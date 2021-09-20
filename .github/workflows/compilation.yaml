@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Run
+      # Install
       - name: Create build folder
         run: mkdir build
 
@@ -24,10 +24,17 @@ jobs:
           path: ~/.conan/data
           key: ${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
 
-      - name: Install conan
+      - name: DEBUG 1
+        run: ls ~/.conan
+
+      - name: DEBUG 2
+        run: ls ~/.conan/profiles
+
+      - name: Install conan data
         working-directory: build
         run: conan install .. --build=missing
 
+      # Run
       - name: Build Project
         working-directory: build
         run: cmake .. -G "Unix Makefiles"
@@ -43,7 +50,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Run
+      # Install
+      - name: Install conan
+        run: pip install --user conan
+
       - name: Create build folder
         run: mkdir build
 
@@ -53,10 +63,11 @@ jobs:
           path: ~/.conan/data
           key: ${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
 
-      - name: Install conan
+      - name: Install conan data
         working-directory: build
         run: conan install .. --build=missing
 
+      # Run
       - name: Build Project
         working-directory: build
         run: cmake .. -G "Unix Makefiles"
