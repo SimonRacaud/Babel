@@ -1,0 +1,65 @@
+name: Check compilation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  linux-babel:
+    runs-on: ubuntu-20.04
+    container: epitechcontent/epitest-docker:devel
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Run
+      - name: Create build folder
+        run: mkdir build
+
+      - name: Cache conan data
+        uses: actions/cache@v2
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
+
+      - name: Install conan
+        working-directory: build
+        run: conan install .. --build=missing
+
+      - name: Build Project
+        working-directory: build
+        run: cmake .. -G "Unix Makefiles"
+
+      - name: Check if binaries exist
+        run: ls babel_client babel_server
+
+
+  windows-babel:
+    runs-on: windows-2019
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Run
+      - name: Create build folder
+        run: mkdir build
+
+      - name: Cache conan data
+        uses: actions/cache@v2
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
+
+      - name: Install conan
+        working-directory: build
+        run: conan install .. --build=missing
+
+      - name: Build Project
+        working-directory: build
+        run: cmake .. -G "Unix Makefiles"
+
+      - name: Check if binaries exist
+        run: ls babel_client babel_server
