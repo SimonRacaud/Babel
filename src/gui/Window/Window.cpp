@@ -39,6 +39,7 @@ Window::Window()
     Account *account = new Account;
     rightLayout->addWidget(account);
 
-    /// Call manager
-    //TODO
+    /// CallManager manager
+    CallManager *callManager = new CallManager;
+    rightLayout->addWidget(callManager);
 }

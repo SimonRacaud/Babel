@@ -32,6 +32,7 @@ Account::Account() : QGroupBox("My Account")
     mainLayout->setAlignment(Qt::AlignTop);
     upperLayout->setAlignment(Qt::AlignLeft);
     _username->setStyleSheet("QLabel { color: red; }");
+    this->setMaximumHeight(100);
     /**
      * TODO:
      *  apply button event => set account username

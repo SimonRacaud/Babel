@@ -17,6 +17,7 @@
 #include "gui/MyContactList/MyContactList.hpp"
 #include "gui/AddContact/AddContact.hpp"
 #include "gui/Account/Account.hpp"
+#include "gui/CallManager/CallManager.hpp"
 
 namespace GUI
 {
