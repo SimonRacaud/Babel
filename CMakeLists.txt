@@ -21,6 +21,9 @@ set(SRCS
     main.cpp
 )
 
+include_directories(${CMAKE_INCLUDE_PATH})
+
+
 add_executable(${NAME} ${SRCS})
 
 ## COMPILATION
