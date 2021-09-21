@@ -12,6 +12,10 @@
 #include <QPushButton>
 #include <QMdiArea>
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include "gui/MyContactList/MyContactList.hpp"
+#include "gui/AddContact/AddContact.hpp"
 
 namespace GUI
 {
@@ -21,7 +25,6 @@ namespace GUI
         virtual ~Window() = default;
 
       private:
-        QPushButton *_test;
     };
 } // namespace GUI
 

@@ -18,7 +18,7 @@ conan_basic_setup()
 
 ## SOURCES
 set(SRCS
-        src/main.cpp src/gui/Window/Window.cpp)
+        src/main.cpp src/gui/Window/Window.cpp src/gui/MyContactList/MyContactList.cpp src/gui/MyContactList/MyContactList.hpp src/gui/MyContactList/Contact/Contact.cpp src/gui/MyContactList/Contact/Contact.hpp src/gui/AddContact/AddContact.cpp src/gui/AddContact/AddContact.hpp)
 
 include_directories(${CMAKE_INCLUDE_PATH})
 include_directories(./src/)
