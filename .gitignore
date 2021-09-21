@@ -1,5 +1,12 @@
+## Executables
 Babel
-build
-.idea
+Babel_client
+Babel_server
 bootstrap
+
+## Compilation
+build
 cmake-build-debug
+
+## IDE
+.idea
