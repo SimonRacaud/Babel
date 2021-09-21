@@ -28,3 +28,10 @@ MyContactList::MyContactList(std::vector<QString> const &contactNameList) : QGro
         _contacts.push_back(new Contact(*_contactList, username));
     }
 }
+
+MyContactList::~MyContactList()
+{
+    for (Contact *contact : _contacts) {
+        delete contact;
+    }
+}

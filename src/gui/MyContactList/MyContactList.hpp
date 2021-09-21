@@ -24,7 +24,7 @@ namespace GUI
     class MyContactList : public QGroupBox {
       public:
         MyContactList(std::vector<QString> const &contactNameList);
-        virtual ~MyContactList() = default;
+        virtual ~MyContactList();
 
       private:
         QVBoxLayout *_contactList;
