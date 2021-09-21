@@ -24,7 +24,7 @@ set(SRCS
 add_executable(${NAME} ${SRCS})
 
 ## COMPILATION
-target_compile_options(${NAME} PRIVATE -Wall -Wextra -Werror)
+#target_compile_options(${NAME} PRIVATE -Wall -Wextra -Werror)
 
 set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
