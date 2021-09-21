@@ -36,7 +36,9 @@ Window::Window()
     leftLayout->addWidget(addContactBox);
 
     /// Account
-    //TODO
+    Account *account = new Account;
+    rightLayout->addWidget(account);
 
     /// Call manager
+    //TODO
 }

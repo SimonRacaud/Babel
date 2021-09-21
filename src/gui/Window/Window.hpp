@@ -16,6 +16,7 @@
 #include <QHBoxLayout>
 #include "gui/MyContactList/MyContactList.hpp"
 #include "gui/AddContact/AddContact.hpp"
+#include "gui/Account/Account.hpp"
 
 namespace GUI
 {
