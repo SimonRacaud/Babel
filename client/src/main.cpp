@@ -1,11 +1,11 @@
 /*
 ** EPITECH PROJECT, 2021
-** main_client.cpp
+** main.cpp
 ** File description:
 ** Client side of Babel
 */
 
-int main(const int, const char *[])
+int main(const int, const char **)
 {
     return 0;
 }

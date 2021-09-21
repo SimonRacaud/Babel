@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.17)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CLIENT Babel_client)
-set(SERVER Babel_server)
+set(CLIENT babel_client)
+set(SERVER babel_server)
 
 project(Babel VERSION 0.0.0 LANGUAGES CXX)
 
@@ -12,14 +12,15 @@ conan_basic_setup()
 
 include_directories(${CMAKE_INCLUDE_PATH})
 
-set(SRC src/)
+set(SRC_CLIENT client/src/)
+set(SRC_SERVER server/src/)
 
 ############ CLIENT
 
 ## SOURCES
 set(SRCS_CLIENT
-        ${SRC}client/main_client.cpp
-        )
+    ${SRC_CLIENT}/main.cpp
+)
 
 add_executable(${CLIENT} ${SRCS_CLIENT})
 
@@ -41,8 +42,9 @@ target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS})
 
 ## SOURCES
 set(SRCS_SERVER
-        ${SRC}server/main_server.cpp
-        )
+    ${SRC_SERVER}/main.cpp
+)
+
 add_executable(${SERVER} ${SRCS_SERVER})
 
 ## COMPILATION
