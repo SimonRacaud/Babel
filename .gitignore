@@ -1,3 +1,5 @@
 Babel
 build
 .idea
+bootstrap
+cmake-build-debug
