@@ -43,6 +43,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "portaudio.h"
 
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
@@ -200,7 +201,8 @@ int main(void)
     PaStream*           stream;
     PaError             err = paNoError;
     paTestData          data;
-    int                 i;
+    const PaDeviceInfo *deviceInfo = NULL;
+    int i;
     int                 totalFrames;
     int                 numSamples;
     int                 numBytes;
@@ -224,11 +226,24 @@ int main(void)
     err = Pa_Initialize();
     if( err != paNoError ) goto done;
 
+    sleep(1);
+    printf("Devices count: %d\n", Pa_GetDeviceCount());
     inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
+    printf("Device Input value: %d\n", inputParameters.device);
     if (inputParameters.device == paNoDevice) {
-        fprintf(stderr,"Error: No default input device.\n");
+        fprintf(stderr, "Error: No default input device.\n");
         goto done;
     }
+
+    deviceInfo = Pa_GetDeviceInfo(inputParameters.device);
+    if (deviceInfo)
+    printf("=== Device input info ===\n\t- name: %s\n\t- max channels: %d\n\t- default sample rate: %f\n\t- high latency: %f\n\t- low latency: %d\n",
+        deviceInfo->name,
+        deviceInfo->maxInputChannels,
+        deviceInfo->defaultSampleRate,
+        deviceInfo->defaultHighInputLatency,
+        deviceInfo->defaultLowInputLatency);
+
     inputParameters.channelCount = 2;                    /* stereo input */
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
@@ -301,10 +316,21 @@ int main(void)
     data.frameIndex = 0;
 
     outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+    printf("Device Output value: %d\n", inputParameters.device);
     if (outputParameters.device == paNoDevice) {
-        fprintf(stderr,"Error: No default output device.\n");
+        fprintf(stderr, "Error: No default output device.\n");
         goto done;
     }
+
+    deviceInfo = Pa_GetDeviceInfo(outputParameters.device);
+    if (deviceInfo)
+    printf("=== Device output info ===\n\t- name: %s\n\t- max channels: %d\n\t- default sample rate: %f\n\t- high latency: %f\n\t- low latency: %d\n",
+        deviceInfo->name,
+        deviceInfo->maxOutputChannels,
+        deviceInfo->defaultSampleRate,
+        deviceInfo->defaultHighOutputLatency,
+        deviceInfo->defaultLowOutputLatency);
+
     outputParameters.channelCount = 2;                     /* stereo output */
     outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
