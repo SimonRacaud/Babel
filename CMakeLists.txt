@@ -18,16 +18,15 @@ conan_basic_setup()
 
 ## SOURCES
 set(SRCS
-    main.cpp
-)
+        src/main.cpp src/gui/Window/Window.cpp)
 
 include_directories(${CMAKE_INCLUDE_PATH})
-
+include_directories(./src/)
 
 add_executable(${NAME} ${SRCS})
 
 ## COMPILATION
-#target_compile_options(${NAME} PRIVATE -Wall -Wextra -Werror)
+target_compile_options(${NAME} PRIVATE -Wall -Wextra) # -Werror
 
 set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
