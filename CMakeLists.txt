@@ -42,3 +42,10 @@ add_subdirectory(${opusToolsDir})
 include_directories(${opusToolsDir}/include)
 include_directories(${opusToolsDir}/src)
 target_link_libraries(${NAME} opusTools)
+
+## PORTAUDIO
+set(portAudioToolsDir ${PROJECT_SOURCE_DIR}/portAudio/)
+add_subdirectory(${portAudioToolsDir})
+include_directories(${portAudioToolsDir}/include)
+include_directories(${portAudioToolsDir}/src)
+target_link_libraries(${NAME} portAudioTools)
