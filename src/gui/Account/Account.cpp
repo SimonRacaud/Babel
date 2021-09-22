@@ -9,7 +9,7 @@
 
 using namespace GUI;
 
-Account::Account() : QGroupBox("My Account")
+Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QHBoxLayout *upperLayout = new QHBoxLayout;
@@ -38,4 +38,10 @@ Account::Account() : QGroupBox("My Account")
      *  apply button event => set account username
      *  _username label update with the new username + color
      */
+     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(applyUsername(void)));
+}
+
+void Account::applyUsername()
+{
+    std::cout << "TEST\n";
 }
