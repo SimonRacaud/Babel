@@ -35,3 +35,10 @@ set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOU
 #target_link_libraries(babel_client ${CONAN_LIBS})
 #target_link_libraries(babel_server ${CONAN_LIBS})
 target_link_libraries(${NAME} ${CONAN_LIBS})
+
+## OPUS
+set(opusToolsDir ${PROJECT_SOURCE_DIR}/opus/)
+add_subdirectory(${opusToolsDir})
+include_directories(${opusToolsDir}/include)
+include_directories(${opusToolsDir}/src)
+target_link_libraries(${NAME} opusTools)
