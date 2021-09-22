@@ -18,6 +18,7 @@
 #include "gui/AddContact/AddContact.hpp"
 #include "gui/Account/Account.hpp"
 #include "gui/CallManager/CallManager.hpp"
+#include "gui/Options/Options.hpp"
 
 namespace GUI
 {
@@ -26,7 +27,14 @@ namespace GUI
         Window();
         virtual ~Window() = default;
 
+        void showOptions();
+
       private:
+        Options *_winOption;
+        MyContactList *_contactBox;
+        AddContact *_addContactBox;
+        Account *_account;
+        CallManager *_callManager;
     };
 } // namespace GUI
 

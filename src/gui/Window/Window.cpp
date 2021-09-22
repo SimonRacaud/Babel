@@ -26,20 +26,24 @@ Window::Window()
     this->setCentralWidget(centerArea);
     rootLayout->addLayout(leftLayout);
     rootLayout->addLayout(rightLayout);
-
     /// Contacts
-    MyContactList *contactBox = new MyContactList(DEBUG_LIST); // TODO : inject contacts username
-    leftLayout->addWidget(contactBox);
-
+    _contactBox = new MyContactList(DEBUG_LIST); // TODO : inject contacts username
+    leftLayout->addWidget(_contactBox);
     /// Add Contact
-    AddContact *addContactBox = new AddContact;
-    leftLayout->addWidget(addContactBox);
-
+    _addContactBox = new AddContact;
+    leftLayout->addWidget(_addContactBox);
     /// Account
-    Account *account = new Account;
-    rightLayout->addWidget(account);
-
+    _account = new Account;
+    rightLayout->addWidget(_account);
     /// CallManager manager
-    CallManager *callManager = new CallManager;
-    rightLayout->addWidget(callManager);
+    _callManager = new CallManager;
+    rightLayout->addWidget(_callManager);
+    /// Options
+    _winOption = new Options;
+}
+
+void Window::showOptions()
+{
+    _winOption->show();
+    this->hide();
 }
