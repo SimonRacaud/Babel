@@ -29,6 +29,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
 
+set(SRC_CLIENT client/src/)
+set(SRC_SERVER server/src/)
+
+include_directories(
+    ./include/
+    ./include/Interfaces/
+)
+
+############ CLIENT
+
 ## SOURCES
 file(GLOB_RECURSE SRCS_CLIENT client/src/*)
 file(GLOB_RECURSE SRCS_SERVER server/src/*)
@@ -61,11 +71,17 @@ endif ()
 set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 ## OPUS
-set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/opus/)
+set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/opus/)
 add_subdirectory(${OPUS_TOOLS_DIR})
 include_directories(${OPUS_TOOLS_DIR}/include)
 include_directories(${OPUS_TOOLS_DIR}/src)
 
+## PORTAUDIO
+set(PORT_AUDIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/portAudio/)
+add_subdirectory(${PORT_AUDIO_TOOLS_DIR})
+include_directories(${PORT_AUDIO_TOOLS_DIR}/include)
+include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
+
 # LDD conan
+target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network opusTools)
 target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
-target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} Qt5::Widgets Qt5::Network opusTools)

@@ -1,9 +1,9 @@
 /*
-** EPITECH PROJECT, 2021
-** main.cpp
-** File description:
-** Client side of Babel
-*/
+ * EPITECH PROJECT, 2021
+ * src
+ * File description:
+ * main.cpp - Created: 23/09/2021
+ */
 
 #include <QApplication>
 #include "gui/Window/Window.hpp"
