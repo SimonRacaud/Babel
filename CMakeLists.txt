@@ -9,11 +9,12 @@ cmake_minimum_required(VERSION 3.17)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(NAME Babel)
+set(NAME_CLIENT babel_client)
+set(NAME_SRV babel_server)
 
 add_definitions("-fPIC")
 
-project(${NAME} VERSION 0.0.0 LANGUAGES CXX)
+project(Babel VERSION 0.0.0 LANGUAGES CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -26,39 +27,25 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
 
-file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*)
 ## SOURCES
-#set(SRCS
-#        src/main.cpp
-#        src/gui/Window/Window.cpp
-#        src/gui/MyContactList/MyContactList.cpp
-#        src/gui/MyContactList/MyContactList.hpp
-#        src/gui/MyContactList/Contact/Contact.cpp
-#        src/gui/MyContactList/Contact/Contact.hpp
-#        src/gui/AddContact/AddContact.cpp
-#        src/gui/AddContact/AddContact.hpp
-#        src/gui/Account/Account.cpp
-#        src/gui/Account/Account.hpp
-#        src/gui/CallManager/CallManager.cpp
-#        src/gui/CallManager/CallManager.hpp
-#        src/gui/Options/Options.cpp src/gui/Options/Options.hpp)
+file(GLOB_RECURSE SRCS_CLIENT client/src/*)
 
-add_executable(${NAME} ${SRCS})
+add_executable(${NAME_CLIENT} ${SRCS_CLIENT})
 
-include_directories(${CMAKE_INCLUDE_PATH} ./src/)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/Account)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/AddContact)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/CallManager)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/MyContactList)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/Options)
-target_include_directories(${NAME} BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/src/gui/Window)
+## Client includes (Qt)
+include_directories(${CMAKE_INCLUDE_PATH} client/src/ client/include)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/Account)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/AddContact)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/MyContactList)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/Options)
+target_include_directories(${NAME_CLIENT} BEFORE PUBLIC client/src/gui/Window)
 
-## COMPILATION
-target_compile_options(${NAME} PRIVATE -Wall -Wextra) # -Werror
-
-set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
+## COMPILATION FLAGS
+target_compile_options(${NAME_CLIENT} PRIVATE -Wall -Wextra) # -Werror
+## Binary destination
+set_target_properties(${NAME_CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 # LDD conan
-#target_link_libraries(babel_client ${CONAN_LIBS})
 #target_link_libraries(babel_server ${CONAN_LIBS})
-target_link_libraries(${NAME} ${CONAN_LIBS} Qt5::Widgets Qt5::Network)
+target_link_libraries(${NAME_CLIENT} ${CONAN_LIBS} Qt5::Widgets Qt5::Network)
