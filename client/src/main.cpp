@@ -17,16 +17,13 @@ static int recordCallBack(const void *input, void *, unsigned long, const PaStre
 {
     PortAudioCaps::AudioRecorder *tools = static_cast<PortAudioCaps::AudioRecorder *>(params);
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
-    std::vector<float> translateBuffer(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    Audio::rawFrameBuffer frameBuffer;
 
+    frameBuffer.data = std::vector<float>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    std::memset(frameBuffer.data.data(), 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     if (input)
-        std::memcpy(translateBuffer.data(), input, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
-    else
-        std::memset(translateBuffer.data(), 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
-    tab.push({
-        translateBuffer
-    });
-    std::cout << "here2: " << translateBuffer.size() / sizeof(float) << std::endl;
+        std::memcpy(frameBuffer.data.data(), input, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    tab.push(frameBuffer);
     return paContinue;
 }
 
@@ -36,7 +33,13 @@ static int streamerCallBack(const void *, void *output, unsigned long, const PaS
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
 
     std::cout << "here1: " << tab.size() << std::endl;
-    auto &member = tab.back();
+    auto &member = tab.front();
+    std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+
+    /*float *testOutput = (float *) output;
+    for (size_t i = 0; i < Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS; i++) {
+        testOutput[i] += member.data[i];
+    }*/
     std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     tab.pop();
     return (tab.size()) ? paContinue : paComplete;
@@ -79,7 +82,7 @@ int main()
     std::cout << std::endl;
     std::cout << std::endl;
     while (buffer.size()) {
-        streamer->getSampleBuffer().push(buffer.back());
+        streamer->getSampleBuffer().push(buffer.front());
         buffer.pop();
     }
     streamer->setCallBack(streamerCallBack);
