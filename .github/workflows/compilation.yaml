@@ -12,6 +12,9 @@ jobs:
     container: epitechcontent/epitest-docker:devel
     steps:
       # Install
+      - name: Install qt
+        run: dnf install -y qt5-qtbase-devel
+
       - name: Set conan config
         run: conan config set general.revisions_enabled=1
 
