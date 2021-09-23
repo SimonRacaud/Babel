@@ -19,11 +19,13 @@ include_directories(
     ./src/
     ./include/
     ../include/
+    ../include/Interfaces/
 )
 
 ## SOURCES
 set(SRCS
-    src/keep.cpp
+    src/AudioRecorder.cpp
+    src/AudioStreamer.cpp
 )
 
 add_library(${NAME} SHARED ${SRCS})
