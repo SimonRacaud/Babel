@@ -5,13 +5,14 @@
 ** AudioRecorder.cpp
 */
 
-#include "AudioRecorder.hpp"
+#include <cstring>
 #include <stdexcept>
 #include "Audio.hpp"
+#include "AudioRecorder.hpp"
 
 using namespace PortAudioCaps;
 
-AudioRecorder::AudioRecorder() : _stream(nullptr), _callback(nullptr)
+AudioRecorder::AudioRecorder() : _stream(nullptr), _callback(AudioRecorder::defaultCallBack)
 {
     int PA_err = Pa_Initialize();
 
@@ -87,4 +88,18 @@ Audio::rawFrameBuffer AudioRecorder::getFrame()
 
     this->_streaming.pop();
     return tmp;
+}
+
+int AudioRecorder::defaultCallBack(const void *input, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *params)
+{
+    PortAudioCaps::AudioRecorder *tools = static_cast<PortAudioCaps::AudioRecorder *>(params);
+    std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
+    Audio::rawFrameBuffer frameBuffer;
+
+    frameBuffer.data = std::vector<float>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    std::memset(frameBuffer.data.data(), 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    if (input)
+        std::memcpy(frameBuffer.data.data(), input, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    tab.push(frameBuffer);
+    return paContinue;
 }

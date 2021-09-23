@@ -32,6 +32,9 @@ namespace PortAudioCaps
             ** IAudioRecorder
             */
             Audio::rawFrameBuffer getFrame();
+
+        private:
+            static int defaultCallBack(const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *);
         
         private:
             PaStream *_stream;

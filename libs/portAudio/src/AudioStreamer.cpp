@@ -5,13 +5,14 @@
 ** AudioStreamer.cpp
 */
 
-#include "AudioStreamer.hpp"
+#include <cstring>
 #include <stdexcept>
 #include "Audio.hpp"
+#include "AudioStreamer.hpp"
 
 using namespace PortAudioCaps;
 
-AudioStreamer::AudioStreamer() : _stream(nullptr), _callback(nullptr)
+AudioStreamer::AudioStreamer() : _stream(nullptr), _callback(AudioStreamer::defaultCallBack)
 {
     int PA_err = Pa_Initialize();
 
@@ -84,4 +85,15 @@ std::queue<Audio::rawFrameBuffer> &AudioStreamer::getSampleBuffer()
 void AudioStreamer::setFrame(Audio::rawFrameBuffer frame)
 {
     this->_streaming.push(frame);
+}
+
+int AudioStreamer::defaultCallBack(const void *, void *output, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *params)
+{
+    PortAudioCaps::AudioStreamer *tools = static_cast<PortAudioCaps::AudioStreamer *>(params);
+    std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
+    auto &member = tab.front();
+
+    std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    tab.pop();
+    return (tab.size()) ? paContinue : paComplete;
 }
