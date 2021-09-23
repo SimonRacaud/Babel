@@ -51,3 +51,13 @@ void Contact::slotCallContact() noexcept
     // Network : start call
     // disable call button
 }
+
+void Contact::enableCall()
+{
+    this->_buttonCall->setDisabled(false);
+}
+
+void Contact::disableCall()
+{
+    this->_buttonCall->setDisabled(true);
+}

@@ -31,6 +31,9 @@ namespace GUI
         Contact(QVBoxLayout &parent, QString const &userName);
         virtual ~Contact();
 
+        void enableCall();
+        void disableCall();
+
       private slots:
         void slotCallContact() noexcept;
         void slotRemoveContact() noexcept;

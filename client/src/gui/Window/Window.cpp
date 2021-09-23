@@ -36,7 +36,7 @@ Window::Window()
     _account = new Account;
     rightLayout->addWidget(_account);
     /// CallManager manager
-    _callManager = new CallManager;
+    _callManager = new CallManager((*_contactBox));
     rightLayout->addWidget(_callManager);
     /// Options
     //_winOption = new Options;

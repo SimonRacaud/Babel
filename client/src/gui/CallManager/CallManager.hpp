@@ -16,6 +16,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <iostream>
+#include "gui/MyContactList/MyContactList.hpp"
 
 namespace GUI
 {
@@ -23,7 +24,7 @@ namespace GUI
         Q_OBJECT
 
       public:
-        CallManager();
+        CallManager(MyContactList &contactList);
         virtual ~CallManager();
 
         void setCallMembers(std::vector<QString> const &usernames);
@@ -35,6 +36,7 @@ namespace GUI
         void slotHangUpCall() noexcept;
 
       private:
+        MyContactList &_contactList;
         QGroupBox *_memberGroup;
         QVBoxLayout *_memberList;
 

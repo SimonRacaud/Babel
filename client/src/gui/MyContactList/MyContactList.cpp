@@ -43,7 +43,9 @@ void MyContactList::addContact(QString const& username)
 
 void MyContactList::enableCallButtons()
 {
-    // TODO
+    for (Contact *contact : _contacts) {
+        contact->enableCall();
+    }
 }
 
 void MyContactList::removeContact(QString const &username)
