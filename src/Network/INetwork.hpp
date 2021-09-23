@@ -30,16 +30,14 @@ namespace network
         /**
          * @brief Connect to a remote INetwork class
          * @param ip The ip of the targeted machine
-         * @param port The port on which the socket is open
          */
-        virtual void connect(std::string ip, unsigned int port) = 0;
+        virtual void connect(std::string ip) = 0;
 
         /**
          * @brief Disconnect from a particular machine
          * @param ip The machine's ip address
-         * @param port The machine's socket port that was connected
          */
-        virtual void disconnect(std::string ip, unsigned int port) = 0;
+        virtual void disconnect(std::string ip) = 0;
         /**
          * @brief Disconnect from every connected machine
          */
@@ -55,11 +53,9 @@ namespace network
         /**
          * @brief Receive data from a particular machine
          * @param ip The machine's ip address
-         * @param port The machine's connected socket port
          * @return The data received, '\0's if nothing received
          */
-        virtual std::array<char, PACKETSIZE> receive(
-            std::string ip, unsigned int port) = 0;
+        virtual std::array<char, PACKETSIZE> receive(std::string ip) = 0;
 
         /**
          * @brief Send data to every machine connected
@@ -71,18 +67,16 @@ namespace network
          * @brief Send data to a particular machine
          * @param buf The data sent
          * @param ip The machine's ip address
-         * @param port The machine's connected socket port
          */
-        virtual void send(std::array<char, PACKETSIZE> buf, std::string ip,
-            unsigned int port) = 0;
+        virtual void send(
+            std::array<char, PACKETSIZE> buf, std::string ip, ) = 0;
 
         /**
          * @brief Check if a machine is connected
          * @param ip The machine's ip address
-         * @param port The machine's supposedly connected socket port
          * @return True if connected, false otherwise
          */
-        virtual bool isConnected(std::string ip, unsigned int port) const = 0;
+        virtual bool isConnected(std::string ip) const = 0;
         // TODO put in abstract class ?
     };
 
