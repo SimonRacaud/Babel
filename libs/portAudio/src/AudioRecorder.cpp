@@ -5,9 +5,9 @@
 ** AudioRecorder.cpp
 */
 
+#include "AudioRecorder.hpp"
 #include <stdexcept>
 #include "Audio.hpp"
-#include <AudioRecorder.hpp>
 
 using namespace PortAudioCaps;
 

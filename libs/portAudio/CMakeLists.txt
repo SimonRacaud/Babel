@@ -18,14 +18,15 @@ project(${NAME} VERSION 0.0.0 LANGUAGES CXX)
 include_directories(
     ./src/
     ./include/
-    ../include/
-    ../include/Interfaces/
+    ../../include/
+    ../../include/Interfaces/
 )
 
 ## SOURCES
 set(SRCS
     src/AudioRecorder.cpp
     src/AudioStreamer.cpp
+    src/IODevices.cpp
 )
 
 add_library(${NAME} SHARED ${SRCS})

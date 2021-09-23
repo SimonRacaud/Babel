@@ -9,27 +9,26 @@
 #define OPUSDECODER_HPP
 
 #include <opus.h>
-#include "../../include/Audio.hpp"
-#include "../../include/rawFrameBuffer.hpp"
-#include "../../include/compressFrameBuffer.hpp"
-#include "../../include/Interfaces/IAudioExtractor.hpp"
+#include "Audio.hpp"
+#include "Interfaces/IAudioExtractor.hpp"
+#include "compressFrameBuffer.hpp"
+#include "rawFrameBuffer.hpp"
 
 namespace OpusCaps
 {
     using defaultBuffer = Audio::rawFrameBuffer;
     using compressBuffer = Audio::compressFrameBuffer;
 
-    class opusDecoder : public Audio::IAudioExtractor<compressBuffer, defaultBuffer>
-    {
-        public:
-            opusDecoder();
-            ~opusDecoder();
-            defaultBuffer extract(const compressBuffer &);
-            void extract(defaultBuffer &, const compressBuffer &);
+    class opusDecoder : public Audio::IAudioExtractor<compressBuffer, defaultBuffer> {
+      public:
+        opusDecoder();
+        ~opusDecoder();
+        defaultBuffer extract(const compressBuffer &);
+        void extract(defaultBuffer &, const compressBuffer &);
 
-        private:
-            OpusDecoder *_decoder;
+      private:
+        OpusDecoder *_decoder;
     };
-}
+} // namespace OpusCaps
 
 #endif

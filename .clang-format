@@ -56,7 +56,7 @@ Language: Cpp
 #--------#
 
 # F3 - Maximum columns count
-ColumnLimit: 79
+ColumnLimit: 135
 
 # F3 - Column limit wrapping for comments
 ReflowComments: true
@@ -66,8 +66,8 @@ AlignAfterOpenBracket: DontAlign
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 IndentWrappedFunctionNames: false
-BinPackArguments: true
-BinPackParameters: true
+BinPackArguments: false
+BinPackParameters: false
 AlignOperands: false
 
 # L4 - Brace wrapping
@@ -75,7 +75,7 @@ BreakBeforeBraces: Custom
 BraceWrapping:
     AfterCaseLabel: false
     AfterControlStatement: false
-    AfterEnum: false
+    AfterEnum: true
     AfterFunction: true
     AfterNamespace: true
     AfterStruct: false
@@ -223,6 +223,9 @@ BreakBeforeBinaryOperators: NonAssignment
 
 #
 BreakBeforeTernaryOperators: true
+
+#
+EmptyLineBeforeAccessModifier: LogicalBlock
 
 # Include sorting and priority - lowest priority gets sorted at the bottom of the list
 SortIncludes: true
