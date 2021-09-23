@@ -6,5 +6,10 @@ if [ ! -d "./build" ]; then
 fi
 
 ## Build
-cd build && conan install .. --build missing && cmake .. && make
+if [[ "re" = $1 ]]; then
+  cd build && conan install .. --build missing
+  cmake .. && make
+else
+    cd build && make
+fi
 
