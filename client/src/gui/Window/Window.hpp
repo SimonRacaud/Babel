@@ -18,7 +18,7 @@
 #include "gui/AddContact/AddContact.hpp"
 #include "gui/Account/Account.hpp"
 #include "gui/CallManager/CallManager.hpp"
-#include "gui/Options/Options.hpp"
+//#include "gui/Options/Options.hpp"
 
 namespace GUI
 {
@@ -30,7 +30,7 @@ namespace GUI
         void showOptions();
 
       private:
-        Options *_winOption;
+        //Options *_winOption;
         MyContactList *_contactBox;
         AddContact *_addContactBox;
         Account *_account;

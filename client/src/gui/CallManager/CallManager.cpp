@@ -24,11 +24,14 @@ CallManager::CallManager()
     /// config
     _hangUpButton->setStyleSheet("QPushButton { background-color: red; }");
     _memberList->setAlignment(Qt::AlignTop);
+    /// Events
+    QObject::connect(_hangUpButton, SIGNAL(clicked()), this, SLOT(slotHangUpCall()));
+}
 
-    /// DEBUG TODO
-    _memberList->addWidget(new QLabel("Thomas.J"));
-    _memberList->addWidget(new QLabel("Aurélien.J"));
-    _memberList->addWidget(new QLabel("Simon.R"));
+CallManager::~CallManager()
+{
+    delete _hangUpButton;
+    delete _memberGroup;
 }
 
 void CallManager::setCallMembers(std::vector<QString> const &usernames)
@@ -60,4 +63,11 @@ void CallManager::clearMemberList()
         QLayoutItem *item = _memberList->itemAt(0);
         delete item->widget();
     }
+}
+
+void CallManager::slotHangUpCall() noexcept
+{
+    /// TODO : Network => close call connections
+    this->clearMemberList();
+    // gui : enable all call buttons
 }

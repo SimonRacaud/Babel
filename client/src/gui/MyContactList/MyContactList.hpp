@@ -11,23 +11,28 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QVBoxLayout>
+#include <QObject>
 #include <QPushButton>
-#include <QWidget>
 #include <QScrollArea>
-#include <vector>
+#include <QVBoxLayout>
+#include <QWidget>
 #include <iostream>
+#include <vector>
 
 #include "Contact/Contact.hpp"
 
 namespace GUI
 {
     class MyContactList : public QGroupBox {
+        Q_OBJECT
+
       public:
         MyContactList(std::vector<QString> const &contactNameList);
         virtual ~MyContactList();
 
-        void addContact(QString const& username);
+        void addContact(QString const &username);
+        void enableCallButtons();
+        void removeContact(QString const &username);
 
       private:
         QVBoxLayout *_contactList;

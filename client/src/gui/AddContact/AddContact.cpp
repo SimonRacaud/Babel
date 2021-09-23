@@ -28,7 +28,7 @@ AddContact::AddContact(MyContactList &contactList) : QGroupBox("Add Contact"), _
     _widthControl->setMaximumWidth(ADD_CONTACT_MAX_WIDTH);
     _input->setPlaceholderText("username");
     /// Events
-    QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(addContact()));
+    QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotAddContact()));
 }
 
 AddContact::~AddContact()
@@ -38,7 +38,7 @@ AddContact::~AddContact()
     delete _widthControl;
 }
 
-void AddContact::addContact() noexcept
+void AddContact::slotAddContact()
 {
     QString const &input = _input->text();
 

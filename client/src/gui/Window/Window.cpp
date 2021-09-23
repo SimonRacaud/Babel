@@ -39,11 +39,11 @@ Window::Window()
     _callManager = new CallManager;
     rightLayout->addWidget(_callManager);
     /// Options
-    _winOption = new Options;
+    //_winOption = new Options;
 }
 
 void Window::showOptions()
 {
-    _winOption->show();
+    //_winOption->show();
     this->hide();
 }

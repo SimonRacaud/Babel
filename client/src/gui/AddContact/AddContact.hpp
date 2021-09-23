@@ -29,7 +29,7 @@ namespace GUI
         virtual ~AddContact();
 
       private slots:
-        void addContact() noexcept;
+        void slotAddContact();
 
       private:
         MyContactList &_contactList;

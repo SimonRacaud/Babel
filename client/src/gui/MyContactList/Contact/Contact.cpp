@@ -26,9 +26,29 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName)
     _buttonRemove->setFixedWidth(CONTACT_BUTT_WIDTH);
 
     parent.addWidget(_widthControl);
-    /**
-     * TODO:
-     *  Call button event => start a call with the current user
-     *  Remove button event => remove contact
-     */
+}
+
+Contact::~Contact()
+{
+    delete _widthControl;
+    delete _label;
+    delete _buttonCall;
+    delete _buttonRemove;
+}
+
+void Contact::slotRemoveContact() noexcept
+{
+    // TODO
+    // get contact name
+    // Network : API remove contact
+    // remove contact from GUI list
+}
+
+void Contact::slotCallContact() noexcept
+{
+    // TODO
+    // get contact name
+    // gui : callManager add member
+    // Network : start call
+    // disable call button
 }

@@ -38,5 +38,15 @@ MyContactList::~MyContactList()
 
 void MyContactList::addContact(QString const& username)
 {
-    std::cerr << "DEBUG : add contact\n";
+    _contacts.push_back(new Contact(*_contactList, username));
+}
+
+void MyContactList::enableCallButtons()
+{
+    // TODO
+}
+
+void MyContactList::removeContact(QString const &username)
+{
+    // TODO
 }

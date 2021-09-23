@@ -33,7 +33,7 @@ Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
     _upperLayout->setAlignment(Qt::AlignLeft);
     _username->setStyleSheet("QLabel { color: red; }");
     this->setMaximumHeight(100);
-     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(applyUsername(void)));
+     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotApplyUsername()));
 }
 
 Account::~Account()
@@ -44,11 +44,12 @@ Account::~Account()
     delete _usernameLabel;
 }
 
-void Account::applyUsername()
+void Account::slotApplyUsername()
 {
     const QString &username = this->_input->text();
 
     if (username.isEmpty() == false) {
+        _input->setText("");
         /// TODO : apply new username on network (api)
         this->_username->setText(username);
         _username->setStyleSheet("QLabel { color: blue; }");

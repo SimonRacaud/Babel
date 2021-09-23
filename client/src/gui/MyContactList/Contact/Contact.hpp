@@ -14,6 +14,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QWidget>
+#include <QObject>
 
 /**
  * Config
@@ -23,10 +24,16 @@
 
 namespace GUI
 {
-    class Contact {
+    class Contact : public QObject {
+        Q_OBJECT
+
       public:
         Contact(QVBoxLayout &parent, QString const &userName);
-        virtual ~Contact() = default;
+        virtual ~Contact();
+
+      private slots:
+        void slotCallContact() noexcept;
+        void slotRemoveContact() noexcept;
 
       private:
         QWidget *_widthControl;

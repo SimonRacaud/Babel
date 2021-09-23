@@ -10,23 +10,29 @@
 
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QListWidget>
 #include <QLabel>
+#include <QListWidget>
+#include <QObject>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include <iostream>
 
 namespace GUI
 {
     class CallManager : public QGroupBox {
+        Q_OBJECT
+
       public:
         CallManager();
-        virtual ~CallManager() = default;
+        virtual ~CallManager();
 
         void setCallMembers(std::vector<QString> const &usernames);
         void removeMember(QString const &username);
         void addMember(QString const &username);
         void clearMemberList();
+
+      private slots:
+        void slotHangUpCall() noexcept;
 
       private:
         QGroupBox *_memberGroup;
@@ -34,6 +40,6 @@ namespace GUI
 
         QPushButton *_hangUpButton;
     };
-}
+} // namespace GUI
 
 #endif // CALLMANAGER_HPP

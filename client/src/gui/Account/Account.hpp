@@ -29,7 +29,7 @@ namespace GUI
         virtual ~Account();
 
       private slots:
-        void applyUsername();
+        void slotApplyUsername();
 
       private:
         QLineEdit *_input;
