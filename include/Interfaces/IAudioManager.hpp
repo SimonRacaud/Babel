@@ -8,11 +8,12 @@
 #ifndef IAUDIOMANAGER_HPP
 #define IAUDIOMANAGER_HPP
 
+#include <queue>
 #include <functional>
 
 namespace Audio
 {
-    template <typename callbackProto>
+    template <typename callbackProto, typename sampleBuffer>
     class IAudioManager
     {
         public:
@@ -22,6 +23,7 @@ namespace Audio
             virtual void startStreaming() = 0;
             virtual bool isStreaming() const = 0;
             virtual void setCallBack(std::function<callbackProto>) = 0;
+            virtual std::queue<sampleBuffer> &getSampleBuffer() = 0;
     };
 }
 

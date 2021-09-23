@@ -8,7 +8,6 @@
 #ifndef AUDIOSTREAMER_HPP
 #define AUDIOSTREAMER_HPP
 
-#include <queue>
 #include <portaudio.h>
 #include "IAudioStreamer.hpp"
 
@@ -27,6 +26,7 @@ namespace PortAudioCaps
             void startStreaming();
             bool isStreaming() const;
             void setCallBack(std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>);
+            std::queue<Audio::rawFrameBuffer> &getSampleBuffer();
 
             /*
             ** IAudioStreamer

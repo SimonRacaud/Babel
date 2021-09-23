@@ -39,12 +39,14 @@ AudioStreamer::~AudioStreamer()
 /*
 ** IAudioManager
 */
+
 void AudioStreamer::endStreaming()
 {
     int PA_err = Pa_CloseStream(this->_stream);
 
     if (PA_err != paNoError)
         throw std::invalid_argument("Failed: Pa_CloseStream");
+    this->_stream = nullptr;
 }
 
 void AudioStreamer::startStreaming()
@@ -56,16 +58,24 @@ void AudioStreamer::startStreaming()
     PA_err = Pa_OpenStream(&this->_stream, NULL, &this->_parameters, Audio::SAMPLE_RATE, Audio::FRAMES_PER_BUFFER, paClipOff, this->_callback.target<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>(), this);
     if (PA_err != paNoError)
         throw std::invalid_argument("Failed: Pa_OpenStream");
+    PA_err = Pa_StartStream(this->_stream);
+    if (PA_err != paNoError)
+        throw std::invalid_argument("Failed: Pa_OpenStart");
 }
 
 bool AudioStreamer::isStreaming() const
 {
-    return Pa_IsStreamActive(this->_stream) == 1;
+    return this->_stream && Pa_IsStreamActive(this->_stream) == 1;
 }
 
 void AudioStreamer::setCallBack(std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)> func)
 {
     this->_callback = func;
+}
+
+std::queue<Audio::rawFrameBuffer> &AudioStreamer::getSampleBuffer()
+{
+    return this->_streaming;
 }
 
 /*

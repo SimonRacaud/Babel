@@ -6,10 +6,32 @@
 */
 
 #include <memory>
+#include <iostream>
+#include <unistd.h>
 #include "AudioStreamer.hpp"
 #include "AudioRecorder.hpp"
 #include "opusDecoder.hpp"
 #include "opusEncoder.hpp"
+
+static int recordCallBack(const void *input, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *params)
+{
+    PortAudioCaps::AudioRecorder *tools = static_cast<PortAudioCaps::AudioRecorder *>(params);
+    const float *inputFrameBuffer = static_cast<const float *>(input);
+    std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
+    std::vector<float> translateBuffer;
+
+    for (size_t i = 0; i < Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS; i++)
+        translateBuffer.push_back(inputFrameBuffer[i]);
+    tab.push({
+        translateBuffer
+    });
+    return paContinue;
+}
+
+static int streamerCallBack(const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)
+{
+    return paContinue;
+}
 
 int main()
 {
@@ -30,8 +52,32 @@ int main()
     // compressed = encode.compress(Frame);
 
     std::unique_ptr<PortAudioCaps::AudioRecorder> record = std::make_unique<PortAudioCaps::AudioRecorder>();
+    record->setCallBack(recordCallBack);
     record->startStreaming();
+    for (size_t i = 0; i < 5 * Audio::FRAMES_PER_BUFFER; i++)
+        usleep(1000);
     record->endStreaming();
+    auto buffer = record->getSampleBuffer();
     record.reset();
+
+    std::unique_ptr<PortAudioCaps::AudioStreamer> streamer = std::make_unique<PortAudioCaps::AudioStreamer>();
+
+    while (buffer.size()) {
+        streamer->getSampleBuffer().push(buffer.back());
+        buffer.pop();
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "ICICICICICICICICICI" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    streamer->setCallBack(streamerCallBack);
+    streamer->startStreaming();
+    for (size_t i = 0; i < 5 * Audio::FRAMES_PER_BUFFER; i++)
+        usleep(100);
+    streamer->endStreaming();
+    streamer.reset();
     return 0;
 }

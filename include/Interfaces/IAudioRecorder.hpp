@@ -14,7 +14,7 @@
 namespace Audio
 {
     template <typename callbackProto>
-    class IAudioRecorder : public IAudioManager<callbackProto>
+    class IAudioRecorder : public IAudioManager<callbackProto, rawFrameBuffer>
     {
         public:
             virtual ~IAudioRecorder() = default;
@@ -26,6 +26,7 @@ namespace Audio
             virtual void startStreaming() = 0;
             virtual bool isStreaming() const = 0;
             virtual void setCallBack(std::function<callbackProto>) = 0;
+            virtual std::queue<rawFrameBuffer> &getSampleBuffer() = 0;
 
             /*
             ** IAudioRecorder
