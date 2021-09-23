@@ -21,7 +21,11 @@ set(SRCS
     main.cpp
 )
 
-include_directories(${CMAKE_INCLUDE_PATH})
+include_directories(
+    ./src/
+    ./include/
+    ./include/Interfaces/
+)
 
 
 add_executable(${NAME} ${SRCS})
