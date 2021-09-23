@@ -30,7 +30,6 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName)
 
 Contact::~Contact()
 {
-    delete _widthControl;
     delete _label;
     delete _buttonCall;
     delete _buttonRemove;
