@@ -26,8 +26,11 @@ Window::Window()
     this->setCentralWidget(centerArea);
     rootLayout->addLayout(leftLayout);
     rootLayout->addLayout(rightLayout);
+    /// CallManager
+    _callManager = new CallManager();
+    rightLayout->addWidget(_callManager);
     /// Contacts
-    _contactBox = new MyContactList(DEBUG_LIST); // TODO : inject contacts username
+    _contactBox = new MyContactList(*_callManager, DEBUG_LIST); // TODO : inject contacts username
     leftLayout->addWidget(_contactBox);
     /// Add Contact
     _addContactBox = new AddContact((*_contactBox));
@@ -35,9 +38,8 @@ Window::Window()
     /// Account
     _account = new Account;
     rightLayout->addWidget(_account);
-    /// CallManager manager
-    _callManager = new CallManager((*_contactBox));
-    rightLayout->addWidget(_callManager);
+    /// Call Manager
+    this->_callManager->setContactList(*_contactBox);
     /// Options
     //_winOption = new Options;
 }

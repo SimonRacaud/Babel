@@ -19,6 +19,7 @@
 #include <iostream>
 #include <vector>
 
+#include "ICallManager.hpp"
 #include "Contact/Contact.hpp"
 
 namespace GUI
@@ -27,7 +28,7 @@ namespace GUI
         Q_OBJECT
 
       public:
-        MyContactList(std::vector<QString> const &contactNameList);
+        MyContactList(ICallManager &callManager, std::vector<QString> const &contactNameList = {});
         virtual ~MyContactList();
 
         void addContact(QString const &username);
@@ -35,6 +36,7 @@ namespace GUI
         void removeContact(QString const &username);
 
       private:
+        ICallManager &_callManager;
         QVBoxLayout *_contactList;
         std::vector<Contact *> _contacts;
     };

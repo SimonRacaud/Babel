@@ -17,14 +17,15 @@
 #include <QVBoxLayout>
 #include <iostream>
 #include "gui/MyContactList/MyContactList.hpp"
+#include "ICallManager.hpp"
 
 namespace GUI
 {
-    class CallManager : public QGroupBox {
+    class CallManager : public QGroupBox, public ICallManager {
         Q_OBJECT
 
       public:
-        CallManager(MyContactList &contactList);
+        CallManager();
         virtual ~CallManager();
 
         void setCallMembers(std::vector<QString> const &usernames);
@@ -32,11 +33,13 @@ namespace GUI
         void addMember(QString const &username);
         void clearMemberList();
 
+        void setContactList(MyContactList &contactList);
+
       private slots:
         void slotHangUpCall() noexcept;
 
       private:
-        MyContactList &_contactList;
+        MyContactList *_contactList;
         QGroupBox *_memberGroup;
         QVBoxLayout *_memberList;
 

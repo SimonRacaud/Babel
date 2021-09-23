@@ -9,7 +9,7 @@
 
 using namespace GUI;
 
-CallManager::CallManager(MyContactList &contactList) : _contactList(contactList)
+CallManager::CallManager() : _contactList(nullptr)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     _memberGroup = new QGroupBox("Call Members");
@@ -69,5 +69,12 @@ void CallManager::slotHangUpCall() noexcept
 {
     /// TODO : Network => close call connections
     this->clearMemberList();
-    this->_contactList.enableCallButtons();
+    if (_contactList) {
+        this->_contactList->enableCallButtons();
+    }
+}
+
+void CallManager::setContactList(MyContactList &contactList)
+{
+    this->_contactList = &contactList;
 }

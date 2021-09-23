@@ -9,7 +9,9 @@
 
 using namespace GUI;
 
-MyContactList::MyContactList(std::vector<QString> const &contactNameList) : QGroupBox("My Contacts")
+MyContactList::MyContactList(
+    ICallManager &callManager, std::vector<QString> const &contactNameList)
+    : QGroupBox("My Contacts"), _callManager(callManager)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QScrollArea *scrollArea = new QScrollArea;
@@ -25,7 +27,7 @@ MyContactList::MyContactList(std::vector<QString> const &contactNameList) : QGro
     container->setLayout(_contactList);
 
     for (QString const &username : contactNameList) {
-        _contacts.push_back(new Contact(*_contactList, username));
+        _contacts.push_back(new Contact(*_contactList, username, callManager));
     }
 }
 
@@ -36,9 +38,9 @@ MyContactList::~MyContactList()
     }
 }
 
-void MyContactList::addContact(QString const& username)
+void MyContactList::addContact(QString const &username)
 {
-    _contacts.push_back(new Contact(*_contactList, username));
+    _contacts.push_back(new Contact(*_contactList, username, _callManager));
 }
 
 void MyContactList::enableCallButtons()

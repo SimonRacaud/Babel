@@ -9,7 +9,9 @@
 
 using namespace GUI;
 
-Contact::Contact(QVBoxLayout &parent, QString const &userName)
+Contact::Contact(
+    QVBoxLayout &parent, QString const &userName, ICallManager &callManager)
+    : _callManager(callManager)
 {
     this->_widthControl = new QWidget;
     this->_layout = new QHBoxLayout;
@@ -26,6 +28,10 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName)
     _buttonRemove->setFixedWidth(CONTACT_BUTT_WIDTH);
 
     parent.addWidget(_widthControl);
+
+    /// Events
+    QObject::connect(_buttonCall, SIGNAL(clicked()), this, SLOT(slotCallContact()));
+    QObject::connect(_buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
 }
 
 Contact::~Contact()
@@ -45,11 +51,17 @@ void Contact::slotRemoveContact() noexcept
 
 void Contact::slotCallContact() noexcept
 {
-    // TODO
-    // get contact name
-    // gui : callManager add member
-    // Network : start call
-    // disable call button
+    QString const &username = _label->text();
+
+    this->disableCall();
+    // TODO Network : start call
+    if (true /*network ok*/) {
+        _callManager.addMember(username);
+    } else {
+        this->enableCall();
+        std::cerr << "Info: fail to call " << username.toStdString() << ". Network error"
+                  << std::endl;
+    }
 }
 
 void Contact::enableCall()
