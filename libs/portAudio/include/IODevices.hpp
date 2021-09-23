@@ -20,18 +20,18 @@ namespace PortAudioCaps
 
     class IODevices {
       public:
-        IODevices(const PaDeviceIndex &inputDevice = Pa_GetDefaultInputDevice(),
-            const PaDeviceIndex &outputDevice = Pa_GetDefaultOutputDevice());
+        IODevices();
         ~IODevices();
 
         const std::vector<DeviceInfos> getInputs() const;
         const std::vector<DeviceInfos> getOutputs() const;
+        const DeviceInfos getSelectedInput() const;
+        const DeviceInfos getSelectedOutput() const;
 
         void selectInput(const PaDeviceIndex &deviceIndex);
         void selectOutput(const PaDeviceIndex &deviceIndex);
-
-        const DeviceInfos getSelectedInput() const;
-        const DeviceInfos getSelectedOutput() const;
+        void setDefaultInput();
+        void setDefaultOutput();
 
       private:
         PaDeviceIndex _inputDevice = -1;
