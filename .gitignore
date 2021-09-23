@@ -1,4 +1,13 @@
+## Executables
 Babel
+babel_client
+babel_server
+bootstrap
+
+## Compilation
 build
+cmake-build-debug
+
+## IDE
 .idea
 .vscode
