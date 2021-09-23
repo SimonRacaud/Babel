@@ -224,6 +224,9 @@ BreakBeforeBinaryOperators: NonAssignment
 #
 BreakBeforeTernaryOperators: true
 
+#
+EmptyLineBeforeAccessModifier: LogicalBlock
+
 # Include sorting and priority - lowest priority gets sorted at the bottom of the list
 SortIncludes: true
 IncludeBlocks: Preserve
