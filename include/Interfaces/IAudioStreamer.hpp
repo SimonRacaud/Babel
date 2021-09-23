@@ -25,7 +25,7 @@ namespace Audio
             virtual void endStreaming() = 0;
             virtual void startStreaming() = 0;
             virtual bool isStreaming() const = 0;
-            virtual void setCallBack(std::function<callbackProto>) = 0;
+            virtual void setCallBack(callbackProto) = 0;
             virtual std::queue<rawFrameBuffer> &getSampleBuffer() = 0;
 
             /*

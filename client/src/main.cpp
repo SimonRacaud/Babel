@@ -25,6 +25,7 @@ static int recordCallBack(const void *input, void *, unsigned long, const PaStre
     tab.push({
         translateBuffer
     });
+    std::cout << "here2: " << translateBuffer.size() << std::endl;
     return paContinue;
 }
 
@@ -34,15 +35,14 @@ static int streamerCallBack(const void *, void *output, unsigned long, const PaS
     float *outputFrameBuffer = static_cast<float *>(output);
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
 
-
-
-    while (tab.size()) {
+    std::cout << "here1: " << tab.size() << std::endl;
+    //while (tab.size()) {
         auto &member = tab.back();
-        for (size_t i = 0; i < member.data.size(); i++)
-            outputFrameBuffer[i] += member.data[i];
+        for (size_t i = 0; i < member.data.size() && i < Audio::FRAMES_PER_BUFFER; i++)
+            outputFrameBuffer[i] = member.data[i];
         tab.pop();
-    }
-    return paContinue;
+    //}
+    return (tab.size()) ? paContinue : paComplete;
 }
 
 int main()
@@ -66,37 +66,30 @@ int main()
     std::unique_ptr<PortAudioCaps::AudioRecorder> record = std::make_unique<PortAudioCaps::AudioRecorder>();
     record->setCallBack(recordCallBack);
     record->startStreaming();
-    for (size_t i = 0; i < 5 * Audio::FRAMES_PER_BUFFER; i++)
-        usleep(1000);
+    for (size_t i = 0; i < 5; i++)
+        Pa_Sleep(1000);
     record->endStreaming();
     auto buffer = record->getSampleBuffer();
     record.reset();
 
     std::unique_ptr<PortAudioCaps::AudioStreamer> streamer = std::make_unique<PortAudioCaps::AudioStreamer>();
 
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "ICICICICICICICICICI: " << buffer.size() << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
     while (buffer.size()) {
         streamer->getSampleBuffer().push(buffer.back());
         buffer.pop();
     }
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "ICICICICICICICICICI" << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
     streamer->setCallBack(streamerCallBack);
     streamer->startStreaming();
-    for (size_t i = 0; i < 5 * Audio::FRAMES_PER_BUFFER; i++)
-        usleep(100);
+    while (streamer->isStreaming())
+        Pa_Sleep(100);
     streamer->endStreaming();
     streamer.reset();
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "END" << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
     return 0;
 }

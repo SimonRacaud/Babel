@@ -25,7 +25,7 @@ namespace PortAudioCaps
             void endStreaming();
             void startStreaming();
             bool isStreaming() const;
-            void setCallBack(std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>);
+            void setCallBack(int (*func) (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *));
             std::queue<Audio::rawFrameBuffer> &getSampleBuffer();
 
             /*
@@ -37,7 +37,7 @@ namespace PortAudioCaps
             PaStream *_stream;
             PaStreamParameters _parameters;
             std::queue<Audio::rawFrameBuffer> _streaming;
-            std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)> _callback;
+            int (*_callback) (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *);
     };
 }
 

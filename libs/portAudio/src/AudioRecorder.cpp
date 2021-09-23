@@ -54,20 +54,20 @@ void AudioRecorder::startStreaming()
 
     if (!this->_callback)
         throw std::invalid_argument("AudioRecorder invalid callback: nullptr");
-    PA_err = Pa_OpenStream(&this->_stream, &this->_parameters, NULL, Audio::SAMPLE_RATE, Audio::FRAMES_PER_BUFFER, paClipOff, this->_callback.target<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>(), this);
+    PA_err = Pa_OpenStream(&this->_stream, &this->_parameters, NULL, Audio::SAMPLE_RATE, Audio::FRAMES_PER_BUFFER, paClipOff, this->_callback, this);
     if (PA_err != paNoError)
         throw std::invalid_argument("Failed: Pa_OpenStream");
     PA_err = Pa_StartStream(this->_stream);
     if (PA_err != paNoError)
         throw std::invalid_argument("Failed: Pa_OpenStart");
 }
-#include <iostream>
+
 bool AudioRecorder::isStreaming() const
 {
     return this->_stream && Pa_IsStreamActive(this->_stream) == 1;
 }
 
-void AudioRecorder::setCallBack(std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)> func)
+void AudioRecorder::setCallBack(int (*func) (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *))
 {
     this->_callback = func;
 }

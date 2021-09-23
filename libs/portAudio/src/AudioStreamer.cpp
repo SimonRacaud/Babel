@@ -55,7 +55,7 @@ void AudioStreamer::startStreaming()
 
     if (!this->_callback)
         throw std::invalid_argument("AudioStreamer invalid callback: nullptr");
-    PA_err = Pa_OpenStream(&this->_stream, NULL, &this->_parameters, Audio::SAMPLE_RATE, Audio::FRAMES_PER_BUFFER, paClipOff, this->_callback.target<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>(), this);
+    PA_err = Pa_OpenStream(&this->_stream, NULL, &this->_parameters, Audio::SAMPLE_RATE, Audio::FRAMES_PER_BUFFER, paClipOff, this->_callback, this);
     if (PA_err != paNoError)
         throw std::invalid_argument("Failed: Pa_OpenStream");
     PA_err = Pa_StartStream(this->_stream);
@@ -68,7 +68,7 @@ bool AudioStreamer::isStreaming() const
     return this->_stream && Pa_IsStreamActive(this->_stream) == 1;
 }
 
-void AudioStreamer::setCallBack(std::function<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)> func)
+void AudioStreamer::setCallBack(int (*func) (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *))
 {
     this->_callback = func;
 }
