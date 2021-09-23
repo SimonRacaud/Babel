@@ -35,9 +35,7 @@ AddContact::~AddContact()
 {
     delete _apply;
     delete _input;
-    delete _layout;
     delete _widthControl;
-    delete _mainLayout;
 }
 
 void AddContact::addContact() noexcept

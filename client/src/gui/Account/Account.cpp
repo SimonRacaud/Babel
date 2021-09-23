@@ -42,9 +42,6 @@ Account::~Account()
     delete _apply;
     delete _username;
     delete _usernameLabel;
-    delete _upperLayout;
-    delete _lowerLayout;
-    delete _mainLayout;
 }
 
 void Account::applyUsername()
