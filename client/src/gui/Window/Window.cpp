@@ -30,7 +30,7 @@ Window::Window()
     _contactBox = new MyContactList(DEBUG_LIST); // TODO : inject contacts username
     leftLayout->addWidget(_contactBox);
     /// Add Contact
-    _addContactBox = new AddContact;
+    _addContactBox = new AddContact((*_contactBox));
     leftLayout->addWidget(_addContactBox);
     /// Account
     _account = new Account;

@@ -26,7 +26,7 @@ namespace GUI
 
       public:
         Account(QWidget *parent = nullptr);
-        virtual ~Account() = default;
+        virtual ~Account();
 
       private slots:
         void applyUsername();
@@ -35,6 +35,11 @@ namespace GUI
         QLineEdit *_input;
         QPushButton *_apply;
         QLabel *_username;
+
+        QVBoxLayout *_mainLayout;
+        QHBoxLayout *_upperLayout;
+        QHBoxLayout *_lowerLayout;
+        QLabel *_usernameLabel;
     };
 }
 

@@ -16,6 +16,7 @@
 #include <QWidget>
 #include <QScrollArea>
 #include <vector>
+#include <iostream>
 
 #include "Contact/Contact.hpp"
 
@@ -25,6 +26,8 @@ namespace GUI
       public:
         MyContactList(std::vector<QString> const &contactNameList);
         virtual ~MyContactList();
+
+        void addContact(QString const& username);
 
       private:
         QVBoxLayout *_contactList;

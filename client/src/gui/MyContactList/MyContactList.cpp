@@ -35,3 +35,8 @@ MyContactList::~MyContactList()
         delete contact;
     }
 }
+
+void MyContactList::addContact(QString const& username)
+{
+    std::cerr << "DEBUG : add contact\n";
+}

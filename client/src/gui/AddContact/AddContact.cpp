@@ -9,26 +9,46 @@
 
 using namespace GUI;
 
-AddContact::AddContact() : QGroupBox("Add Contact")
+AddContact::AddContact(MyContactList &contactList) : QGroupBox("Add Contact"), _contactList(contactList)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout;
-    QWidget *widthControl = new QWidget;
-    QHBoxLayout *layout = new QHBoxLayout;
+    _mainLayout = new QHBoxLayout;
+    _widthControl = new QWidget;
+    _layout = new QHBoxLayout;
     _apply = new QPushButton("Apply");
     _input = new QLineEdit;
 
     // Link
-    this->setLayout(mainLayout);
-    mainLayout->addWidget(widthControl);
-    widthControl->setLayout(layout);
-    layout->addWidget(_input);
-    layout->addWidget(_apply);
+    this->setLayout(_mainLayout);
+    _mainLayout->addWidget(_widthControl);
+    _widthControl->setLayout(_layout);
+    _layout->addWidget(_input);
+    _layout->addWidget(_apply);
     // Config
-    mainLayout->setAlignment(Qt::AlignLeft);
-    widthControl->setMaximumWidth(ADD_CONTACT_MAX_WIDTH);
+    _mainLayout->setAlignment(Qt::AlignLeft);
+    _widthControl->setMaximumWidth(ADD_CONTACT_MAX_WIDTH);
     _input->setPlaceholderText("username");
-    /**
-     * TODO:
-     * Apply button event => empty input + add new contact
-     */
+    /// Events
+    QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(addContact()));
+}
+
+AddContact::~AddContact()
+{
+    delete _apply;
+    delete _input;
+    delete _layout;
+    delete _widthControl;
+    delete _mainLayout;
+}
+
+void AddContact::addContact() noexcept
+{
+    QString const &input = _input->text();
+
+    if (input.isEmpty() == false) {
+        /// TODO : Network add contact
+        if (true/* contact added on server */) {
+            _input->setText("");
+            _contactList.addContact(input);
+        }
+    }
 }

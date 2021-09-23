@@ -10,24 +10,36 @@
 
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QWidget>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QObject>
+#include "gui/MyContactList/MyContactList.hpp"
 
 #define ADD_CONTACT_MAX_WIDTH 300
 
 namespace GUI
 {
     class AddContact : public QGroupBox {
+        Q_OBJECT
+
       public:
-        AddContact();
-        virtual ~AddContact() = default;
+        AddContact(MyContactList &contactList);
+        virtual ~AddContact();
+
+      private slots:
+        void addContact() noexcept;
 
       private:
+        MyContactList &_contactList;
         QPushButton *_apply;
         QLineEdit *_input;
+
+        QHBoxLayout *_mainLayout;
+        QWidget *_widthControl;
+        QHBoxLayout *_layout;
     };
-}
+} // namespace GUI
 
 #endif // ADDCONTACT_HPP
