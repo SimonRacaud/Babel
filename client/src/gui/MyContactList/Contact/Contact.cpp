@@ -9,9 +9,9 @@
 
 using namespace GUI;
 
-Contact::Contact(
-    QVBoxLayout &parent, QString const &userName, ICallManager &callManager)
-    : _callManager(callManager)
+Contact::Contact(QVBoxLayout &parent, QString const &userName,
+    ICallManager &callManager, IMyContactList &contactList)
+    : _callManager(callManager), _contactList(contactList)
 {
     this->_widthControl = new QWidget;
     this->_layout = new QHBoxLayout;
@@ -30,8 +30,10 @@ Contact::Contact(
     parent.addWidget(_widthControl);
 
     /// Events
-    QObject::connect(_buttonCall, SIGNAL(clicked()), this, SLOT(slotCallContact()));
-    QObject::connect(_buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
+    QObject::connect(
+        _buttonCall, SIGNAL(clicked()), this, SLOT(slotCallContact()));
+    QObject::connect(
+        _buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
 }
 
 Contact::~Contact()
@@ -43,10 +45,12 @@ Contact::~Contact()
 
 void Contact::slotRemoveContact() noexcept
 {
-    // TODO
-    // get contact name
-    // Network : API remove contact
-    // remove contact from GUI list
+    //QString const &username = _label->text();
+
+    // TODO Network : API remove contact
+    if (true /*network ok*/) {
+        this->_contactList.removeContact(*this);
+    }
 }
 
 void Contact::slotCallContact() noexcept
@@ -59,8 +63,8 @@ void Contact::slotCallContact() noexcept
         _callManager.addMember(username);
     } else {
         this->enableCall();
-        std::cerr << "Info: fail to call " << username.toStdString() << ". Network error"
-                  << std::endl;
+        std::cerr << "Info: fail to call " << username.toStdString()
+                  << ". Network error" << std::endl;
     }
 }
 

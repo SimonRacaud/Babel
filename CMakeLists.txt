@@ -32,7 +32,7 @@ find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
 ## SOURCES
 file(GLOB_RECURSE SRCS_CLIENT client/src/*)
 
-add_executable(${NAME_CLIENT} ${SRCS_CLIENT} client/include/ICallManager.hpp)
+add_executable(${NAME_CLIENT} ${SRCS_CLIENT} client/include/ICallManager.hpp client/include/IMyContactList.hpp client/include/IContact.hpp)
 
 ## Client includes (Qt)
 include_directories(${CMAKE_INCLUDE_PATH} client/src/ client/include)

@@ -18,13 +18,16 @@
 #include <QWidget>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "ICallManager.hpp"
+#include "IMyContactList.hpp"
+#include "IContact.hpp"
 #include "Contact/Contact.hpp"
 
 namespace GUI
 {
-    class MyContactList : public QGroupBox {
+    class MyContactList : public QGroupBox, public IMyContactList {
         Q_OBJECT
 
       public:
@@ -33,7 +36,7 @@ namespace GUI
 
         void addContact(QString const &username);
         void enableCallButtons();
-        void removeContact(QString const &username);
+        void removeContact(IContact const &contact);
 
       private:
         ICallManager &_callManager;

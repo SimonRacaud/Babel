@@ -27,7 +27,8 @@ MyContactList::MyContactList(
     container->setLayout(_contactList);
 
     for (QString const &username : contactNameList) {
-        _contacts.push_back(new Contact(*_contactList, username, callManager));
+        _contacts.push_back(
+            new Contact(*_contactList, username, callManager, *this));
     }
 }
 
@@ -40,7 +41,8 @@ MyContactList::~MyContactList()
 
 void MyContactList::addContact(QString const &username)
 {
-    _contacts.push_back(new Contact(*_contactList, username, _callManager));
+    _contacts.push_back(
+        new Contact(*_contactList, username, _callManager, *this));
 }
 
 void MyContactList::enableCallButtons()
@@ -50,7 +52,12 @@ void MyContactList::enableCallButtons()
     }
 }
 
-void MyContactList::removeContact(QString const &username)
+void MyContactList::removeContact(IContact const &contact)
 {
-    // TODO
+    auto contactIt = std::find(_contacts.begin(), _contacts.end(), &contact);
+
+    if (contactIt != _contacts.end()) {
+        delete *contactIt;
+        _contacts.erase(contactIt);
+    }
 }

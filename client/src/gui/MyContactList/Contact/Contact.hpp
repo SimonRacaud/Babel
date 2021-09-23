@@ -18,6 +18,8 @@
 #include <iostream>
 
 #include "ICallManager.hpp"
+#include "IMyContactList.hpp"
+#include "IContact.hpp"
 
 /**
  * Config
@@ -27,12 +29,12 @@
 
 namespace GUI
 {
-    class Contact : public QObject {
+    class Contact : public QObject, public IContact {
         Q_OBJECT
 
       public:
         Contact(QVBoxLayout &parent, QString const &userName,
-            ICallManager &callManager);
+            ICallManager &callManager, IMyContactList &contactList);
         virtual ~Contact();
 
         void enableCall();
@@ -44,6 +46,7 @@ namespace GUI
 
       private:
         ICallManager &_callManager;
+        IMyContactList &_contactList;
 
         QWidget *_widthControl;
         QHBoxLayout *_layout;
