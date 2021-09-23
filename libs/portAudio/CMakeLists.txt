@@ -26,6 +26,7 @@ include_directories(
 set(SRCS
     src/AudioRecorder.cpp
     src/AudioStreamer.cpp
+    src/IODevices.cpp
 )
 
 add_library(${NAME} SHARED ${SRCS})
