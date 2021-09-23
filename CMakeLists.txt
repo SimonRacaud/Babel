@@ -7,7 +7,7 @@
 
 cmake_minimum_required(VERSION 3.17)
 
-set(CMAKE_BUILD_TYPE Debug) # TEMPORARY
+# set(CMAKE_BUILD_TYPE Debug) # TEMPORARY
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -33,8 +33,11 @@ set(SRC_CLIENT client/src/)
 set(SRC_SERVER server/src/)
 
 include_directories(
+    ${CMAKE_INCLUDE_PATH}
     ./include/
     ./include/Interfaces/
+    ./client/src/
+    ./client/include
 )
 
 ############ CLIENT
@@ -43,11 +46,10 @@ include_directories(
 file(GLOB_RECURSE SRCS_CLIENT client/src/*)
 file(GLOB_RECURSE SRCS_SERVER server/src/*)
 
-add_executable(${CLIENT} ${SRCS_CLIENT} client/include/ICallManager.hpp client/include/IMyContactList.hpp client/include/IContact.hpp)
+add_executable(${CLIENT} ${SRCS_CLIENT})
 add_executable(${SERVER} ${SRCS_SERVER})
 
 ## Client includes (Qt)
-include_directories(${CMAKE_INCLUDE_PATH} client/src/ client/include)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Account)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/AddContact)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
@@ -58,16 +60,12 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
     target_compile_options(${CLIENT} PRIVATE /W4 /WX)
-else ()
-    target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
-endif ()
-    set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-if (MSVC)
     target_compile_options(${SERVER} PRIVATE /W4 /WX)
 else ()
+    target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
     target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
+set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 ## OPUS
