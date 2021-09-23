@@ -83,7 +83,7 @@ std::queue<Audio::rawFrameBuffer> &AudioRecorder::getSampleBuffer()
 
 Audio::rawFrameBuffer AudioRecorder::getFrame()
 {
-    Audio::rawFrameBuffer tmp = this->_streaming.back();
+    Audio::rawFrameBuffer tmp = this->_streaming.front();
 
     this->_streaming.pop();
     return tmp;
