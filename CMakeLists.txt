@@ -32,11 +32,7 @@ if (MSVC)
 else ()
     target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
-
 set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-
-# LDD conan
-target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS})
 
 ############ SERVER
 
@@ -45,7 +41,6 @@ set(SRCS_SERVER
     ${SRC_SERVER}/main.cpp
 )
 
-add_executable(${CLIENT} ${SRCS_CLIENT})
 add_executable(${SERVER} ${SRCS_SERVER})
 
 ## COMPILATION
@@ -58,7 +53,6 @@ endif ()
 set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 # LDD conan
-target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS})
 target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
 
 ## OPUS
@@ -66,4 +60,6 @@ set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/opus/)
 add_subdirectory(${OPUS_TOOLS_DIR})
 include_directories(${OPUS_TOOLS_DIR}/include)
 include_directories(${OPUS_TOOLS_DIR}/src)
-target_link_libraries(${CLIENT} opusTools)
+
+# LDD conan
+target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools)
