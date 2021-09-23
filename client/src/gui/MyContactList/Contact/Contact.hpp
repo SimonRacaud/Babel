@@ -40,6 +40,8 @@ namespace GUI
         void enableCall();
         void disableCall();
 
+        QWidget *getTopWidget();
+
       private slots:
         void slotCallContact() noexcept;
         void slotRemoveContact() noexcept;

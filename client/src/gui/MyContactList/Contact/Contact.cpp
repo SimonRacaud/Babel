@@ -77,3 +77,8 @@ void Contact::disableCall()
 {
     this->_buttonCall->setDisabled(true);
 }
+
+QWidget *Contact::getTopWidget()
+{
+    return _widthControl;
+}

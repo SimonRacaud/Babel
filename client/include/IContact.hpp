@@ -15,6 +15,8 @@ namespace GUI {
 
         virtual void enableCall() = 0;
         virtual void disableCall() = 0;
+
+        virtual QWidget *getTopWidget() = 0;
     };
 }
 

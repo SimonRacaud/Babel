@@ -36,7 +36,7 @@ namespace GUI
 
         void addContact(QString const &username);
         void enableCallButtons();
-        void removeContact(IContact const &contact);
+        void removeContact(IContact &contact);
 
       private:
         ICallManager &_callManager;

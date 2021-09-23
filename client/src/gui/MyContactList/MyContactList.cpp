@@ -52,11 +52,12 @@ void MyContactList::enableCallButtons()
     }
 }
 
-void MyContactList::removeContact(IContact const &contact)
+void MyContactList::removeContact(IContact &contact)
 {
     auto contactIt = std::find(_contacts.begin(), _contacts.end(), &contact);
 
     if (contactIt != _contacts.end()) {
+        _contactList->removeWidget(contact.getTopWidget());
         delete *contactIt;
         _contacts.erase(contactIt);
     }

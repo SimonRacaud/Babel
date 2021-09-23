@@ -17,7 +17,7 @@ namespace GUI {
 
         virtual void addContact(QString const &username) = 0;
         virtual void enableCallButtons() = 0;
-        virtual void removeContact(IContact const &contact) = 0;
+        virtual void removeContact(IContact &contact) = 0;
     };
 }
 
