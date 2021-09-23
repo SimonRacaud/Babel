@@ -5,7 +5,15 @@
 ** Client side of Babel
 */
 
-int main(const int, const char **)
+#include <QApplication>
+#include "gui/Window/Window.hpp"
+
+int main(int argc, char *argv[])
 {
-    return 0;
+    QApplication app(argc, argv);
+
+    GUI::Window win;
+    win.show();
+
+    return app.exec();
 }

@@ -1,59 +1,64 @@
+##
+## PERSONAL PROJECT, 2021
+## Babel Project
+## File description:
+## Babel CMake
+##
+
 cmake_minimum_required(VERSION 3.17)
+
+set(CMAKE_BUILD_TYPE Debug) # TEMPORARY
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CLIENT babel_client)
 set(SERVER babel_server)
 
+add_definitions("-fPIC")
+
 project(Babel VERSION 0.0.0 LANGUAGES CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-include_directories(${CMAKE_INCLUDE_PATH})
+# QT
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(SRC_CLIENT client/src/)
-set(SRC_SERVER server/src/)
-
-############ CLIENT
+find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
 
 ## SOURCES
-set(SRCS_CLIENT
-    ${SRC_CLIENT}/main.cpp
-)
+file(GLOB_RECURSE SRCS_CLIENT client/src/*)
+file(GLOB_RECURSE SRCS_SERVER server/src/*)
 
-add_executable(${CLIENT} ${SRCS_CLIENT})
+add_executable(${CLIENT} ${SRCS_CLIENT} client/include/ICallManager.hpp client/include/IMyContactList.hpp client/include/IContact.hpp)
+add_executable(${SERVER} ${SRCS_SERVER})
 
-## COMPILATION
+## Client includes (Qt)
+include_directories(${CMAKE_INCLUDE_PATH} client/src/ client/include)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Account)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/AddContact)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/MyContactList)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Options)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
 
-
+## COMPILATION FLAGS + DESTINATION
 if (MSVC)
     target_compile_options(${CLIENT} PRIVATE /W4 /WX)
 else ()
     target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
+    set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-
-############ SERVER
-
-## SOURCES
-set(SRCS_SERVER
-    ${SRC_SERVER}/main.cpp
-)
-
-add_executable(${SERVER} ${SRCS_SERVER})
-
-## COMPILATION
-
 if (MSVC)
     target_compile_options(${SERVER} PRIVATE /W4 /WX)
 else ()
     target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
 set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-
-# LDD conan
-target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
 
 ## OPUS
 set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/opus/)
@@ -62,4 +67,5 @@ include_directories(${OPUS_TOOLS_DIR}/include)
 include_directories(${OPUS_TOOLS_DIR}/src)
 
 # LDD conan
-target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools)
+target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
+target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} Qt5::Widgets Qt5::Network opusTools)
