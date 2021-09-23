@@ -5,9 +5,9 @@
 ** AudioStreamer.cpp
 */
 
+#include "AudioStreamer.hpp"
 #include <stdexcept>
 #include "Audio.hpp"
-#include <AudioStreamer.hpp>
 
 using namespace PortAudioCaps;
 
