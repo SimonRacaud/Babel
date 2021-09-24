@@ -59,6 +59,9 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
 
+## Server include
+include_directories(server/include)
+
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
     target_compile_options(${CLIENT} PRIVATE /W4 /WX)
