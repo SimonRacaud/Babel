@@ -27,5 +27,5 @@ set(SRCS
     src/opusEncoder/opusEncoder.cpp
 )
 
-add_library(${NAME} SHARED ${SRCS})
+add_library(${NAME} ${SRCS})
 target_compile_options(${NAME} PRIVATE -Wall -Wextra)
