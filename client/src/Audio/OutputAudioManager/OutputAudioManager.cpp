@@ -21,6 +21,13 @@ OutputAudioManager::~OutputAudioManager()
     this->_decoder.reset();
 }
 
-void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &)
+void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &data)
 {
+    Audio::rawFrameBuffer extractedData;
+
+    while (data.size()) {
+        extractedData = this->_decoder->extract(data.front());
+        data.pop();
+        this->_output->setFrame(extractedData);
+    }
 }

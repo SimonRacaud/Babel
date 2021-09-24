@@ -25,5 +25,10 @@ std::queue<Audio::compressFrameBuffer> InputAudioManager::getFrameBuffer()
 {
     std::queue<Audio::compressFrameBuffer> tmp;
 
+    try {
+        while (1)
+            tmp.push(this->_encoder->compress(this->_input->getFrame()));
+    } catch ([[maybe_unused]] const std::invalid_argument &e) {
+    }
     return tmp;
 }

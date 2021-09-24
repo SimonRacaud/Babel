@@ -84,8 +84,11 @@ std::queue<Audio::rawFrameBuffer> &AudioRecorder::getSampleBuffer()
 
 Audio::rawFrameBuffer AudioRecorder::getFrame()
 {
-    Audio::rawFrameBuffer tmp = this->_streaming.front();
+    Audio::rawFrameBuffer tmp;
 
+    if (!this->_streaming.size())
+        throw std::invalid_argument("Not frame available");
+    tmp = this->_streaming.front();
     this->_streaming.pop();
     return tmp;
 }
