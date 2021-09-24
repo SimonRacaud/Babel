@@ -1,7 +1,7 @@
 ## Executables
 Babel
-Babel_client
-Babel_server
+babel_client
+babel_server
 bootstrap
 
 ## Compilation
@@ -10,3 +10,7 @@ cmake-build-debug
 
 ## IDE
 .idea
+.vscode
+
+## Database
+*.sqlite

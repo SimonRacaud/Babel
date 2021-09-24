@@ -1,0 +1,58 @@
+name: Check compilation
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+
+jobs:
+  linux-babel:
+    runs-on: ubuntu-20.04
+    container: epitechcontent/epitest-docker:devel
+    steps:
+      # Install
+      - name: Install qt
+        run: dnf install -y qt5-qtbase-devel
+
+      - name: Set conan config
+        run: conan config set general.revisions_enabled=1
+
+      - name: Create conan profile
+        run: |
+          conan profile new --detect default
+          conan profile update settings.compiler=gcc default
+          conan profile update settings.compiler.version=11 default
+          conan profile update settings.compiler.libcxx=libstdc++11 default
+
+      - name: Add bincrafters remote to conan
+        run: conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Build
+      # - name: Cache conan data
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.conan/data
+      #     key: ${{ runner.os }}-${{ hashFiles('conanfile.txt') }}
+
+      - name: Create build folder
+        run: mkdir build
+
+      - name: Install conan data
+        working-directory: build
+        run: conan install .. --build=missing
+
+      - name: Build CMake
+        working-directory: build
+        run: cmake .. -G "Unix Makefiles"
+
+      - name: Build project
+        run: make -C build/
+
+      # Run
+      - name: Check if binaries exist
+        run: ls babel_client babel_server
