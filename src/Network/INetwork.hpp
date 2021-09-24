@@ -9,19 +9,21 @@
 #define BABEL_NETWORK_HPP
 
 #include <array>
+//#include <concepts>
+#include <cstddef>
 #include <queue>
 #include <string>
-
-#include <concepts>
+#include <tuple>
 #include <utility>
+#include <vector>
+
 #include "asio.hpp"
 
 namespace network
 {
     enum protocol { TCP, UDP };
 
-    template <typename PACKETSIZE>
-    requires unsigned_integral<PACKETSIZE>
+    template <std::size_t PACKETSIZE>
     class IConnection
     /* TODO do a template with the container that contains the data (that
      * would replace arrays) ?? if yes, constrained with concepts ?? */
@@ -31,13 +33,15 @@ namespace network
          * @brief Connect to a remote INetwork class
          * @param ip The ip of the targeted machine
          */
-        virtual void connect(std::string ip) = 0;
+        virtual void connect(
+            const std::string &ip, const std::size_t port) = 0;
 
         /**
          * @brief Disconnect from a particular machine
          * @param ip The machine's ip address
          */
-        virtual void disconnect(std::string ip) = 0;
+        virtual void disconnect(
+            const std::string &ip, const std::size_t port) = 0;
         /**
          * @brief Disconnect from every connected machine
          */
@@ -45,17 +49,19 @@ namespace network
 
         /**
          * @brief Receive data from every machine connected
-         * @return The first data caught, and infos about the sender
+         * @return The first data caught, its length, and infos about the
+         * sender (ip and port)
          */
-        virtual std::pair<std::pair<std::array<char, PACKETSIZE> buf>,
-            std::array<char, PACKETSIZE>>
+        virtual std::tuple<std::array<char, PACKETSIZE>, std::size_t,
+            std::string, std::size_t>
         receiveAny() = 0;
         /**
          * @brief Receive data from a particular machine
          * @param ip The machine's ip address
          * @return The data received, '\0's if nothing received
          */
-        virtual std::array<char, PACKETSIZE> receive(std::string ip) = 0;
+        virtual std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(
+            const std::string &ip, const std::size_t port) = 0;
 
         /**
          * @brief Send data to every machine connected
@@ -68,16 +74,16 @@ namespace network
          * @param buf The data sent
          * @param ip The machine's ip address
          */
-        virtual void send(
-            std::array<char, PACKETSIZE> buf, std::string ip, ) = 0;
+        virtual void send(std::array<char, PACKETSIZE> buf,
+            const std::string &ip, const std::size_t port) = 0;
 
         /**
          * @brief Check if a machine is connected
          * @param ip The machine's ip address
          * @return True if connected, false otherwise
          */
-        virtual bool isConnected(std::string ip) const = 0;
-        // TODO put in abstract class ?
+        virtual bool isConnected(
+            const std::string &ip, const std::size_t port) const = 0;
     };
 
 } // namespace network
