@@ -22,6 +22,7 @@ namespace PortAudioCaps
             /*
             ** IAudioManager
             */
+            void setDevice(int);
             void endStreaming();
             void startStreaming();
             bool isStreaming() const;

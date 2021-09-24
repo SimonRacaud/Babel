@@ -16,6 +16,14 @@ _encoder(std::make_unique<OpusCaps::opusEncoder>())
     this->_input->startStreaming();
 }
 
+InputAudioManager::InputAudioManager(int device) :
+_input(std::make_unique<PortAudioCaps::AudioRecorder>()),
+_encoder(std::make_unique<OpusCaps::opusEncoder>())
+{
+    this->_input->setDevice(device);
+    this->_input->startStreaming();
+}
+
 InputAudioManager::~InputAudioManager()
 {
     this->_input->endStreaming();

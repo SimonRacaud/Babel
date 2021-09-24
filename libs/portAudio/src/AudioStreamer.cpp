@@ -30,7 +30,7 @@ AudioStreamer::AudioStreamer() : _stream(nullptr), _callback(AudioStreamer::defa
 AudioStreamer::~AudioStreamer()
 {
     if (this->isStreaming())
-        throw std::invalid_argument("AudioRecorder is currently streaming");
+        throw std::invalid_argument("AudioStreamer is currently streaming");
     Pa_Terminate();
     while (this->_streaming.size())
         this->_streaming.pop();
@@ -77,6 +77,14 @@ void AudioStreamer::setCallBack(int (*func) (const void *, void *, unsigned long
 std::queue<Audio::rawFrameBuffer> &AudioStreamer::getSampleBuffer()
 {
     return this->_streaming;
+}
+
+void AudioStreamer::setDevice(int device)
+{
+    this->_parameters.device = device;
+    if (this->_parameters.device == paNoDevice)
+        throw std::invalid_argument("Failed: invalid device");
+    this->_parameters.suggestedLatency = Pa_GetDeviceInfo(this->_parameters.device)->defaultLowOutputLatency;
 }
 
 /*

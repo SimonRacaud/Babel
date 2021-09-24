@@ -18,6 +18,7 @@ namespace Audio
         public:
             virtual ~IAudioManager() = default;
 
+            virtual void setDevice(int) = 0;
             virtual void endStreaming() = 0;
             virtual void startStreaming() = 0;
             virtual bool isStreaming() const = 0;

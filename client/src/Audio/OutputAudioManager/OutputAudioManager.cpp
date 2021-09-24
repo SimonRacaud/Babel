@@ -16,6 +16,14 @@ _decoder(std::make_unique<OpusCaps::opusDecoder>())
     this->_output->startStreaming();
 }
 
+OutputAudioManager::OutputAudioManager(int device) :
+_output(std::make_unique<PortAudioCaps::AudioStreamer>()),
+_decoder(std::make_unique<OpusCaps::opusDecoder>())
+{
+    this->_output->setDevice(device);
+    this->_output->startStreaming();
+}
+
 OutputAudioManager::~OutputAudioManager()
 {
     this->_output->endStreaming();

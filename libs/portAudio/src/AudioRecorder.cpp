@@ -78,6 +78,14 @@ std::queue<Audio::rawFrameBuffer> &AudioRecorder::getSampleBuffer()
     return this->_streaming;
 }
 
+void AudioRecorder::setDevice(int device)
+{
+    this->_parameters.device = device;
+    if (this->_parameters.device == paNoDevice)
+        throw std::invalid_argument("Failed: invalid device");
+    this->_parameters.suggestedLatency = Pa_GetDeviceInfo(this->_parameters.device)->defaultLowOutputLatency;
+}
+
 /*
 ** IAudioRecorder
 */

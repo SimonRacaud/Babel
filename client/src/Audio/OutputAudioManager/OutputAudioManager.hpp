@@ -22,6 +22,7 @@ namespace Audio
         using callBackType = int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *);
         public:
             OutputAudioManager();
+            OutputAudioManager(int);
             ~OutputAudioManager();
 
             void setFrameBuffer(std::queue<Audio::compressFrameBuffer> &);
