@@ -56,6 +56,8 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/MyContactList)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Options)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioManager)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
 
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
