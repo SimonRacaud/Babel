@@ -17,3 +17,25 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+
+/*
+** #include <iostream>
+** #include "InputAudioManager.hpp"
+** #include "OutputAudioManager.hpp"
+** 
+** int main()
+** {
+**     Audio::OutputAudioManager output;
+**     Audio::InputAudioManager input;
+** 
+**     std::cout << "record" << std::endl;
+**     for (size_t i = 0; i < 5; i++)
+**         Pa_Sleep(1000);
+** 
+**     std::cout << "stream" << std::endl;
+**     auto tmp = input.getFrameBuffer();
+**     output.setFrameBuffer(tmp);
+**     for (size_t i = 0; i < 50; i++)
+**         Pa_Sleep(100);
+** }
+*/

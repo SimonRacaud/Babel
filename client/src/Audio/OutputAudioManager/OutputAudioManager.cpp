@@ -13,10 +13,12 @@ OutputAudioManager::OutputAudioManager() :
 _output(std::make_unique<PortAudioCaps::AudioStreamer>()),
 _decoder(std::make_unique<OpusCaps::opusDecoder>())
 {
+    this->_output->startStreaming();
 }
 
 OutputAudioManager::~OutputAudioManager()
 {
+    this->_output->endStreaming();
     this->_output.reset();
     this->_decoder.reset();
 }

@@ -91,9 +91,14 @@ int AudioStreamer::defaultCallBack(const void *, void *output, unsigned long, co
 {
     PortAudioCaps::AudioStreamer *tools = static_cast<PortAudioCaps::AudioStreamer *>(params);
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
-    auto &member = tab.front();
 
-    std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
-    tab.pop();
-    return (tab.size()) ? paContinue : paComplete;
+    if (tab.size()) {
+        auto &member = tab.front();
+
+        std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+        tab.pop();
+    } else {
+        std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    }
+    return paContinue;
 }
