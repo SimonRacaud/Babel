@@ -31,3 +31,5 @@ set(SRCS
 
 add_library(${NAME} SHARED ${SRCS})
 target_compile_options(${NAME} PRIVATE -Wall -Wextra)
+
+target_link_libraries(${NAME} ${CONAN_LIBS})

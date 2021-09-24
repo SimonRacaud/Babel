@@ -86,5 +86,5 @@ include_directories(${PORT_AUDIO_TOOLS_DIR}/include)
 include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
 
 # LDD conan
-target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network opusTools)
+target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
 target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
