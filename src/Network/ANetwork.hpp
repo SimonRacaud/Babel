@@ -45,9 +45,9 @@ namespace network
 
         virtual std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port) = 0;
 
-        virtual void sendAll(std::array<char, PACKETSIZE> buf) = 0;
+        virtual void sendAll(const std::array<char, PACKETSIZE> &buf) = 0;
 
-        virtual void send(std::array<char, PACKETSIZE> buf, const std::string &ip, const std::size_t port) = 0;
+        virtual void send(const std::array<char, PACKETSIZE> &buf, const std::string &ip, const std::size_t port) = 0;
 
         bool isConnected(const std::string &ip, const std::size_t port) const override
         {

@@ -45,14 +45,14 @@ namespace network
             return std::make_pair(recvBuf, len);
         }
 
-        void sendAll(std::array<char, PACKETSIZE> buf) override
+        void sendAll(const std::array<char, PACKETSIZE> &buf) override
         {
             for (const auto &connection : AAsioConnection<PACKETSIZE>::_connections) {
                 send(buf, connection.first, connection.second);
             }
         }
 
-        void send(std::array<char, PACKETSIZE> buf, const std::string &ip, const std::size_t port) override
+        void send(const std::array<char, PACKETSIZE> &buf, const std::string &ip, const std::size_t port) override
         {
             udp::endpoint remoteEndpoint(asio::ip::make_address(ip), port);
 
