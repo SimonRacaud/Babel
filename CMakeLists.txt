@@ -33,21 +33,25 @@ set(SRC_CLIENT client/src/)
 set(SRC_SERVER server/src/)
 
 include_directories(
-    ${CMAKE_INCLUDE_PATH}
-    ./include/
-    ./include/Interfaces/
-    ./client/src/
-    ./client/include
+        ${CMAKE_INCLUDE_PATH}
+        ./include/
+        ./include/Interfaces/
+        ./client/src/
+        ./client/include
 )
 
 ############ CLIENT
 
-## SOURCES
-file(GLOB_RECURSE SRCS_CLIENT client/src/*)
-file(GLOB_RECURSE SRCS_SERVER server/src/*)
+set(CLIENT_SRCS src/Network/mainTestNetwork.cpp)
+add_executable(${CLIENT} ${CLIENT_SRCS})
 
-add_executable(${CLIENT} ${SRCS_CLIENT})
-add_executable(${SERVER} ${SRCS_SERVER})
+#set(SERVER_SRCS)
+#add_executable(${SERVER} ${SERVER_SRCS})
+
+
+target_include_directories(${CLIENT} BEFORE PUBLIC src)
+target_include_directories(${CLIENT} BEFORE PUBLIC src/server)
+target_include_directories(${CLIENT} BEFORE PUBLIC src/Network)
 
 ## Client includes (Qt)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Account)
@@ -65,13 +69,13 @@ include_directories(server/include)
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
     target_compile_options(${CLIENT} PRIVATE /W4 /WX)
-    target_compile_options(${SERVER} PRIVATE /W4 /WX)
+    #    target_compile_options(${SERVER} PRIVATE /W4 /WX)
 else ()
     target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
-    target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
+    #    target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
 set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
+##set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 ## OPUS
 set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/opus/)
@@ -87,4 +91,4 @@ include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
-target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
+#target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
