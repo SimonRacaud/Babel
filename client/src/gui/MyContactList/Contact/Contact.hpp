@@ -25,7 +25,7 @@
  * Config
  */
 #define CONTACT_BUTT_WIDTH 70
-#define CONTACT_MAX_WIDTH  300
+#define CONTACT_MAX_WIDTH  500
 
 namespace GUI
 {
@@ -53,6 +53,7 @@ namespace GUI
         QWidget *_widthControl;
         QHBoxLayout *_layout;
         QLabel *_label;
+        QLabel *_callLabel;
         QPushButton *_buttonCall;
         QPushButton *_buttonRemove;
     };
