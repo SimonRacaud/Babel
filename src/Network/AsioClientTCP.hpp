@@ -17,28 +17,19 @@ namespace network
 
         void connect(const std::string &ip, const std::size_t port)
         {
-            //            asio::connect(_socket, _endpoints);
-        }
+            // auto _endpoints = resolver.async_resolve(ip); // todo instead of ip, create endpoint and send in parameter
 
-        std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> receiveAny()
-        {
-        }
+            auto socketConnection(getConnection(ip, port));
+            // todo ensure that AsioConnectionTCP<PACKETSIZE>::connect() fills the array
 
-        std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port)
-        {
-        }
+            if (!socketConnection)
+                return;
 
-        void sendAll(const std::array<char, PACKETSIZE> &buf)
-        {
-        }
-
-        void send(const std::array<char, PACKETSIZE> &buf, const std::string &ip, const std::size_t port)
-        {
+            // asio::connect(socketConnection, _endpoints);
         }
 
       private:
         tcp::resolver _resolver;
-        tcp::resolver::results_type _endpoints;
         tcp::socket _socket;
     };
 
