@@ -50,7 +50,7 @@ namespace network
         virtual void disconnectAll() = 0;
 
         /**
-         * @brief Receive data from every machine connected
+         * @brief Receive data from any machine connected
          * @return The first data caught, its length, and infos about the
          * sender (ip and port)
          */

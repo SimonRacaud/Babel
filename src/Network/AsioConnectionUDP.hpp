@@ -23,7 +23,9 @@ namespace network
          */
         AsioConnectionUDP(const std::size_t port)
             : AAsioConnection<PACKETSIZE>(true),
-              _endpoint(udp::v4(), port), _socket{AAsioConnection<PACKETSIZE>::_ioContext, _endpoint} {};
+              _endpoint(udp::v4(), port), _socket{AAsioConnection<PACKETSIZE>::_ioContext, _endpoint}
+        {
+        }
 
         std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> receiveAny() override
         {

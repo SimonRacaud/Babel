@@ -13,14 +13,14 @@ namespace network
 {
     template <std::size_t PACKETSIZE> class AAsioConnection : public IConnection<PACKETSIZE> {
       public:
-        AAsioConnection(const bool server = false)
-            : _ioContext(), _server(server){
+        AAsioConnection(const bool server = false) : _ioContext(), _server(server)
+        {
+        }
 
-                            };
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
             AAsioConnection<PACKETSIZE>::_connections.push_front(std::make_pair(ip, port));
-        };
+        }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
         {
@@ -35,11 +35,12 @@ namespace network
             //                AAsioConnection<PACKETSIZE>::_connections.end())
             //                AAsioConnection<PACKETSIZE>::_connections.erase(disconnection);
             //                std::erase(disconnection);
-        };
+        }
+
         virtual void disconnectAll() override
         {
             AAsioConnection<PACKETSIZE>::_connections.clear();
-        };
+        }
 
         virtual std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> receiveAny() = 0;
 

@@ -18,17 +18,11 @@ namespace network
 {
     using asio::ip::tcp;
 
-    template <std::size_t PACKETSIZE> class AsioServerTCP : public AAsioConnection<PACKETSIZE> {
-      public:
-        /**
-         * @brief
-         * @param port The port to open on this machine
-         */
-        AsioServerTCP(const std::size_t port)
-            : AAsioConnection<PACKETSIZE>(true), _acceptor(AAsioConnection<PACKETSIZE>::_ioContext, tcp::endpoint(tcp::v4(), port))
+    template <std::size_t PACKETSIZE> class AsioConnectionTCP : public AAsioConnection<PACKETSIZE> {
+        virtual void connect(const std::string &ip, const std::size_t port)
         {
-            startAccept();
-        };
+            _socketConnections.push_back(newConnection);
+        }
 
         void disconnect(const std::string &ip, const std::size_t port)
         {
@@ -67,9 +61,12 @@ namespace network
         std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port) override
         {
             std::pair<std::array<char, PACKETSIZE>, std::size_t> buf;
+            auto connection(getConnection(ip, port));
 
-            asio::async_read(*getConnection(ip, port),
-                asio::buffer(buf.first),
+            if (!connection)
+                return buf;
+            asio::async_read(*connection,
+                             asio::buffer(buf.first),
                              [](const asio::error_code &, std::size_t){}
                 /*std::bind(
                     [&](const asio::error_code &error, tcp::endpoint endpoint, const std::size_t bytesTransferred) {
@@ -100,8 +97,8 @@ namespace network
                 return; // todo connect() ??
 
             asio::async_write(*connection,
-                asio::buffer(buf),
-                [](const asio::error_code &, std::size_t){}
+                              asio::buffer(buf),
+                              [](const asio::error_code &, std::size_t){}
                 /*
                 std::bind(
                     [&](const asio::error_code &error, tcp::endpoint endpoint, const std::size_t bytesTransferred) {
@@ -115,25 +112,7 @@ namespace network
                     std::placeholders::_3)*/);
         }
 
-      private:
-        void startAccept()
-        {
-            std::shared_ptr<tcp::socket> newConnection(std::make_shared<tcp::socket>(AAsioConnection<PACKETSIZE>::_ioContext));
-
-            _acceptor.async_accept(*newConnection, std::bind(&AsioServerTCP::connect, this, newConnection, std::placeholders::_1));
-        }
-
-        void connect(std::shared_ptr<tcp::socket> newConnection, const asio::error_code &error)
-        {
-            if (error)
-                return; // todo check errors
-            auto my_newConnection(newConnection->remote_endpoint());
-
-            AAsioConnection<PACKETSIZE>::connect(my_newConnection.address().to_string(), my_newConnection.port());
-
-            startAccept();
-        }
-
+      protected:
         bool isConnection(
             const std::shared_ptr<tcp::socket> &connection, const std::string &otherIp, const std::size_t otherPort) const
         {
@@ -153,14 +132,8 @@ namespace network
             return nullptr;
         }
 
-      private:
-        tcp::acceptor _acceptor;
-        tcp::endpoint _endpoint;
-
         std::deque<std::shared_ptr<tcp::socket>> _socketConnections;
     };
-    // todo client tcp async
-    //        template <std::size_t PACKETSIZE> class AsioClientTCP : public AAsioConnection<PACKETSIZE> {
 } // namespace network
 
 #endif // BABEL_ASIOCONNECTIONTCP_HPP
