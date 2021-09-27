@@ -5,21 +5,21 @@
  * IInterpreter.hpp - Created: 27/09/2021
  */
 
-#ifndef API_INTERFACE_INTERPRETER_HPP
-#define API_INTERFACE_INTERPRETER_HPP
-
-#include <array>
+#ifndef INTERPRETER_INTERFACE_HPP
+#define INTERPRETER_INTERFACE_HPP
 
 #include "DatabaseManager.hpp"
-#include "utils.hpp"
+#include "tram.hpp"
 
 namespace network
 {
-    template <size_t PACKETSIZE> class IInterpreter {
+    class IInterpreter {
       public:
         virtual IInterpreter(DatabaseManager &databaseManager);
 
-        virtual void operator()(const std::array<char, PACKETSIZE> &data, const size_t &size);
+        virtual void GET(const TramTCP &tram) = 0;
+        virtual void POST(const TramTCP &tram) = 0;
+        virtual void DELETE(const TramTCP &tram) = 0;
     };
 }; // namespace network
 
