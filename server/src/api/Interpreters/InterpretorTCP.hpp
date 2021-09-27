@@ -33,7 +33,7 @@ namespace network
         void _post(const std::array<char, PACKETSIZE> &data, const size_t &size);
         void _delete(const std::array<char, PACKETSIZE> &data, const size_t &size);
 
-        DatabaseManager &databaseManager;
+        DatabaseManager &_databaseManager;
 
         const std::unordered_map<string, std::function<void(const std::array<char, PACKETSIZE> &, const size_t &)>> _tramActions = {
             {"GET", this->_get},
