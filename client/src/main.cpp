@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    GUI::Window win;
+    GUI::Window win(app);
     win.show();
 
     return app.exec();

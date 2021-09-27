@@ -13,12 +13,17 @@ const std::vector<QString> DEBUG_LIST = {
     "USER A", "USER B", "USER C"
 };
 
-Window::Window()
+Window::Window(QApplication &app) : _app(app)
 {
     QMdiArea *centerArea = new QMdiArea;
     QHBoxLayout *rootLayout = new QHBoxLayout(centerArea);
     QVBoxLayout *leftLayout = new QVBoxLayout;
     QVBoxLayout *rightLayout = new QVBoxLayout;
+
+    /// Menu bar
+    QMenu *menuFile = this->menuBar()->addMenu("&View");
+    QAction *actionOption = new QAction("&Options", this);
+    menuFile->addAction(actionOption);
 
     /// Config Window
     this->setWindowTitle("Babel");
@@ -37,17 +42,25 @@ Window::Window()
     /// Call Manager
     this->_callManager->setContactList(*_contactBox);
     /// Options
-    //_winOption = new Options;
+    _winOption = new Options((*this), _ioDevices);
 
     /// Links
     leftLayout->addWidget(_contactBox);
     leftLayout->addWidget(_addContactBox);
     rightLayout->addWidget(_account);
     rightLayout->addWidget(_callManager);
+    /// Events
+    QObject::connect(actionOption, SIGNAL(triggered()), this, SLOT(showOptions()));
 }
 
 void Window::showOptions()
 {
-    //_winOption->show();
+    _winOption->show();
     this->hide();
+}
+
+void Window::hideOptions()
+{
+    _winOption->hide();
+    this->show();
 }

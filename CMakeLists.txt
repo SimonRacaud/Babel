@@ -46,7 +46,7 @@ include_directories(
 file(GLOB_RECURSE SRCS_CLIENT client/src/*)
 file(GLOB_RECURSE SRCS_SERVER server/src/*)
 
-add_executable(${CLIENT} ${SRCS_CLIENT})
+add_executable(${CLIENT} ${SRCS_CLIENT} client/include/IWindow.hpp)
 add_executable(${SERVER} ${SRCS_SERVER})
 
 ## Client includes (Qt)

@@ -13,28 +13,42 @@
 #include <QMdiArea>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QObject>
 #include <QHBoxLayout>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+
 #include "gui/MyContactList/MyContactList.hpp"
 #include "gui/AddContact/AddContact.hpp"
 #include "gui/Account/Account.hpp"
 #include "gui/CallManager/CallManager.hpp"
-//#include "gui/Options/Options.hpp"
+#include "gui/Options/Options.hpp"
+#include "IWindow.hpp"
+#include "IODevices.hpp"
 
 namespace GUI
 {
-    class Window : public QMainWindow {
+    class Window : public QMainWindow, public IWindow {
+        Q_OBJECT
+
       public:
-        Window();
+        Window(QApplication &app);
         virtual ~Window() = default;
 
+        void hideOptions();
+      private slots:
         void showOptions();
 
       private:
-        //Options *_winOption;
+        QApplication &_app;
+        Options *_winOption;
         MyContactList *_contactBox;
         AddContact *_addContactBox;
         Account *_account;
         CallManager *_callManager;
+
+        PortAudioCaps::IODevices _ioDevices;
     };
 } // namespace GUI
 
