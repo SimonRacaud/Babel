@@ -5,6 +5,7 @@
 ** TODO: add description
 */
 
+#include <cstring>
 #include "Network/AsioConnectionUDP.hpp"
 
 #define PACKETSIZE 123
@@ -40,7 +41,15 @@ int main(__attribute__((unused)) const int ac, const char *av[])
             std::cout << "sending to "
                       << " ip :" << ip << " port :" << portOther << std::endl;
             //            my_connection.connect(ip, port);
-            my_connection.send(my_dataToSend, ip, portOther);
+            size_t tmp = 0;
+            while (1) {
+                std::string str("hello world: " + std::to_string(tmp++) + "\n");
+                std::memset(my_dataToSend.data(), 0, PACKETSIZE);
+                std::memcpy(my_dataToSend.data(), str.c_str(), str.size());
+                my_connection.send(my_dataToSend, ip, portOther);
+                sleep(1);
+            }
+            //my_connection.send(my_dataToSend, ip, portOther);
         } else {
             sleep(2);
             std::cout << "receiving from "
@@ -51,9 +60,14 @@ int main(__attribute__((unused)) const int ac, const char *av[])
             //            receivedData; std::cout << "dataLength : " <<
             //            dataLength << std::endl; std::cout.write(data.data(),
             //            dataLength);
-            receivedData = my_connection.receive(ip, port);
-            std::cout << "dataLength : " << receivedData.second << std::endl;
-            std::cout.write(receivedData.first.data(), receivedData.second);
+            while (1) {
+                receivedData = my_connection.receive(ip, port);
+                std::cout.write(receivedData.first.data(), receivedData.second);
+                sleep(1);
+            }
+            //receivedData = my_connection.receive(ip, port);
+            //std::cout << "dataLength : " << receivedData.second << std::endl;
+            //std::cout.write(receivedData.first.data(), receivedData.second);
         }
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
