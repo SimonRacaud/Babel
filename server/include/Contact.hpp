@@ -16,4 +16,9 @@ struct Contact {
     std::unique_ptr<int> contactId; // must map to User::id
 };
 
+struct ContactRaw {
+    char username[42];
+    char contactName[42];
+};
+
 #endif // CONTACT_HPP
