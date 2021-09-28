@@ -20,7 +20,7 @@ void UserInterpreter::GET(const TramTCP &tram)
 {
     const UserRaw user = static_cast<UserRaw>(tram.list);
 
-    this->_databaseManager.getUser(user.username);
+    const auto &result = this->_databaseManager.getUser(user.username);
 }
 
 void UserInterpreter::POST(const TramTCP &tram)

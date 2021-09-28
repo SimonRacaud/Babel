@@ -20,7 +20,7 @@ namespace network
 {
     template <size_t PACKETSIZE> class API : public IAPI<PACKETSIZE> {
       public:
-        API(DatabaseManager &databaseManager);
+        API(IConnection &network, DatabaseManager &databaseManager);
         ~API() = default;
 
         void operator()(const std::array<char, PACKETSIZE> &data, const size_t &size);
@@ -32,6 +32,7 @@ namespace network
         void _delete(const TramTCP &tram);
 
         DatabaseManager &_databaseManager;
+        IConnection &_network;
 
         const std::unordered_map<TramAction, std::function<void(const TramTCP &)>> _tramActions = {
             {TramAction::GET, this->_get},

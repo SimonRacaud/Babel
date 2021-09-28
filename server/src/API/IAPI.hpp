@@ -11,13 +11,14 @@
 #include <array>
 
 #include "DatabaseManager.hpp"
+#include "INetwork.hpp"
 #include "utils.hpp"
 
 namespace network
 {
     template <size_t PACKETSIZE> class IAPI {
       public:
-        virtual IAPI(DatabaseManager &databaseManager) = 0;
+        virtual IAPI(IConnection &network, DatabaseManager &databaseManager) = 0;
 
         virtual void operator()(const std::array<char, PACKETSIZE> &data, const size_t &size) = 0;
     };
