@@ -11,7 +11,9 @@
 #include <functional>
 #include <unordered_map>
 
+#include "ContactInterpreter.hpp"
 #include "IAPI.hpp"
+#include "UserInterpreter.hpp"
 #include "tram.hpp"
 
 namespace network
@@ -36,9 +38,10 @@ namespace network
             {TramAction::POST, this->_post},
             {TramAction::DELETE, this->_delete},
         };
-        const std::unordered_map<TramType, std::function<void(const TramTCP &)>> _tramTypes = {{
-
-        }};
+        const std::unordered_map<TramType, std::function<void(const TramTCP &)>> _tramTypes = {
+            {TramType::USER, new UserInterpreter(this->_databaseManager)},
+            {TramType::CONTACT, new ContactInterpreter(this->_databaseManager)},
+        };
     };
 
 }; // namespace network

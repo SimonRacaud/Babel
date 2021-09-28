@@ -34,17 +34,15 @@ template <size_t PACKETSIZE> const TramTCP API<PACKETSIZE>::_dataFilter(const st
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TramTCP &tram)
 {
-    switch (tram.type) {
-        case TramType::USER:
-            this->_databaseManager.
-            break;
-    }
+    this->_tramTypes[tram.type].GET(tram);
 }
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TramTCP &tram)
 {
+    this->_tramTypes[tram.type].POST(tram);
 }
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_delete(const TramTCP &tram)
 {
+    this->_tramTypes[tram.type].DELETE(tram);
 }
