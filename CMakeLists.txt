@@ -36,13 +36,17 @@ include_directories(
     ${CMAKE_INCLUDE_PATH}
     ./include/
     ./include/Interfaces/
+    ./src/
+    ./src/Network/
 )
 
 ############ CLIENT
 
 ## SOURCES
 file(GLOB_RECURSE SRCS_CLIENT client/src/*)
+file(GLOB_RECURSE SRCS_CLIENT src/*)
 file(GLOB_RECURSE SRCS_SERVER server/src/*)
+file(GLOB_RECURSE SRCS_SERVER src/*)
 
 add_executable(${CLIENT} ${SRCS_CLIENT})
 add_executable(${SERVER} ${SRCS_SERVER})
@@ -65,7 +69,6 @@ target_include_directories(${SERVER} BEFORE PUBLIC server/src/)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/API)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/API/Interpreters)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/Database)
-target_include_directories(${SERVER} BEFORE PUBLIC server/src/Network)
 
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
