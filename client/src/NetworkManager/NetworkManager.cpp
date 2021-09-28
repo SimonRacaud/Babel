@@ -14,12 +14,15 @@ NetworkManager::NetworkManager() : _logged(false), _user({0}), _connection(nullp
 
 NetworkManager::~NetworkManager()
 {
+    if (this->_connection)
+        this->_connection.reset();
 }
 
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    // TODO: NOW
+    this->_connection.reset();
+    this->_connection = nullptr;
 }
 
 bool NetworkManager::isLogged() const
@@ -33,12 +36,11 @@ void NetworkManager::sendCallMemberList()
     // TODO: Need srv API
 }
 
-void NetworkManager::login(const userNameType &)
+void NetworkManager::login(const userNameType &username)
 {
     // TODO: Need srv API
-    this->_user = {0}; // API request
-    this->_connection = std::make_unique<connectionClass>();
     this->_logged = true;
+    this->_user = this->getUser(username);
 }
 
 NetworkManager::UserType NetworkManager::getUser(const userNameType &)
@@ -48,16 +50,23 @@ NetworkManager::UserType NetworkManager::getUser(const userNameType &)
     return NetworkManager::UserType();
 }
 
-void NetworkManager::callUser(const userNameType &)
+void NetworkManager::callUser(const userNameType &username)
 {
+    UserType user;
+
     this->mustBeConnected();
-    // TODO: Need srv API
+    if (!this->_connection)
+        this->_connection = std::make_unique<connectionClass>();
+    user = this->getUser(username);
+    this->voiceConnect(user);
 }
 
-void NetworkManager::voiceConnect(const UserType &)
+void NetworkManager::voiceConnect(const UserType &user)
 {
     this->mustBeConnected();
-    // TODO: NOW
+    if (!this->_connection)
+        throw std::invalid_argument("User must be in call");
+    this->_connection->connect(user.ip, user.port);
 }
 
 void NetworkManager::newContact(const userNameType &)
@@ -66,10 +75,12 @@ void NetworkManager::newContact(const userNameType &)
     // TODO: Need srv API
 }
 
-void NetworkManager::voiceDisconnect(const UserType &)
+void NetworkManager::voiceDisconnect(const UserType &user)
 {
     this->mustBeConnected();
-    // TODO: NOW
+    if (!this->_connection)
+        throw std::invalid_argument("User must be in call");
+    this->_connection->disconnect(user.ip, user.port);
 }
 
 void NetworkManager::removeContact(const userNameType &)
