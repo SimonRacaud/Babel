@@ -21,6 +21,9 @@ namespace network
         void POST(const TramTCP &tram, const string &ip, const size_t &port);
         void DELETE(const TramTCP &tram, const string &ip, const size_t &port);
 
+      protected:
+        void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port);
+
       private:
         DatabaseManager &_databaseManager;
         IConnection<PACKETSIZE> &_network;

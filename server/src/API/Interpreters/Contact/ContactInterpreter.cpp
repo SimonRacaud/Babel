@@ -19,8 +19,9 @@ ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &netw
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
+    const auto &result = this->_databaseManager.getContacts(contact.username);
 
-    this->_databaseManager.getContacts(contact.username);
+    this->_send(result, ip, port);
 }
 
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
@@ -35,4 +36,13 @@ template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::DELETE(const T
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
 
     this->_databaseManager.removeContact(contact.username, contact.contactName);
+}
+
+template <size_t PACKETSIZE>
+void ContactInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port)
+{
+    if (ip == "" && port == 0)
+        this->_network.sendAll(data);
+    else
+        this->_network.send(data, ip, port);
 }

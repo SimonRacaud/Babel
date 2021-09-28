@@ -21,8 +21,9 @@ UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, D
 template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const UserRaw user = static_cast<UserRaw>(tram.list);
-
     const auto &result = this->_databaseManager.getUser(user.username);
+
+    this->_send(result, ip, port);
 }
 
 template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
@@ -36,4 +37,13 @@ template <size_t PACKETSIZE>
 void UserInterpreter<PACKETSIZE>::DELETE(UNUSED const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
     throw std::runtime_error("Method not override");
+}
+
+template <size_t PACKETSIZE>
+void UserInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port)
+{
+    if (ip == "" && port == 0)
+        this->_network.sendAll(data);
+    else
+        this->_network.send(data, ip, port);
 }
