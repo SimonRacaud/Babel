@@ -14,7 +14,7 @@ class INetworkManager
     public:
         virtual ~INetworkManager() = default;
         virtual void callHangUp() = 0;
-        virtual void isLogged() const = 0;
+        virtual bool isLogged() const = 0;
         virtual void sendCallMemberList() = 0;
         virtual void login(const userNameType &) = 0;
         virtual UserType getUser(const userNameType &) = 0;

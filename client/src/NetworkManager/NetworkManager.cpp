@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include "NetworkManager.hpp"
 
-NetworkManager::NetworkManager() : _logged(false)
+NetworkManager::NetworkManager() : _logged(false), _user({0}), _connection(nullptr)
 {
 }
 
@@ -22,7 +22,7 @@ void NetworkManager::callHangUp()
     // TODO: NOW
 }
 
-void NetworkManager::isLogged() const
+bool NetworkManager::isLogged() const
 {
     return this->_logged;
 }
@@ -36,6 +36,8 @@ void NetworkManager::sendCallMemberList()
 void NetworkManager::login(const userNameType &)
 {
     // TODO: Need srv API
+    this->_user = {0}; // API request
+    this->_connection = std::make_unique<connectionClass>();
     this->_logged = true;
 }
 
