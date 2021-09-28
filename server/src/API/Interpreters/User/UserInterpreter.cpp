@@ -20,14 +20,16 @@ UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, D
 
 template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
-    const UserRaw user = static_cast<UserRaw>(tram.list);
-    const User &result = this->_databaseManager.getUser(user.username);
-    const UserRaw response = {
+    const UserRaw *user = static_cast<UserRaw>(tram.list);
+    const User &result = this->_databaseManager.getUser(user->username);
+    const UserRaw resultRaw = {
         result.username.c_str(),
         result.ip.c_str(),
         result.port,
     };
+    std::array<char, PACKETSIZE> response;
 
+    std::memcpy(response.data(), &resultRaw, sizeof(UserRaw));
     this->_send(response, ip, port);
 }
 

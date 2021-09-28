@@ -29,9 +29,9 @@ template <size_t PACKETSIZE> const TramTCP API<PACKETSIZE>::_dataFilter(const st
 {
     TramTCP tram;
 
-    memcpy(tram.action, data[0], sizeof(TramAction));
-    memcpy(tram.type, data[sizeof(TramAction)], sizeof(TramType));
-    memcpy(tram.list_size, data[sizeof(TramAction) + sizeof(TramType)], sizeof(size_t));
+    std::memcpy(tram.action, data[0], sizeof(TramAction));
+    std::memcpy(tram.type, data[sizeof(TramAction)], sizeof(TramType));
+    std::memcpy(tram.list_size, data[sizeof(TramAction) + sizeof(TramType)], sizeof(size_t));
     tram.list = data[sizeof(TramAction) + sizeof(TramType) + sizeof(size_t)];
 
     return tram;

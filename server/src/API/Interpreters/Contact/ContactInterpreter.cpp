@@ -5,8 +5,10 @@
  * ContactInterpreter.cpp - Created: 27/09/2021
  */
 
-#include "ContactInterpreter.hpp"
+#include <cstring>
+
 #include "Contact.hpp"
+#include "ContactInterpreter.hpp"
 
 using namespace Network;
 
@@ -21,15 +23,18 @@ template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const Tram
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
     const std::vector<User> &result = this->_databaseManager.getContacts(contact.username);
     std::array<char, PACKETSIZE> response;
+    UserRaw userRaw;
 
     if (result.size() * sizeof(User) > PACKETSIZE)
         throw std::out_of_range("Response size > PACKETSIZE(" + toString(PACKETSIZE) + ")");
-    for (size_t i = 0; i < result.size(); i++)
-        response[i * sizeof(User)] = {
+    for (size_t i = 0; i < result.size(); i++) {
+        userRaw = {
             result[i].username.c_str(),
             result[i].ip.c_str(),
             result[i].port,
         };
+        std::memcpy(response[i * sizeof(UserRaw)], &userRaw, sizeof(UserRaw))
+    }
 
     this->_send(response, ip, port);
 }
