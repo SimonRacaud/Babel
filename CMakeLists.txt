@@ -61,6 +61,10 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioM
 
 ## Server include
 include_directories(server/include)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/API)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/API/Interpreters)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/Database)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/Network)
 
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)

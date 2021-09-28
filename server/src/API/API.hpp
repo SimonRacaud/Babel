@@ -11,9 +11,9 @@
 #include <functional>
 #include <unordered_map>
 
-#include "ContactInterpreter.hpp"
+#include "Contact/ContactInterpreter.hpp"
 #include "IAPI.hpp"
-#include "UserInterpreter.hpp"
+#include "User/UserInterpreter.hpp"
 #include "tram.hpp"
 
 namespace network
