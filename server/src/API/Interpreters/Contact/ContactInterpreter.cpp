@@ -10,25 +10,27 @@
 
 using namespace network;
 
-ContactInterpreter::ContactInterpreter(DatabaseManager &databaseManager) : _databaseManager(databaseManager)
+template <size_t PACKETSIZE>
+ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
+    : _network(network), _databaseManager(databaseManager)
 {
 }
 
-void ContactInterpreter::GET(const TramTCP &tram)
+template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
 
     this->_databaseManager.getContacts(contact.username);
 }
 
-void ContactInterpreter::POST(const TramTCP &tram)
+template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
 
     this->_databaseManager.newContact(contact.username, contact.contactName);
 }
 
-void ContactInterpreter::DELETE(const TramTCP &tram)
+template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::DELETE(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
 

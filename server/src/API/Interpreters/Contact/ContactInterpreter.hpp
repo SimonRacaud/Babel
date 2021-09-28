@@ -12,17 +12,18 @@
 
 namespace network
 {
-    class ContactInterpreter : public IInterpreter {
+    template <size_t PACKETSIZE> class ContactInterpreter : public IInterpreter<PACKSIZE> {
       public:
-        ContactInterpreter(DatabaseManager &databaseManager);
+        ContactInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager);
         ~ContactInterpreter() = default;
 
-        void GET(const TramTCP &tram);
-        void POST(const TramTCP &tram);
-        void DELETE(const TramTCP &tram);
+        void GET(const TramTCP &tram, const string &ip, const size_t &port);
+        void POST(const TramTCP &tram, const string &ip, const size_t &port);
+        void DELETE(const TramTCP &tram, const string &ip, const size_t &port);
 
       private:
         DatabaseManager &_databaseManager;
+        IConnection<PACKETSIZE> &_network;
     };
 }; // namespace network
 

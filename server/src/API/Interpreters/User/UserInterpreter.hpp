@@ -12,17 +12,21 @@
 
 namespace network
 {
-    class UserInterpreter : public IInterpreter {
+    template <size_t PACKETSIZE> class UserInterpreter : public IInterpreter<PACKETSIZE> {
       public:
-        UserInterpreter(DatabaseManager &databaseManager);
+        UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager);
         ~UserInterpreter() = default;
 
-        void GET(const TramTCP &tram);
-        void POST(const TramTCP &tram);
-        void DELETE(const TramTCP &tram);
+        void GET(const TramTCP &tram, const string &ip, const size_t &port);
+        void POST(const TramTCP &tram, const string &ip, const size_t &port);
+        void DELETE(const TramTCP &tram, const string &ip, const size_t &port);
+
+      protected:
+        void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port);
 
       private:
         DatabaseManager &_databaseManager;
+        IConnection<PACKETSIZE> &_network;
     };
 }; // namespace network
 

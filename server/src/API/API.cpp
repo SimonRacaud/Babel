@@ -11,11 +11,14 @@
 
 using namespace network;
 
-template <size_t PACKETSIZE> API<PACKETSIZE>::API(DatabaseManager &databaseManager) : _databaseManager(databaseManager)
+template <size_t PACKETSIZE>
+API<PACKETSIZE>::API(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
+    : _network(network), _databaseManager(databaseManager)
 {
 }
 
-template <size_t PACKETSIZE> void API<PACKETSIZE>::operator()(const std::array<char, PACKETSIZE> &data, const size_t &size)
+template <size_t PACKETSIZE>
+void API<PACKETSIZE>::operator()(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t port)
 {
     const TramTCP &tram = this->_dataFilter(data);
 
@@ -32,17 +35,17 @@ template <size_t PACKETSIZE> const TramTCP API<PACKETSIZE>::_dataFilter(const st
     tram.list = data[sizeof(TramAction) + sizeof(TramType) + sizeof(size_t)];
 }
 
-template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TramTCP &tram)
+template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TramTCP &tram, const string &ip, const size_t &port)
 {
-    this->_tramTypes[tram.type].GET(tram);
+    this->_tramTypes[tram.type].GET(tram, ip, port);
 }
 
-template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TramTCP &tram)
+template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TramTCP &tram, const string &ip, const size_t &port)
 {
-    this->_tramTypes[tram.type].POST(tram);
+    this->_tramTypes[tram.type].POST(tram, ip, port);
 }
 
-template <size_t PACKETSIZE> void API<PACKETSIZE>::_delete(const TramTCP &tram)
+template <size_t PACKETSIZE> void API<PACKETSIZE>::_delete(const TramTCP &tram, const string &ip, const size_t &port)
 {
-    this->_tramTypes[tram.type].DELETE(tram);
+    this->_tramTypes[tram.type].DELETE(tram, ip, port);
 }

@@ -20,21 +20,21 @@ namespace network
 {
     template <size_t PACKETSIZE> class API : public IAPI<PACKETSIZE> {
       public:
-        API(IConnection &network, DatabaseManager &databaseManager);
+        API(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager);
         ~API() = default;
 
-        void operator()(const std::array<char, PACKETSIZE> &data, const size_t &size);
+        void operator()(const std::array<char, PACKETSIZE> &data, const string &ip = "", const size_t port = 0);
 
       private:
         const TramTCP _dataFilter(const std::array<char, PACKETSIZE> &data) const;
-        void _get(const TramTCP &tram);
-        void _post(const TramTCP &tram);
-        void _delete(const TramTCP &tram);
+        void _get(const TramTCP &tram, const string &ip, const size_t &port);
+        void _post(const TramTCP &tram, const string &ip, const size_t &port);
+        void _delete(const TramTCP &tram, const string &ip, const size_t &port);
 
         DatabaseManager &_databaseManager;
         IConnection &_network;
 
-        const std::unordered_map<TramAction, std::function<void(const TramTCP &)>> _tramActions = {
+        const std::unordered_map<TramAction, std::function<void(const TramTCP &, const string &, const size_t &)>> _tramActions = {
             {TramAction::GET, this->_get},
             {TramAction::POST, this->_post},
             {TramAction::DELETE, this->_delete},

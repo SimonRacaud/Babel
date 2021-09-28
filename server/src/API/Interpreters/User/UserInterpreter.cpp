@@ -12,25 +12,28 @@
 
 using namespace network;
 
-UserInterpreter::UserInterpreter(DatabaseManager &databaseManager) : _databaseManager(databaseManager)
+template <size_t PACKETSIZE>
+UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
+    : _network(network), _databaseManager(databaseManager)
 {
 }
 
-void UserInterpreter::GET(const TramTCP &tram)
+template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const UserRaw user = static_cast<UserRaw>(tram.list);
 
     const auto &result = this->_databaseManager.getUser(user.username);
 }
 
-void UserInterpreter::POST(const TramTCP &tram)
+template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const UserRaw user = static_cast<UserRaw>(tram.list);
 
     this->_databaseManager.setUser(user.username, user.ip, user.port);
 }
 
-void UserInterpreter::DELETE(const TramTCP &tram)
+template <size_t PACKETSIZE>
+void UserInterpreter<PACKETSIZE>::DELETE(UNUSED const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
     throw std::runtime_error("Method not override");
 }
