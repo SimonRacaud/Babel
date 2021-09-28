@@ -8,8 +8,6 @@
 #ifndef API_INTERFACE_HPP
 #define API_INTERFACE_HPP
 
-#include <array>
-
 #include "DatabaseManager.hpp"
 #include "INetwork.hpp"
 #include "utils.hpp"
@@ -20,7 +18,7 @@ namespace network
       public:
         virtual IAPI(IConnection &network, DatabaseManager &databaseManager) = 0;
 
-        virtual void operator()(const std::array<char, PACKETSIZE> &data, const size_t &size) = 0;
+        virtual void operator()(const std::array<char, PACKETSIZE> &data, const string &ip = "", const size_t port = 0) = 0;
     };
 }; // namespace network
 
