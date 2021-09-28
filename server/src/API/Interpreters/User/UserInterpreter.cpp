@@ -54,3 +54,5 @@ void UserInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data
     else
         this->_network.send(data, ip, port);
 }
+
+template class UserInterpreter<T_PACKETSIZE>;
