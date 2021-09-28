@@ -19,9 +19,19 @@ ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &netw
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
     const ContactRaw contact = static_cast<ContactRaw>(tram.list);
-    const auto &result = this->_databaseManager.getContacts(contact.username);
+    const std::vector<User> &result = this->_databaseManager.getContacts(contact.username);
+    std::array<char, PACKETSIZE> response;
 
-    this->_send(result, ip, port);
+    if (result.size() * sizeof(User) > PACKETSIZE)
+        throw std::out_of_range("Response size > PACKETSIZE(" + toString(PACKETSIZE) + ")");
+    for (size_t i = 0; i < result.size(); i++)
+        response[i * sizeof(User)] = {
+            result[i].username.c_str(),
+            result[i].ip.c_str(),
+            result[i].port,
+        };
+
+    this->_send(response, ip, port);
 }
 
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
