@@ -36,8 +36,6 @@ include_directories(
     ${CMAKE_INCLUDE_PATH}
     ./include/
     ./include/Interfaces/
-    ./client/src/
-    ./client/include
 )
 
 ############ CLIENT
