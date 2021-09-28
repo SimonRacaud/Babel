@@ -51,5 +51,3 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_delete(const TramTCP &tram, 
 {
     this->_tramTypes.at(tram.type).DELETE(tram, ip, port);
 }
-
-template class API<T_PACKETSIZE>;
