@@ -15,6 +15,7 @@ namespace network
     class ContactInterpreter : public IInterpreter {
       public:
         ContactInterpreter(DatabaseManager &databaseManager);
+        ~ContactInterpreter() = default;
 
         void GET(const TramTCP &tram);
         void POST(const TramTCP &tram);
