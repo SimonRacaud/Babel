@@ -48,6 +48,8 @@ add_executable(${CLIENT} ${SRCS_CLIENT})
 add_executable(${SERVER} ${SRCS_SERVER})
 
 ## Client includes (Qt)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/include)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Account)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/AddContact)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
@@ -58,7 +60,8 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioMa
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
 
 ## Server include
-include_directories(server/include)
+target_include_directories(${SERVER} BEFORE PUBLIC server/include)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/API)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/API/Interpreters)
 target_include_directories(${SERVER} BEFORE PUBLIC server/src/Database)
