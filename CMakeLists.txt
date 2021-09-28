@@ -36,17 +36,14 @@ include_directories(
     ${CMAKE_INCLUDE_PATH}
     ./include/
     ./include/Interfaces/
-    ./src/
     ./src/Network/
 )
 
 ############ CLIENT
 
 ## SOURCES
-file(GLOB_RECURSE SRCS_CLIENT client/src/*)
-file(GLOB_RECURSE SRCS_CLIENT src/*)
-file(GLOB_RECURSE SRCS_SERVER server/src/*)
-file(GLOB_RECURSE SRCS_SERVER src/*)
+file(GLOB_RECURSE SRCS_CLIENT client/src/* src/*)
+file(GLOB_RECURSE SRCS_SERVER server/src/* src/*)
 
 add_executable(${CLIENT} ${SRCS_CLIENT})
 add_executable(${SERVER} ${SRCS_SERVER})

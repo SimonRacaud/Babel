@@ -33,7 +33,7 @@ template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const Tram
             result[i].ip.c_str(),
             result[i].port,
         };
-        std::memcpy(response[i * sizeof(UserRaw)], &userRaw, sizeof(UserRaw))
+        std::memcpy(response[i * sizeof(UserRaw)], &userRaw, sizeof(UserRaw));
     }
 
     this->_send(response, ip, port);
