@@ -10,7 +10,7 @@
 
 #include "IInterpreter.hpp"
 
-namespace network
+namespace Network
 {
     template <size_t PACKETSIZE> class UserInterpreter : public IInterpreter<PACKETSIZE> {
       public:
@@ -28,6 +28,6 @@ namespace network
         DatabaseManager &_databaseManager;
         IConnection<PACKETSIZE> &_network;
     };
-}; // namespace network
+}; // namespace Network
 
 #endif

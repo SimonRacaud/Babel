@@ -10,9 +10,9 @@
 
 #include "IInterpreter.hpp"
 
-namespace network
+namespace Network
 {
-    template <size_t PACKETSIZE> class ContactInterpreter : public IInterpreter<PACKSIZE> {
+    template <size_t PACKETSIZE> class ContactInterpreter : public IInterpreter<PACKETSIZE> {
       public:
         ContactInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager);
         ~ContactInterpreter() = default;
@@ -28,6 +28,6 @@ namespace network
         DatabaseManager &_databaseManager;
         IConnection<PACKETSIZE> &_network;
     };
-}; // namespace network
+}; // namespace Network
 
 #endif

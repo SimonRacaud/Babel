@@ -16,7 +16,7 @@
 #include "User/UserInterpreter.hpp"
 #include "tram.hpp"
 
-namespace network
+namespace Network
 {
     template <size_t PACKETSIZE> class API : public IAPI<PACKETSIZE> {
       public:
@@ -32,19 +32,19 @@ namespace network
         void _delete(const TramTCP &tram, const string &ip, const size_t &port);
 
         DatabaseManager &_databaseManager;
-        IConnection &_network;
+        IConnection<PACKETSIZE> &_network;
 
         const std::unordered_map<TramAction, std::function<void(const TramTCP &, const string &, const size_t &)>> _tramActions = {
             {TramAction::GET, this->_get},
             {TramAction::POST, this->_post},
             {TramAction::DELETE, this->_delete},
         };
-        const std::unordered_map<TramType, std::function<void(const TramTCP &)>> _tramTypes = {
-            {TramType::USER, new UserInterpreter(this->_databaseManager)},
-            {TramType::CONTACT, new ContactInterpreter(this->_databaseManager)},
+        const std::unordered_map<TramType, IInterpreter<PACKETSIZE>> _tramTypes = {
+            {TramType::USER, new UserInterpreter(this->_network, this->_databaseManager)},
+            {TramType::CONTACT, new ContactInterpreter(this->_network, this->_databaseManager)},
         };
     };
 
-}; // namespace network
+}; // namespace Network
 
 #endif

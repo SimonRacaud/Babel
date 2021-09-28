@@ -19,7 +19,7 @@
 
 #include "asio.hpp"
 
-namespace network
+namespace Network
 {
     enum protocol
     {
@@ -83,6 +83,6 @@ namespace network
         virtual bool isConnected(const std::string &ip, const std::size_t port) const = 0;
     };
 
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_NETWORK_HPP

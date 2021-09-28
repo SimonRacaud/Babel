@@ -14,7 +14,7 @@
 
 #include "ANetwork.hpp"
 
-namespace network
+namespace Network
 {
     using asio::ip::tcp;
 
@@ -161,6 +161,6 @@ namespace network
     };
     // todo client tcp async
     //        template <std::size_t PACKETSIZE> class AsioClientTCP : public AAsioConnection<PACKETSIZE> {
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_ASIOCONNECTIONTCP_HPP

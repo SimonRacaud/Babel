@@ -10,7 +10,7 @@
 #include "User.hpp"
 #include "UserInterpreter.hpp"
 
-using namespace network;
+using namespace Network;
 
 template <size_t PACKETSIZE>
 UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)

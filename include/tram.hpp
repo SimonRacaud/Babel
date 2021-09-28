@@ -10,7 +10,7 @@
 
 #include "utils.hpp"
 
-namespace network
+namespace Network
 {
     enum class TramAction
     {
@@ -31,6 +31,6 @@ namespace network
         size_t list_size;
         void *list;
     };
-}; // namespace network
+}; // namespace Network
 
 #endif

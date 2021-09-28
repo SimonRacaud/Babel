@@ -12,12 +12,10 @@
 #include "INetwork.hpp"
 #include "tram.hpp"
 
-namespace network
+namespace Network
 {
     template <size_t PACKETSIZE> class IInterpreter {
       public:
-        virtual IInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager) = 0;
-
         virtual void GET(const TramTCP &tram, const string &ip, const size_t &port) = 0;
         virtual void POST(const TramTCP &tram, const string &ip, const size_t &port) = 0;
         virtual void DELETE(const TramTCP &tram, const string &ip, const size_t &port) = 0;
@@ -25,6 +23,6 @@ namespace network
       protected:
         virtual void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port) = 0;
     };
-}; // namespace network
+}; // namespace Network
 
 #endif

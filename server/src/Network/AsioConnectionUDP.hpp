@@ -11,7 +11,7 @@
 #include <iostream>
 #include "Network/ANetwork.hpp"
 
-namespace network
+namespace Network
 {
     using asio::ip::udp;
 
@@ -64,6 +64,6 @@ namespace network
         udp::socket _socket;
     };
 
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_ASIOCONNECTIONUDP_HPP

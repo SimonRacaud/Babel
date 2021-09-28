@@ -8,7 +8,7 @@
 #include "ContactInterpreter.hpp"
 #include "Contact.hpp"
 
-using namespace network;
+using namespace Network;
 
 template <size_t PACKETSIZE>
 ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)

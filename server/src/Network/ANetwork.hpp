@@ -9,7 +9,7 @@
 
 #include "INetwork.hpp"
 
-namespace network
+namespace Network
 {
     template <std::size_t PACKETSIZE> class AAsioConnection : public IConnection<PACKETSIZE> {
       public:
@@ -71,6 +71,6 @@ namespace network
 
         bool _server;
     };
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_ANETWORK_HPP
