@@ -8,15 +8,15 @@
 #ifndef DATABASEMANAGER_HPP
 #define DATABASEMANAGER_HPP
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 #include <sqlite_orm/sqlite_orm.h>
 
 #include "Contact.hpp"
 #include "User.hpp"
 
-namespace network
+namespace Network
 {
     inline auto initStorage(const std::string &path)
     {
@@ -41,27 +41,22 @@ namespace network
         DatabaseManager();
         virtual ~DatabaseManager() = default;
 
-        void setUser(std::string const &username, std::string const &ip,
-            std::size_t port);
+        void setUser(std::string const &username, std::string const &ip, std::size_t port);
         User getUser(std::string const &username);
         std::vector<User> getContacts(std::string const &username);
-        void newContact(
-            std::string const &username, std::string const &contactName);
-        void removeContact(
-            std::string const &username, std::string const &contactName);
+        void newContact(std::string const &username, std::string const &contactName);
+        void removeContact(std::string const &username, std::string const &contactName);
 
         void clearDatabase() const;
         void insertTestDataset();
         void dumpDatabase() const;
 
       private:
-        void newUser(std::string const &username, std::string const &ip,
-            std::size_t port);
-        void updateUser(std::string const &username, std::string const &ip,
-            std::size_t port);
+        void newUser(std::string const &username, std::string const &ip, std::size_t port);
+        void updateUser(std::string const &username, std::string const &ip, std::size_t port);
 
         std::unique_ptr<Storage> _storage;
     };
-}
+} // namespace Network
 
 #endif // DATABASEMANAGER_HPP

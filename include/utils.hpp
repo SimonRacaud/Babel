@@ -7,6 +7,8 @@
 
 #include <fstream>
 
+#define UNUSED [[maybe_unused]]
+
 typedef std::string string;
 typedef std::size_t size_t;
 typedef std::stringstream stringstream;
