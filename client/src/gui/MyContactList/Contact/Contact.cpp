@@ -16,6 +16,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
     this->_widthControl = new QWidget;
     this->_layout = new QHBoxLayout;
     this->_label = new QLabel(userName);
+    this->_callLabel = new QLabel;
     this->_buttonCall = new QPushButton("Call");
     this->_buttonRemove = new QPushButton("Remove");
 
@@ -24,6 +25,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
     _layout->addWidget(_label);
     _layout->addWidget(_buttonCall);
     _layout->addWidget(_buttonRemove);
+    _layout->addWidget(_callLabel);
     _buttonCall->setFixedWidth(CONTACT_BUTT_WIDTH);
     _buttonRemove->setFixedWidth(CONTACT_BUTT_WIDTH);
 
@@ -39,6 +41,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
 Contact::~Contact()
 {
     delete _label;
+    delete _callLabel;
     delete _buttonCall;
     delete _buttonRemove;
 }
@@ -71,11 +74,13 @@ void Contact::slotCallContact() noexcept
 void Contact::enableCall()
 {
     this->_buttonCall->setDisabled(false);
+    this->_callLabel->setText("");
 }
 
 void Contact::disableCall()
 {
     this->_buttonCall->setDisabled(true);
+    this->_callLabel->setText("...calling");
 }
 
 QWidget *Contact::getTopWidget()

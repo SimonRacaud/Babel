@@ -42,8 +42,10 @@ include_directories(
 
 ############ CLIENT
 
+## SOURCES
+
 set(CLIENT_SRCS src/Network/mainTestNetwork.cpp)
-add_executable(${CLIENT} ${CLIENT_SRCS})
+add_executable(${CLIENT} ${CLIENT_SRCS} client/include/IWindow.hpp)
 
 set(SERVER_SRCS
         server/src/main.cpp
@@ -53,10 +55,6 @@ set(SERVER_SRCS
         )
 add_executable(${SERVER} ${SERVER_SRCS})
 
-
-target_include_directories(${CLIENT} BEFORE PUBLIC src)
-target_include_directories(${CLIENT} BEFORE PUBLIC src/server)
-target_include_directories(${CLIENT} BEFORE PUBLIC src/Network)
 
 ## Client includes (Qt)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/include)
