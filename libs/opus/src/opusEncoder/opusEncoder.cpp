@@ -41,4 +41,5 @@ void opusEncoder::compress(compressBuffer &dest, const defaultBuffer &src)
     dest.encodedBit = opus_encode_float(this->_encoder, src.data.data(), Audio::FRAMES_PER_BUFFER, dest.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS);
     if (dest.encodedBit < 0)
         throw std::invalid_argument("Failed: opus_encode_float");
+    dest.data.resize(dest.encodedBit);
 }

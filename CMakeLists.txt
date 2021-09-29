@@ -45,8 +45,13 @@ include_directories(
 set(CLIENT_SRCS src/Network/mainTestNetwork.cpp)
 add_executable(${CLIENT} ${CLIENT_SRCS})
 
-#set(SERVER_SRCS)
-#add_executable(${SERVER} ${SERVER_SRCS})
+set(SERVER_SRCS
+    server/src/main.cpp
+    server/src/database/DatabaseManager.cpp
+    ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
+    ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
+    )
+add_executable(${SERVER} ${SERVER_SRCS})
 
 
 target_include_directories(${CLIENT} BEFORE PUBLIC src)
@@ -69,13 +74,13 @@ include_directories(server/include)
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
     target_compile_options(${CLIENT} PRIVATE /W4 /WX)
-    #    target_compile_options(${SERVER} PRIVATE /W4 /WX)
+    target_compile_options(${SERVER} PRIVATE /W4 /WX)
 else ()
     target_compile_options(${CLIENT} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
-    #    target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
+    target_compile_options(${SERVER} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
 endif ()
 set_target_properties(${CLIENT} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
-##set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
+set_target_properties(${SERVER} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}")
 
 ## OPUS
 set(OPUS_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/opus/)
@@ -91,4 +96,4 @@ include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
-#target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
+target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS} opusTools portAudioTools)
