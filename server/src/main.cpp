@@ -7,9 +7,9 @@
 
 #include <cstring>
 #include <iostream>
-#include "../../src/Network/AsioConnectionUDP.hpp"
 #include "../../client/src/Audio/InputAudioManager/InputAudioManager.hpp"
 #include "../../client/src/Audio/OutputAudioManager/OutputAudioManager.hpp"
+#include "AsioConnectionUDP.hpp"
 
 #define BUFF_SIZE 1000
 
@@ -17,7 +17,7 @@ static void serverfunc(void)
 {
     std::array<char, BUFF_SIZE> buff{"hello les pd!"};
 
-    network::AsioConnectionUDP<BUFF_SIZE> serv(8080);
+    Network::AsioConnectionUDP<BUFF_SIZE> serv(8080);
     Audio::InputAudioManager input;
     std::queue<Audio::compressFrameBuffer> frameBuffer;
 
@@ -45,7 +45,7 @@ static void clientfunc(void)
 {
     std::queue<Audio::compressFrameBuffer> frameBuffer;
     Audio::OutputAudioManager output;
-    network::AsioConnectionUDP<BUFF_SIZE> client(8081);
+    Network::AsioConnectionUDP<BUFF_SIZE> client(8081);
     Audio::compressFrameBuffer tmp;
 
     client.connect("127.0.0.1", 8080);

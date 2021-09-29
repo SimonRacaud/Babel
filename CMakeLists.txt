@@ -44,12 +44,13 @@ include_directories(
 
 ## SOURCES
 
-set(CLIENT_SRCS src/Network/mainTestNetwork.cpp)
-add_executable(${CLIENT} ${CLIENT_SRCS} client/include/IWindow.hpp)
+file(GLOB_RECURSE CLIENT_SRCS client/src/*)
+add_executable(${CLIENT} ${CLIENT_SRCS})
 
+file(GLOB_RECURSE SERVER_SRCS server/src/*)
 set(SERVER_SRCS
         server/src/main.cpp
-        server/src/database/DatabaseManager.cpp
+        server/src/Database/DatabaseManager.cpp
         ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
         ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
         )
@@ -99,8 +100,10 @@ include_directories(${PORT_AUDIO_TOOLS_DIR}/include)
 include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
 
 ## ASIO
-set(ASIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/portAudio/)
+set(ASIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/asio/)
 include_directories(${ASIO_TOOLS_DIR}/include)
+target_include_directories(${SERVER} BEFORE PUBLIC ${ASIO_TOOLS_DIR}/include)
+target_include_directories(${CLIENT} BEFORE PUBLIC ${ASIO_TOOLS_DIR}/include)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)

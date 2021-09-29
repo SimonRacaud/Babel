@@ -9,7 +9,7 @@
 
 #include "AsioConnectionTCP.hpp"
 
-namespace network
+namespace Network
 {
     template <std::size_t PACKETSIZE> class AsioServerTCP : public AsioConnectionTCP<PACKETSIZE> {
       public:
@@ -48,6 +48,6 @@ namespace network
         tcp::endpoint _endpoint;
     };
 
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_ASIOSERVERTCP_HPP

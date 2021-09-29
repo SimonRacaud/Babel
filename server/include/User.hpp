@@ -17,10 +17,4 @@ struct User {
     std::size_t port;
 };
 
-struct UserRaw {
-    char username[42];
-    char ip[15];
-    uint port;
-};
-
 #endif // USER_HPP

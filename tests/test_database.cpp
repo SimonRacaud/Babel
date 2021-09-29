@@ -15,7 +15,7 @@ using namespace std;
 int main(void)
 {
     // create/init
-    network::DatabaseManager db;
+    Network::DatabaseManager db;
     db.clearDatabase();
 
     // login
