@@ -68,17 +68,6 @@ namespace network
             asio::async_read(*connection,
                              asio::buffer(buf.first),
                              [](const asio::error_code &, std::size_t){}
-                /*std::bind(
-                    [&](const asio::error_code &error, tcp::endpoint endpoint, const std::size_t bytesTransferred) {
-                        buf.second = bytesTransferred;
-                        return;
-                    },
-                    this, // todo useless ?
-                    std::placeholders::_1,
-                    std::placeholders::_2,
-                    std::placeholders::_3)*/);
-
-            // todo test if received well here
             return buf;
         }
 

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2021
 ** AsioUdpServer.hpp
 ** File description:
-** Network UDP implementation whith Asio lib, according to IConnection interface
+** Network UDP implementation with Asio lib, according to IConnection interface
 */
 #ifndef BABEL_ASIOCONNECTIONUDP_HPP
 #define BABEL_ASIOCONNECTIONUDP_HPP

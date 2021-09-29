@@ -33,11 +33,11 @@ set(SRC_CLIENT client/src/)
 set(SRC_SERVER server/src/)
 
 include_directories(
-    ${CMAKE_INCLUDE_PATH}
-    ./include/
-    ./include/Interfaces/
-    ./client/src/
-    ./client/include
+        ${CMAKE_INCLUDE_PATH}
+        ./include/
+        ./include/Interfaces/
+        ./client/src/
+        ./client/include
 )
 
 ############ CLIENT
@@ -84,6 +84,9 @@ set(PORT_AUDIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/portAudio/)
 add_subdirectory(${PORT_AUDIO_TOOLS_DIR})
 include_directories(${PORT_AUDIO_TOOLS_DIR}/include)
 include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
+
+## ASIO
+include_directories(${ASIO_TOOLS_DIR}/include)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
