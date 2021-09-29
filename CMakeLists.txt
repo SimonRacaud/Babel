@@ -37,7 +37,7 @@ include_directories(
         ./include/
         ./include/Interfaces/
         ./client/src/
-        ./client/include
+        ./client/include/
 )
 
 ############ CLIENT
@@ -46,11 +46,11 @@ set(CLIENT_SRCS src/Network/mainTestNetwork.cpp)
 add_executable(${CLIENT} ${CLIENT_SRCS})
 
 set(SERVER_SRCS
-    server/src/main.cpp
-    server/src/database/DatabaseManager.cpp
-    ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
-    ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
-    )
+        server/src/main.cpp
+        server/src/database/DatabaseManager.cpp
+        ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
+        ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
+        )
 add_executable(${SERVER} ${SERVER_SRCS})
 
 
@@ -59,6 +59,8 @@ target_include_directories(${CLIENT} BEFORE PUBLIC src/server)
 target_include_directories(${CLIENT} BEFORE PUBLIC src/Network)
 
 ## Client includes (Qt)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/include)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Account)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/AddContact)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/CallManager)
@@ -69,7 +71,11 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioMa
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
 
 ## Server include
-include_directories(server/include)
+target_include_directories(${SERVER} BEFORE PUBLIC server/include)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/API)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/API/Interpreters)
+target_include_directories(${SERVER} BEFORE PUBLIC server/src/Database)
 
 ## COMPILATION FLAGS + DESTINATION
 if (MSVC)
@@ -93,6 +99,10 @@ set(PORT_AUDIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/portAudio/)
 add_subdirectory(${PORT_AUDIO_TOOLS_DIR})
 include_directories(${PORT_AUDIO_TOOLS_DIR}/include)
 include_directories(${PORT_AUDIO_TOOLS_DIR}/src)
+
+## ASIO
+set(ASIO_TOOLS_DIR ${PROJECT_SOURCE_DIR}/libs/portAudio/)
+include_directories(${ASIO_TOOLS_DIR}/include)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)

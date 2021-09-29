@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2021
 ** AsioServerTCP.hpp
 ** File description:
-** TODO: add description
+** Implementation of Server for TCP protocol
 */
 #ifndef BABEL_ASIOSERVERTCP_HPP
 #define BABEL_ASIOSERVERTCP_HPP

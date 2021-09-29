@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2021
 ** AsioClientTCP.hpp
 ** File description:
-** TODO: add description
+** Implementation of Client for TCP protocol
 */
 #ifndef BABEL_ASIOCLIENTTCP_HPP
 #define BABEL_ASIOCLIENTTCP_HPP
@@ -32,6 +32,8 @@ namespace network
                 // todo remove that
                 std::cout << "caught" << std::endl;
                 return;
+
+            asio::connect(socketConnection, _endpoints);
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
         }

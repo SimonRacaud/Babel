@@ -72,6 +72,12 @@ namespace network
             if (my_recvData != _recvData.end())
                 return std::make_pair(std::get<0>(*my_recvData), std::get<1>(*my_recvData));
             return std::pair<std::array<char, PACKETSIZE>, std::size_t>({}, 0);
+            if (!connection)
+                return buf;
+            asio::async_read(*connection,
+                             asio::buffer(buf.first),
+                             [](const asio::error_code &, std::size_t){}
+            return buf;
         }
 
         void sendAll(const std::array<char, PACKETSIZE> &buf) override
