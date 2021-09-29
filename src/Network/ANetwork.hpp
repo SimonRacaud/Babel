@@ -19,7 +19,8 @@ namespace network
 
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
-            AAsioConnection<PACKETSIZE>::_connections.push_front(std::make_pair(ip, port));
+            std::cout << "connect() in base class" << std::endl;
+            AAsioConnection<PACKETSIZE>::_connections.template emplace_back(ip, port);
         }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
@@ -63,13 +64,16 @@ namespace network
             return false;
         }
 
-      protected:
+      public:                        // todo make private after test
         asio::io_context _ioContext; // todo static ?
         asio::error_code _error;
 
         enum protocol _type;
         std::deque<std::pair<const std::string &, const std::size_t>> _connections;
 
+        /**
+         * @brief True if a server, false if a client
+         */
         bool _server;
     };
 } // namespace network

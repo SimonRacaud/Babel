@@ -18,7 +18,7 @@ namespace network
          * @param port The port to open on this machine
          */
         AsioServerTCP(const std::size_t port)
-            : AAsioConnection<PACKETSIZE>(true), _acceptor(AAsioConnection<PACKETSIZE>::_ioContext, tcp::endpoint(tcp::v4(), port))
+            : AsioConnectionTCP<PACKETSIZE>(true), _acceptor(AAsioConnection<PACKETSIZE>::_ioContext, tcp::endpoint(tcp::v4(), port))
         {
             startAccept();
         }
@@ -35,10 +35,10 @@ namespace network
         {
             if (error)
                 return; // todo check errors
+
             auto my_newConnection(newConnection->remote_endpoint());
 
-            // todo add AsioConnectionTCP<PACKETSIZE>::connect() ?
-            AAsioConnection<PACKETSIZE>::connect(my_newConnection.address().to_string(), my_newConnection.port());
+            AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
 
             startAccept();
         }

@@ -7,7 +7,8 @@
 
 #include "Network/AsioConnectionUDP.hpp"
 
-#define PACKETSIZE 123
+static const std::size_t PACKETSIZE = 123;
+/*
 
 int main(__attribute__((unused)) const int ac, const char *av[])
 {
@@ -57,6 +58,48 @@ int main(__attribute__((unused)) const int ac, const char *av[])
         }
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
+    }
+    return 0;
+}*/
+
+#include "AsioClientTCP.hpp"
+#include "AsioServerTCP.hpp"
+
+using namespace network;
+
+int main(const int ac, __attribute__((unused)) const char *av[])
+{
+    if (ac == 1) { // server
+        std::array<char, PACKETSIZE> sendBuf{"hello my_dude"};
+
+        AsioClientTCP<PACKETSIZE> client;
+        client.connect("0.0.0.0", 8080);
+        client.sendAll(sendBuf);
+
+        //        client.send(sendBuf, "0.0.0.0", 8080);
+        std::cout << "client sent" << std::endl;
+    } else /* client */ {
+        // todo tcp server throws when already opened in same port and ip
+        std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> recvData;
+
+        std::array<char, PACKETSIZE> recvBuf;
+        std::size_t lenBuf;
+        std::string ipSender;
+        std::size_t portSender;
+
+        AsioServerTCP<PACKETSIZE> server(8080);
+        //        server._ioContext.run();
+        // todo change server._ioContext.run() by loop method, maybe with thread
+
+        while (1) {
+            recvData = server.receiveAny();
+            std::tie(recvBuf, lenBuf, ipSender, portSender) = recvData;
+            if (lenBuf) {
+                std::cout << "server received" << std::endl;
+                std::cout.write(recvBuf.data(), lenBuf);
+            }
+            server._ioContext.run();
+        }
     }
     return 0;
 }
