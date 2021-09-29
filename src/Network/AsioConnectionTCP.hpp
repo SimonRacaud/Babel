@@ -14,7 +14,7 @@
 
 #include "ANetwork.hpp"
 
-namespace network
+namespace Network
 {
     using asio::ip::tcp;
 
@@ -134,6 +134,6 @@ namespace network
 
         std::deque<std::shared_ptr<tcp::socket>> _socketConnections;
     };
-} // namespace network
+} // namespace Network
 
 #endif // BABEL_ASIOCONNECTIONTCP_HPP
