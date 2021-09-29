@@ -6,7 +6,7 @@
 */
 
 #include <cstring>
-#include "Network/AsioConnectionUDP.hpp"
+#include "AsioConnectionUDP.hpp"
 
 static const std::size_t PACKETSIZE = 123;
 /*
@@ -79,7 +79,7 @@ int main(__attribute__((unused)) const int ac, const char *av[])
 #include "AsioClientTCP.hpp"
 #include "AsioServerTCP.hpp"
 
-using namespace network;
+using namespace Network;
 
 int main(const int ac, __attribute__((unused)) const char *av[])
 {

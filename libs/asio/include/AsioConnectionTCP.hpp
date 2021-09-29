@@ -59,6 +59,7 @@ namespace Network
 
         std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port) override
         {
+            std::pair<std::array<char, PACKETSIZE>, std::size_t> buf({0}, 0);
             auto connection(getConnection(ip, port));
 
             auto my_recvData(std::find_if(_recvData.begin(),
@@ -69,15 +70,11 @@ namespace Network
                     }
                     return false;
                 }));
-            if (my_recvData != _recvData.end())
+            if (my_recvData != _recvData.end()) {
+                _recvData.erase(my_recvData);
                 return std::make_pair(std::get<0>(*my_recvData), std::get<1>(*my_recvData));
+            }
             return std::pair<std::array<char, PACKETSIZE>, std::size_t>({}, 0);
-            if (!connection)
-                return buf;
-            asio::async_read(*connection,
-                             asio::buffer(buf.first),
-                             [](const asio::error_code &, std::size_t){}
-            return buf;
         }
 
         void sendAll(const std::array<char, PACKETSIZE> &buf) override
@@ -162,28 +159,6 @@ namespace Network
         {
             if (!connection)
                 return;
-            /*            connection->async_receive(
-                            asio::buffer(_recvBuf.data(), _recvBuf.size()), [&](const asio::error_code &err, const std::size_t
-               &lenRecvBuf) { std::cout << "received in callback" << std::endl; if (err) { std::cerr << "hoy there is a mistake" <<
-               std::endl;
-                              }
-                              if (!lenRecvBuf)
-                                  return;
-                              if (!_recvBuf.data())
-                                  return;
-
-                              //                _recvData.push_back(std::make_tuple(_recvBuf,
-                              //                    lenRecvBuf,
-                              //                    connection->remote_endpoint().address().to_string(),
-                              //                    connection->remote_endpoint().port()));
-                              //                _recvData.emplace_back(
-                              //                    _recvBuf, lenRecvBuf, connection->remote_endpoint().address().to_string(),
-                              //                    connection->remote_endpoint().port());
-                              std::cout.write(_recvBuf.data(), 4);
-
-                              asyncReceive(connection);
-                            });
-              */
             connection->async_receive(asio::buffer(_recvBuf.data(), _recvBuf.size()),
                 std::bind(
                     &AsioConnectionTCP<PACKETSIZE>::asyncReceiving, this, std::placeholders::_1, std::placeholders::_2, connection));

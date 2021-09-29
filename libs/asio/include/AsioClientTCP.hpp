@@ -32,8 +32,6 @@ namespace Network
                 // todo remove that
                 std::cout << "caught" << std::endl;
                 return;
-
-                asio::connect(socketConnection, _endpoints);
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
         }
