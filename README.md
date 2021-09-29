@@ -16,3 +16,7 @@ sudo dnf install qt5-qtbase-devel
 ```shell
 mkdir build && (cd build && conan install .. --build=missing && cmake .. && make)
 ```
+or
+```shell
+./build.sh re
+```
