@@ -5,8 +5,8 @@
 ** NetworkManager.cpp
 */
 
-#include <stdexcept>
 #include "NetworkManager.hpp"
+#include <stdexcept>
 
 NetworkManager::NetworkManager() : _logged(false), _user({0}), _connection(nullptr)
 {
@@ -56,7 +56,7 @@ void NetworkManager::callUser(const userNameType &username)
 
     this->mustBeConnected();
     if (!this->_connection)
-        this->_connection = std::make_unique<connectionClass>();
+        this->_connection = std::make_unique<connectionClass>(8080 /*todo change this*/);
     user = this->getUser(username);
     this->voiceConnect(user);
 }

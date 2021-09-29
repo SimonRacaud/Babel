@@ -88,9 +88,9 @@ int main(const int ac, __attribute__((unused)) const char *av[])
 
         AsioClientTCP<PACKETSIZE> client;
         client.connect("0.0.0.0", 8080);
-        client.sendAll(sendBuf);
+        //        client.sendAll(sendBuf);
 
-        //        client.send(sendBuf, "0.0.0.0", 8080);
+        client.send(sendBuf, "127.0.0.1", 8080);
         std::cout << "client sent" << std::endl;
     } else /* client */ {
         // todo tcp server throws when already opened in same port and ip

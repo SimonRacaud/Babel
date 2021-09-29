@@ -79,7 +79,7 @@ namespace Network
 
         void sendAll(const std::array<char, PACKETSIZE> &buf) override
         {
-            for (const auto &connection : _socketConnections) {
+            for (auto &connection : _socketConnections) {
                 send(buf, connection);
             }
         }
@@ -88,16 +88,11 @@ namespace Network
         {
             auto connection(getConnection(ip, port));
 
-            if (!connection) {
-                return; // todo connect() ??
-            }
-            //            connection->async_send(asio::buffer(buf), [](const asio::error_code &, std::size_t) {
-            connection->send(asio::buffer(std::string(buf.data(), buf.size())));
-            //            connection->write_some(asio::buffer(std::string(buf.data(), buf.size())));
+            send(buf, connection);
         }
 
       protected:
-        void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> connection) // todo put in private ?
+        void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection) // todo put in private ?
         {
             if (!connection) {
                 return; // todo connect() ??
@@ -112,6 +107,10 @@ namespace Network
         {
             auto endpoint(connection->remote_endpoint());
 
+            std::cout << endpoint.address().to_string() << std::endl;
+            std::cout << otherIp << std::endl;
+            std::cout << endpoint.port() << std::endl;
+            std::cout << otherPort << std::endl;
             if (endpoint.address().to_string() == otherIp && endpoint.port() == otherPort) // todo incompatible types ?
                 return true;
             return false;
@@ -119,9 +118,11 @@ namespace Network
 
         std::shared_ptr<tcp::socket> getConnection(const std::string &ip, const std::size_t port)
         {
-            for (auto socketConnection(_socketConnections.begin()); socketConnection != _socketConnections.end(); socketConnection++) {
-                if (isConnection(*socketConnection, ip, port))
-                    return *socketConnection; // todo doubt
+            for (auto socketConnection : _socketConnections) {
+                std::cout << "hello" << std::endl;
+                if (isConnection(socketConnection, ip, port)) { // todo probably a problem here
+                    return socketConnection;
+                }
             }
             return nullptr;
         }

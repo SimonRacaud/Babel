@@ -9,7 +9,6 @@
 #define BABEL_NETWORK_HPP
 
 #include <array>
-//#include <concepts>
 #include <cstddef>
 #include <queue>
 #include <string>

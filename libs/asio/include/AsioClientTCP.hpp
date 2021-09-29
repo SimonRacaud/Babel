@@ -22,9 +22,6 @@ namespace Network
 
             try {
                 newConnection->connect(serverEndpoint);
-                //                newConnection->async_connect(serverEndpoint,
-                //                    std::bind(&AsioClientTCP<PACKETSIZE>::handleConnect, this, std::placeholders::_1,
-                //                    std::placeholders::_2));
                 // todo does not work if server is not active
                 //      change for async_connect ?
                 //      its ok because the server is always active (just try catch) ?
