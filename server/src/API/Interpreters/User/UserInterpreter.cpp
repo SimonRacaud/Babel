@@ -14,7 +14,7 @@ using namespace Network;
 
 template <size_t PACKETSIZE>
 UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
-    : _network(network), _databaseManager(databaseManager)
+    : _databaseManager(databaseManager), _network(network)
 {
 }
 

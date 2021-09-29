@@ -14,7 +14,7 @@ using namespace Network;
 
 template <size_t PACKETSIZE>
 ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
-    : _network(network), _databaseManager(databaseManager)
+    : _databaseManager(databaseManager), _network(network)
 {
 }
 
