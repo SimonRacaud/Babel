@@ -8,16 +8,16 @@
 #ifndef USERRAW_HPP
 #define USERRAW_HPP
 
-#include <cstddef>
+#include "utils.hpp"
 
 struct UserRaw {
     char username[42];
     char ip[15];
-    std::size_t port;
+    size_t port;
 
-    bool operator==(const UserRaw &Rvalue) const
+    bool operator==(const UserRaw &RValue) const
     {
-        return this->port == Rvalue.port && this->ip == Rvalue.ip && this->username == Rvalue.username;
+        return this->port == RValue.port && string(this->ip) == string(RValue.ip) && string(this->username) == string(RValue.username);
     }
 };
 
