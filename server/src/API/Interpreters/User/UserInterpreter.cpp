@@ -14,30 +14,31 @@ using namespace Network;
 
 template <size_t PACKETSIZE>
 UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager)
-    : _network(network), _databaseManager(databaseManager)
+    : _databaseManager(databaseManager), _network(network)
 {
 }
 
 template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
 {
-    const UserRaw *user = static_cast<UserRaw>(tram.list);
+    const UserRaw *user = static_cast<UserRaw *>(tram.list);
     const User &result = this->_databaseManager.getUser(user->username);
-    const UserRaw resultRaw = {
-        result.username.c_str(),
-        result.ip.c_str(),
-        result.port,
-    };
+    UserRaw resultRaw;
+    std::strcpy(resultRaw.username, result.username.c_str());
+    std::strcpy(resultRaw.ip, result.ip.c_str());
+    resultRaw.port = result.port;
+
     std::array<char, PACKETSIZE> response;
 
     std::memcpy(response.data(), &resultRaw, sizeof(UserRaw));
     this->_send(response, ip, port);
 }
 
-template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::POST(const TramTCP &tram, const string &ip, const size_t &port)
+template <size_t PACKETSIZE>
+void UserInterpreter<PACKETSIZE>::POST(const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const UserRaw user = static_cast<UserRaw>(tram.list);
+    const UserRaw *user = static_cast<UserRaw *>(tram.list);
 
-    this->_databaseManager.setUser(user.username, user.ip, user.port);
+    this->_databaseManager.setUser(user->username, user->ip, user->port);
 }
 
 template <size_t PACKETSIZE>
@@ -54,3 +55,5 @@ void UserInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data
     else
         this->_network.send(data, ip, port);
 }
+
+template class UserInterpreter<T_PACKETSIZE>;

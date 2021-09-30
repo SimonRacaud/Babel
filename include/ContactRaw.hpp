@@ -8,8 +8,6 @@
 #ifndef CONTACTRAW_HPP
 #define CONTACTRAW_HPP
 
-#include <memory>
-
 struct ContactRaw {
     char username[42];
     char contactName[42];
