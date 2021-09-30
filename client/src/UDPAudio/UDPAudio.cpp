@@ -10,6 +10,7 @@
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut) :
 _input(std::make_unique<Audio::InputAudioManager>()),
+_output(std::make_unique<Audio::OutputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
@@ -19,6 +20,7 @@ _networkOut(std::make_unique<NetworkOut>(portOut))
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut, const std::vector<UserRaw> &list) :
 _input(std::make_unique<Audio::InputAudioManager>()),
+_output(std::make_unique<Audio::OutputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
@@ -30,20 +32,20 @@ _networkOut(std::make_unique<NetworkOut>(portOut))
 
 UDPAudio::~UDPAudio()
 {
-    for (size_t i = 0; i < this->_list.size(); i++)
-        std::get<1>(this->_list[i]).reset();
     this->_list.clear();
     this->_networkIn.reset();
     this->_networkOut.reset();
     if (this->_input)
         this->_input.reset();
+    if (this->_output)
+        this->_output.reset();
 }
 
 void UDPAudio::addUser(const UserRaw &user)
 {
     this->_networkIn->connect(user.ip, user.port);
     this->_networkOut->connect(user.ip, user.port);
-    this->_list.push_back(std::tuple<UserRaw, std::unique_ptr<Audio::OutputAudioManager>, size_t>(user, std::make_unique<Audio::OutputAudioManager>(), 0));
+    this->_list.push_back(std::tuple<UserRaw, size_t>(user, 0));
 }
 
 void UDPAudio::removeUser(const UserRaw &user)
@@ -52,7 +54,6 @@ void UDPAudio::removeUser(const UserRaw &user)
     this->_networkOut->disconnect(user.ip, user.port);
     for (size_t i = 0; i < this->_list.size(); i++) {
         if (std::get<0>(this->_list[i]) == user) {
-            std::get<1>(this->_list[i]).reset();
             this->_list.erase(this->_list.begin() + i);
         }
     }
@@ -95,14 +96,14 @@ void UDPAudio::receivingData()
             ** tram
             */
             Network::UDPTram_t tram = tramFactory<Network::UDPTram_t>::getTram(data.first.data());
-            if (this->correctPacket(std::get<2>(it), tram)) {
+            if (this->correctPacket(std::get<1>(it), tram)) {
                 tmp.data = std::vector<unsigned char>(Network::DATA_SIZE);
                 std::memset(tmp.data.data(), 0, Network::DATA_SIZE);
                 std::memcpy(tmp.data.data(), tram.data, Network::DATA_SIZE - sizeof(int));
                 std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
                 tmp.data.resize(tmp.encodedBit);
                 frameBuffer.push(tmp);
-                std::get<1>(it)->setFrameBuffer(frameBuffer);
+                this->_output->setFrameBuffer(frameBuffer);
                 while (frameBuffer.size())
                     frameBuffer.pop();
             }
