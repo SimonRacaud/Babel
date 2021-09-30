@@ -34,10 +34,9 @@ class UDPAudio
 
     private:
         std::unique_ptr<Audio::InputAudioManager> _input;
-        std::unique_ptr<Audio::OutputAudioManager> _output;
         std::unique_ptr<NetworkIn> _networkIn;
         std::unique_ptr<NetworkOut> _networkOut;
-        std::vector<std::pair<UserRaw, int>> _list;
+        std::vector<std::pair<UserRaw, std::unique_ptr<Audio::OutputAudioManager>>> _list;
 };
 
 #endif

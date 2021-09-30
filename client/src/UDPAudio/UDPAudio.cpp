@@ -9,7 +9,6 @@
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut) :
 _input(std::make_unique<Audio::InputAudioManager>()),
-_output(std::make_unique<Audio::OutputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
@@ -17,7 +16,6 @@ _networkOut(std::make_unique<NetworkOut>(portOut))
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut, const std::vector<UserRaw> &list) :
 _input(std::make_unique<Audio::InputAudioManager>()),
-_output(std::make_unique<Audio::OutputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
@@ -27,25 +25,20 @@ _networkOut(std::make_unique<NetworkOut>(portOut))
 
 UDPAudio::~UDPAudio()
 {
+    for (size_t i = 0; i < this->_list.size(); i++)
+        this->_list[i].second.reset();
     this->_list.clear();
     this->_networkIn.reset();
     this->_networkOut.reset();
     if (this->_input)
         this->_input.reset();
-    if (this->_output)
-        this->_output.reset();
 }
 
 void UDPAudio::addUser(const UserRaw &user)
 {
     this->_networkIn->connect(user.ip, user.port);
     this->_networkOut->connect(user.ip, user.port);
-    /*
-    ** TODO
-    ** If audio streaming don't work correctly make
-    ** streaming output for each user.
-    */
-    this->_list.push_back(std::pair<UserRaw, int>(user, 0));
+    this->_list.push_back(std::pair<UserRaw, std::unique_ptr<Audio::OutputAudioManager>>(user, std::make_unique<Audio::OutputAudioManager>()));
 }
 
 void UDPAudio::removeUser(const UserRaw &user)
@@ -54,6 +47,7 @@ void UDPAudio::removeUser(const UserRaw &user)
     this->_networkOut->disconnect(user.ip, user.port);
     for (size_t i = 0; i < this->_list.size(); i++) {
         if (this->_list[i].first == user) {
+            this->_list[i].second.reset();
             this->_list.erase(this->_list.begin() + i);
         }
     }
@@ -96,7 +90,7 @@ void UDPAudio::receivingData()
             std::memcpy(&tmp.encodedBit, data.first.data() + (Network::BUFFER_SIZE - sizeof(int)), sizeof(int));
             tmp.data.resize(tmp.encodedBit);
             frameBuffer.push(tmp);
-            this->_output->setFrameBuffer(frameBuffer);
+            it.second->setFrameBuffer(frameBuffer);
             while (frameBuffer.size())
                 frameBuffer.pop();
         }
