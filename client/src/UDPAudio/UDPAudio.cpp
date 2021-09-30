@@ -66,7 +66,9 @@ void UDPAudio::sendingData()
 
     while (frameBuffer.size()) {
         auto it = frameBuffer.front();
-
+        /*
+        ** tram
+        */
         std::memset(buff.data(), 0, Network::BUFFER_SIZE);
         std::memcpy(buff.data(), it.data.data(), it.encodedBit);
         std::memcpy(buff.data() + (Network::BUFFER_SIZE - sizeof(int)), &it.encodedBit, sizeof(int));
@@ -85,9 +87,13 @@ void UDPAudio::receivingData()
         auto data = this->_networkIn->receive(it.first.ip, it.first.port);
         if (data.second == Network::BUFFER_SIZE) {
             tmp.data = std::vector<unsigned char>(Network::BUFFER_SIZE);
+            /*
+            ** tram
+            */
             std::memset(tmp.data.data(), 0, Network::BUFFER_SIZE);
             std::memcpy(tmp.data.data(), data.first.data(), Network::BUFFER_SIZE - sizeof(int));
             std::memcpy(&tmp.encodedBit, data.first.data() + (Network::BUFFER_SIZE - sizeof(int)), sizeof(int));
+
             tmp.data.resize(tmp.encodedBit);
             frameBuffer.push(tmp);
             it.second->setFrameBuffer(frameBuffer);
