@@ -20,7 +20,7 @@ struct User {
 struct UserRaw {
     char username[42];
     char ip[15];
-    uint port;
+    size_t port;
 };
 
 #endif // USER_HPP

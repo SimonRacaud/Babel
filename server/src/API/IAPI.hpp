@@ -2,7 +2,7 @@
  * EPITECH PROJECT, 2021
  * API
  * File description:
- * API.hpp - Created: 27/09/2021
+ * IAPI.hpp - Created: 27/09/2021
  */
 
 #ifndef API_INTERFACE_HPP

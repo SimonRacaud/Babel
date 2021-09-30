@@ -33,16 +33,8 @@ namespace Network
 
         DatabaseManager &_databaseManager;
         IConnection<PACKETSIZE> &_network;
-
-        const std::unordered_map<TramAction, std::function<void(const TramTCP &, const string &, const size_t &)>> _tramActions = {
-            {TramAction::GET, this->_get},
-            {TramAction::POST, this->_post},
-            {TramAction::DELETE, this->_delete},
-        };
-        const std::unordered_map<TramType, IInterpreter<PACKETSIZE>> _tramTypes = {
-            {TramType::USER, new UserInterpreter(this->_network, this->_databaseManager)},
-            {TramType::CONTACT, new ContactInterpreter(this->_network, this->_databaseManager)},
-        };
+        UserInterpreter<PACKETSIZE> _userInterpreter;
+        ContactInterpreter<PACKETSIZE> _contactInterpreter;
     };
 
 }; // namespace Network

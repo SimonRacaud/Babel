@@ -7,7 +7,8 @@
 
 #include <fstream>
 
-#define UNUSED [[maybe_unused]]
+#define UNUSED       [[maybe_unused]]
+#define T_PACKETSIZE 1024
 
 typedef std::string string;
 typedef std::size_t size_t;
