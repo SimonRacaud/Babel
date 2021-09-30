@@ -31,13 +31,13 @@ class UDPAudio
     private:
         void sendingData();
         void receivingData();
-        bool correctPacket(const Network::UDPTram_t &tram);
+        bool correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram);
 
     private:
         std::unique_ptr<Audio::InputAudioManager> _input;
         std::unique_ptr<NetworkIn> _networkIn;
         std::unique_ptr<NetworkOut> _networkOut;
-        std::vector<std::pair<UserRaw, std::unique_ptr<Audio::OutputAudioManager>>> _list;
+        std::vector<std::tuple<UserRaw, std::unique_ptr<Audio::OutputAudioManager>, size_t>> _list;
 };
 
 #endif

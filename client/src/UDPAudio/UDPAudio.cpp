@@ -31,7 +31,7 @@ _networkOut(std::make_unique<NetworkOut>(portOut))
 UDPAudio::~UDPAudio()
 {
     for (size_t i = 0; i < this->_list.size(); i++)
-        this->_list[i].second.reset();
+        std::get<1>(this->_list[i]).reset();
     this->_list.clear();
     this->_networkIn.reset();
     this->_networkOut.reset();
@@ -43,7 +43,7 @@ void UDPAudio::addUser(const UserRaw &user)
 {
     this->_networkIn->connect(user.ip, user.port);
     this->_networkOut->connect(user.ip, user.port);
-    this->_list.push_back(std::pair<UserRaw, std::unique_ptr<Audio::OutputAudioManager>>(user, std::make_unique<Audio::OutputAudioManager>()));
+    this->_list.push_back(std::tuple<UserRaw, std::unique_ptr<Audio::OutputAudioManager>, size_t>(user, std::make_unique<Audio::OutputAudioManager>(), 0));
 }
 
 void UDPAudio::removeUser(const UserRaw &user)
@@ -51,8 +51,8 @@ void UDPAudio::removeUser(const UserRaw &user)
     this->_networkIn->disconnect(user.ip, user.port);
     this->_networkOut->disconnect(user.ip, user.port);
     for (size_t i = 0; i < this->_list.size(); i++) {
-        if (this->_list[i].first == user) {
-            this->_list[i].second.reset();
+        if (std::get<0>(this->_list[i]) == user) {
+            std::get<1>(this->_list[i]).reset();
             this->_list.erase(this->_list.begin() + i);
         }
     }
@@ -88,21 +88,21 @@ void UDPAudio::receivingData()
     Audio::compressFrameBuffer tmp;
     std::queue<Audio::compressFrameBuffer> frameBuffer;
 
-    for (auto const &it : this->_list) {
-        auto data = this->_networkIn->receive(it.first.ip, it.first.port);
+    for (auto &it : this->_list) {
+        auto data = this->_networkIn->receive(std::get<0>(it).ip, std::get<0>(it).port);
         if (data.second == Network::BUFFER_SIZE) {
             /*
             ** tram
             */
             Network::UDPTram_t tram = tramFactory<Network::UDPTram_t>::getTram(data.first.data());
-            if (this->correctPacket(tram)) {
+            if (this->correctPacket(std::get<2>(it), tram)) {
                 tmp.data = std::vector<unsigned char>(Network::DATA_SIZE);
                 std::memset(tmp.data.data(), 0, Network::DATA_SIZE);
                 std::memcpy(tmp.data.data(), tram.data, Network::DATA_SIZE - sizeof(int));
                 std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
                 tmp.data.resize(tmp.encodedBit);
                 frameBuffer.push(tmp);
-                it.second->setFrameBuffer(frameBuffer);
+                std::get<1>(it)->setFrameBuffer(frameBuffer);
                 while (frameBuffer.size())
                     frameBuffer.pop();
             }
@@ -110,7 +110,11 @@ void UDPAudio::receivingData()
     }
 }
 
-bool UDPAudio::correctPacket(const Network::UDPTram_t &tram)
+bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram)
 {
-    return tram.magicNumber == Network::MAGIC_NUMBER;// && tram.timestamp > 0;
+    bool magicNumber = tram.magicNumber == Network::MAGIC_NUMBER;
+    bool timestamp = lastTimestamp < tram.timestamp;
+
+    timestamp = tram.timestamp;
+    return magicNumber && timestamp;
 }
