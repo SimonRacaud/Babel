@@ -14,23 +14,23 @@
 template <typename tramType>
 class tramFactory
 {
-    static tramFactory getTram(const void *data)
-    {
-        tramFactory tram;
+    public:
+        static tramType getTram(const void *data)
+        {
+            tramType tram;
 
-        std::memset(&tram, 0, sizeof(tramFactory));
-        std::memmove(&tram, data, sizeof(tramFactory));
-        return tram;
-    }
+            std::memmove(&tram, data, sizeof(tramType));
+            return tram;
+        }
 
-    static std::array<char, sizeof(tramType)> makeTram(const tramFactory &tram)
-    {
-        std::array<char, sizeof(tramType)> buff;
+        static std::array<char, sizeof(tramType)> makeTram(const tramType &tram)
+        {
+            std::array<char, sizeof(tramType)> buff;
 
-        std::memset(buff.data(), 0, sizeof(tramFactory));
-        std::memmove(buff.data(), &tram, sizeof(tramFactory));
-        return buff;
-    }
+            std::memset(buff.data(), 0, sizeof(tramType));
+            std::memmove(buff.data(), &tram, sizeof(tramType));
+            return buff;
+        }
 };
 
 #endif

@@ -31,6 +31,7 @@ class UDPAudio
     private:
         void sendingData();
         void receivingData();
+        bool correctPacket(const Network::UDPTram_t &tram);
 
     private:
         std::unique_ptr<Audio::InputAudioManager> _input;

@@ -13,15 +13,16 @@
 
 namespace Network
 {
+    const int DATA_SIZE = 1008;
     const int BUFFER_SIZE = 1024;
     const unsigned int MAGIC_NUMBER = 0x42;
 
-    typedef struct UDPTram_s
+    typedef struct __attribute__((packed)) UDPTram_s
     {
-        unsigned int magicNumber;   // 4
-        size_t timestamp;           // 8
-        char data[1008];            // 1024 - (4 * 2 + 8)
-        unsigned int dataSize;      // 4
+        unsigned int magicNumber;       // 4
+        size_t timestamp;               // 8
+        char data[Network::DATA_SIZE];  // 1024 - (4 * 2 + 8)
+        unsigned int dataSize;          // 4
         UDPTram_s()
         {
             std::memset(this, 0, sizeof(UDPTram_s));
@@ -33,7 +34,7 @@ namespace Network
             std::memset(this, 0, sizeof(UDPTram_s));
             this->magicNumber = Network::MAGIC_NUMBER;
             this->timestamp = std::time(0);
-            std::memmove(this->data, src, sizeof(this->data));
+            std::memmove(this->data, src, Network::DATA_SIZE);
         }
     } UDPTram_t;
 }
