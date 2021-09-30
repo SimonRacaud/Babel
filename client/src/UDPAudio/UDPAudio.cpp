@@ -6,12 +6,15 @@
 */
 
 #include "UDPAudio.hpp"
+#include "tools/tramFactory.hpp"
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut) :
 _input(std::make_unique<Audio::InputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
+    if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
+        throw std::invalid_argument("Invalid UDP tram");
 }
 
 UDPAudio::UDPAudio(size_t portIn, size_t portOut, const std::vector<UserRaw> &list) :
@@ -19,6 +22,8 @@ _input(std::make_unique<Audio::InputAudioManager>()),
 _networkIn(std::make_unique<NetworkIn>(portIn)),
 _networkOut(std::make_unique<NetworkOut>(portOut))
 {
+    if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
+        throw std::invalid_argument("Invalid UDP tram");
     for (auto &it : list)
         this->addUser(it);
 }
