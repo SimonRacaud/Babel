@@ -25,14 +25,17 @@ namespace Network
 
         void disconnect(const std::string &ip, const std::size_t port)
         {
-            auto socketConnection(std::find_if(_socketConnections.begin(),
-                _socketConnections.end(),
-                std::bind(&AsioConnectionTCP::isConnection, this, std::placeholders::_1, ip, port)));
+            auto first(_socketConnections.begin());
+            auto last(_socketConnections.end());
+            std::pair<const std::string &, const std::size_t> value(ip, port);
 
-            if (socketConnection == _socketConnections.end())
-                return;
-            auto connectionEndpoint((*socketConnection)->remote_endpoint());
-            //            _socketConnections.erase(socketConnection); // todo fix problem (also in AAsioConnection::disconnect)
+            first = std::find(first, last, value);
+
+            if (first != last)
+                for (auto i = first; ++i != last;)
+                    if (!(*i == value))
+                        std::move(*i); // todo test
+
             AAsioConnection<PACKETSIZE>::disconnect(connectionEndpoint.address().to_string(), connectionEndpoint.port());
         }
 

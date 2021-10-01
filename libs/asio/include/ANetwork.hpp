@@ -19,23 +19,21 @@ namespace Network
 
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
-            std::cout << "connect() in base class" << std::endl;
             AAsioConnection<PACKETSIZE>::_connections.template emplace_back(ip, port);
         }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
         {
-            const auto disconnection(std::find_if(AAsioConnection<PACKETSIZE>::_connections.begin(),
-                AAsioConnection<PACKETSIZE>::_connections.end(),
-                [ip, port](const auto &connection) {
-                    return ip == connection.first && port == connection.second;
-                }));
-            // todo find solution
-            //            if (disconnection
-            //                !=
-            //                AAsioConnection<PACKETSIZE>::_connections.end())
-            //                AAsioConnection<PACKETSIZE>::_connections.erase(disconnection);
-            //                std::erase(disconnection);
+            auto first(_connections.begin());
+            auto last(_connections.end());
+            std::pair<const std::string &, const std::size_t> value(ip, port);
+
+            first = std::find(first, last, value);
+
+            if (first != last)
+                for (auto i = first; ++i != last;)
+                    if (!(*i == value))
+                        std::move(*i); // todo test
         }
 
         virtual void disconnectAll() override
