@@ -27,20 +27,22 @@ namespace Network
         {
             auto first(_socketConnections.begin());
             auto last(_socketConnections.end());
-            std::pair<const std::string &, const std::size_t> value(ip, port);
+            auto connection(getConnection(ip, port));
 
-            first = std::find(first, last, value);
-
+            if (!connection)
+                return;
+            first = std::find(first, last, connection);
+            AAsioConnection<PACKETSIZE>::disconnect(
+                connection->remote_endpoint().address().to_string(), connection->remote_endpoint().port());
             if (first != last)
                 for (auto i = first; ++i != last;)
-                    if (!(*i == value))
+                    if (!(*i == connection))
                         std::move(*i); // todo test
-
-            AAsioConnection<PACKETSIZE>::disconnect(connectionEndpoint.address().to_string(), connectionEndpoint.port());
         }
 
-        void disconnectAll()
+        virtual void disconnectAll()
         {
+            AAsioConnection<PACKETSIZE>::disconnectAll();
             _socketConnections.clear();
         }
 
@@ -110,10 +112,6 @@ namespace Network
         {
             auto endpoint(connection->remote_endpoint());
 
-            std::cout << endpoint.address().to_string() << std::endl;
-            std::cout << otherIp << std::endl;
-            std::cout << endpoint.port() << std::endl;
-            std::cout << otherPort << std::endl;
             if (endpoint.address().to_string() == otherIp && endpoint.port() == otherPort) // todo incompatible types ?
                 return true;
             return false;
@@ -122,8 +120,7 @@ namespace Network
         std::shared_ptr<tcp::socket> getConnection(const std::string &ip, const std::size_t port)
         {
             for (auto socketConnection : _socketConnections) {
-                std::cout << "hello" << std::endl;
-                if (isConnection(socketConnection, ip, port)) { // todo probably a problem here
+                if (isConnection(socketConnection, ip, port)) {
                     return socketConnection;
                 }
             }
