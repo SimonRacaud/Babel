@@ -26,16 +26,14 @@ namespace Network
         {
             auto first(_connections.begin());
             auto last(_connections.end());
-            std::pair<const std::string , const std::size_t> value(ip, port);
+            std::pair<const std::string, const std::size_t> value(ip, port);
 
             first = std::find(first, last, value);
 
             if (first != last)
                 for (auto i = first; ++i != last;)
-                    if (!(*i == value)) {
-                        auto tmp = std::move(*i); // todo test
-                        (void) tmp;
-                    }
+                    if (!(*i == value))
+                        (void) std::move(*i); // todo test
         }
 
         virtual void disconnectAll() override
