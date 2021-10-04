@@ -44,7 +44,36 @@ include_directories(
 
 ## SOURCES
 
-file(GLOB_RECURSE CLIENT_SRCS client/src/*)
+set(CLIENT_SRCS
+        client/src/main.cpp
+        client/src/Audio/InputAudioManager/InputAudioManager.cpp
+        client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
+        client/src/gui/Account/Account.cpp
+        client/src/gui/Account/Account.hpp
+        client/src/gui/AddContact/AddContact.cpp
+        client/src/gui/AddContact/AddContact.hpp
+        client/src/gui/CallManager/CallManager.hpp
+        client/src/gui/CallManager/CallManager.cpp
+        client/src/gui/MyContactList/MyContactList.cpp
+        client/src/gui/MyContactList/MyContactList.hpp
+        client/src/gui/MyContactList/Contact/Contact.hpp
+        client/src/gui/MyContactList/Contact/Contact.cpp
+        client/src/gui/Options/Options.cpp
+        client/src/gui/Options/Options.hpp
+        client/src/gui/Window/Window.cpp
+        client/src/gui/Window/Window.hpp
+        client/src/Network/Controller/Controller.cpp
+        client/src/Network/Controller/Controller.hpp
+        client/src/Network/Worker/NetworkWorker.hpp
+        client/src/Network/Worker/NetworkWorker.cpp
+        client/src/Network/TCPTram/TcpTram.cpp
+        client/src/Network/TCPTram/TcpTram.hpp
+        client/src/NetworkManager/NetworkManager.cpp
+        client/src/NetworkManager/NetworkManager.hpp
+        client/src/UDPAudio/UDPAudio.cpp
+        client/src/UDPAudio/tools/tramFactory.hpp
+        )
+
 add_executable(${CLIENT} ${CLIENT_SRCS})
 
 file(GLOB_RECURSE SERVER_SRCS server/src/*)
@@ -53,7 +82,6 @@ set(SERVER_SRCS
         server/src/Database/DatabaseManager.cpp
         )
 add_executable(${SERVER} ${SERVER_SRCS})
-
 
 ## Client includes (Qt)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/include)
@@ -66,6 +94,11 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Options)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/TCPTram)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Controller)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Worker)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/NetworkManager)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/UDPAudio)
 
 ## Server include
 target_include_directories(${SERVER} BEFORE PUBLIC server/include)

@@ -8,21 +8,33 @@
 #include "NetworkManager.hpp"
 #include <stdexcept>
 
-NetworkManager::NetworkManager() : _logged(false), _user({0}), _connection(nullptr)
+using namespace Network;
+
+NetworkManager::NetworkManager()
+    : _logged(false), _user({0}), _connectionUDP(nullptr),
+      _connectionServer(std::make_unique<AsioClientTCP<PACKETSIZE>>()),
+      _callServer(std::make_unique<AsioServerTCP<PACKETSIZE>>(PORT_CALL_SERVER)),
+      _callClient(std::make_unique<AsioClientTCP<PACKETSIZE>>())
 {
+    this->connectServer();
 }
 
 NetworkManager::~NetworkManager()
 {
-    if (this->_connection)
-        this->_connection.reset();
+    if (this->_connectionUDP)
+        this->_connectionUDP.reset();
+    if (this->_connectionServer)
+        this->_connectionServer.reset();
+    this->_callServer.reset();
+    this->_callClient.reset();
 }
 
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    this->_connection.reset();
-    this->_connection = nullptr;
+    this->_connectionUDP.reset();
+    // this->_connectionUDP = nullptr; // needed ?
+    // TODO : GUI - empty call member list
 }
 
 bool NetworkManager::isLogged() const
@@ -33,14 +45,20 @@ bool NetworkManager::isLogged() const
 void NetworkManager::sendCallMemberList()
 {
     this->mustBeConnected();
-    // TODO: Need srv API
+    // TODO : get call members
+    // TODO : send list on _connection
 }
 
 void NetworkManager::login(const userNameType &username)
 {
-    // TODO: Need srv API
-    this->_logged = true;
-    this->_user = this->getUser(username);
+    /// Update User
+    std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
+    _user.port = PORT_SERVER;
+    /// Create tram
+    TCPTram tram(TramAction::POST, TramType::USER);
+    tram.setUserList({ this->_user });
+    /// Send to server
+    _connectionServer->sendAll(*tram.getBuffer<PACKETSIZE>().get());
 }
 
 NetworkManager::UserType NetworkManager::getUser(const userNameType &)
@@ -55,8 +73,8 @@ void NetworkManager::callUser(const userNameType &username)
     UserType user;
 
     this->mustBeConnected();
-    if (!this->_connection)
-        this->_connection = std::make_unique<connectionClass>(8080 /*todo change this*/);
+    if (!this->_connectionUDP)
+        this->_connectionUDP = std::make_unique<connectionClass>(8080 /*todo change this*/);
     user = this->getUser(username);
     this->voiceConnect(user);
 }
@@ -64,9 +82,9 @@ void NetworkManager::callUser(const userNameType &username)
 void NetworkManager::voiceConnect(const UserType &user)
 {
     this->mustBeConnected();
-    if (!this->_connection)
+    if (!this->_connectionUDP)
         throw std::invalid_argument("User must be in call");
-    this->_connection->connect(user.ip, user.port);
+    this->_connectionUDP->connect(user.ip, user.port);
 }
 
 void NetworkManager::newContact(const userNameType &)
@@ -78,9 +96,9 @@ void NetworkManager::newContact(const userNameType &)
 void NetworkManager::voiceDisconnect(const UserType &user)
 {
     this->mustBeConnected();
-    if (!this->_connection)
+    if (!this->_connectionUDP)
         throw std::invalid_argument("User must be in call");
-    this->_connection->disconnect(user.ip, user.port);
+    this->_connectionUDP->disconnect(user.ip, user.port);
 }
 
 void NetworkManager::removeContact(const userNameType &)
@@ -93,4 +111,11 @@ void NetworkManager::mustBeConnected() const
 {
     if (!this->_logged)
         throw std::invalid_argument("User must be connected");
+}
+
+void NetworkManager::connectServer()
+{
+    if (!this->_connectionServer) {
+        this->_connectionServer->connect(IP_SERVER, PORT_SERVER);
+    }
 }

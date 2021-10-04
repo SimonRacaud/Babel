@@ -10,9 +10,12 @@
 
 #include "utils.hpp"
 
+#define USERNAME_SIZE 42
+#define IP_SIZE 15
+
 struct UserRaw {
-    char username[42];
-    char ip[15];
+    char username[USERNAME_SIZE];
+    char ip[IP_SIZE];
     size_t port;
 
     bool operator==(const UserRaw &RValue) const
