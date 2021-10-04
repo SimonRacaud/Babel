@@ -34,7 +34,7 @@ namespace Network
             if (first != last)
                 for (auto i = first; ++i != last;)
                     if (!(*i == value))
-                        std::move(*i); // todo test
+                        (void) std::move(*i); // todo test
 
             AAsioConnection<PACKETSIZE>::disconnect(connectionEndpoint.address().to_string(), connectionEndpoint.port());
         }
