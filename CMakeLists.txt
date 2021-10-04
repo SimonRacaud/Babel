@@ -51,8 +51,6 @@ file(GLOB_RECURSE SERVER_SRCS server/src/*)
 set(SERVER_SRCS
         server/src/main.cpp
         server/src/Database/DatabaseManager.cpp
-        ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
-        ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
         )
 add_executable(${SERVER} ${SERVER_SRCS})
 
