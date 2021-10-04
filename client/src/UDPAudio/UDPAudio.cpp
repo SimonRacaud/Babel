@@ -67,7 +67,6 @@ void UDPAudio::sendingData()
 {
     std::queue<Audio::compressFrameBuffer> frameBuffer = this->_input->getFrameBuffer();
 
-    std::cout << frameBuffer.size() << std::endl;
     this->_sending = (frameBuffer.size()) ? true : false;
     while (frameBuffer.size()) {
         auto it = frameBuffer.front();
@@ -79,8 +78,7 @@ void UDPAudio::sendingData()
             throw std::invalid_argument("Invalid data size: resize is necessary");
         std::memcpy(tram.data, it.data.data(), it.encodedBit);
         std::memcpy(tram.data + (Network::DATA_SIZE - sizeof(int)), &it.encodedBit, sizeof(int));
-        //this->_network->sendAll(tramFactory<Network::UDPTram_t>::makeTram(tram));
-        this->_network->send(tramFactory<Network::UDPTram_t>::makeTram(tram), "127.0.0.1", 8081);
+        this->_network->sendAll(tramFactory<Network::UDPTram_t>::makeTram(tram));
         frameBuffer.pop();
     }
 }

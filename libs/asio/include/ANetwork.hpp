@@ -19,8 +19,7 @@ namespace Network
 
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
-            std::cout << "connect() in base class" << std::endl;
-            AAsioConnection<PACKETSIZE>::_connections.template emplace_back(ip, port);
+            AAsioConnection<PACKETSIZE>::_connections.emplace_back(ip, port);
         }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
@@ -69,7 +68,7 @@ namespace Network
         asio::error_code _error;
 
         enum protocol _type;
-        std::deque<std::pair<const std::string &, const std::size_t>> _connections;
+        std::deque<std::pair<const std::string, const std::size_t>> _connections;
 
         /**
          * @brief True if a server, false if a client

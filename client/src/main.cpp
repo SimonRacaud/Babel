@@ -31,7 +31,7 @@ static void sending()
 
     core.addUser(user);
     while (1) {
-        std::cout << "streaming" << std::endl;
+        //std::cout << "streaming" << std::endl;
         core.streamAudio();
     }
 }
@@ -41,7 +41,7 @@ static void receiving()
     Network::AsioConnectionUDP<Network::BUFFER_SIZE> in(8081);
 
     while (1) {
-        std::cout << "respond" << std::endl;
+        //std::cout << "respond" << std::endl;
         auto tmp = in.receive("127.0.0.1", 8080);
         in.send(tmp.first, "127.0.0.1", 8080);
     }
