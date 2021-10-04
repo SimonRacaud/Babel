@@ -5,79 +5,33 @@
 ** Server side of Babel
 */
 
-#include <cstring>
 #include <iostream>
-#include "../../client/src/Audio/InputAudioManager/InputAudioManager.hpp"
-#include "../../client/src/Audio/OutputAudioManager/OutputAudioManager.hpp"
-#include "AsioConnectionUDP.hpp"
 
-#define BUFF_SIZE 1000
+#include "API.hpp"
+#include "AsioServerTCP.hpp"
+#include "utils.hpp"
 
-static void serverfunc(void)
+static void init(Network::DatabaseManager &database)
 {
-    std::array<char, BUFF_SIZE> buff{"hello les pd!"};
+    Network::AsioServerTCP<T_PACKETSIZE> serv(8080);
+    Network::API<T_PACKETSIZE> api(serv, database);
 
-    Network::AsioConnectionUDP<BUFF_SIZE> serv(8080);
-    Audio::InputAudioManager input;
-    std::queue<Audio::compressFrameBuffer> frameBuffer;
+    while (true) {
+        auto recvData = serv.receiveAny();
 
-    serv.connect("127.0.0.1", 8081);
-    while (1) {
-        frameBuffer = input.getFrameBuffer();
-        while (frameBuffer.size()) {
-            auto it = frameBuffer.front();
-
-            std::memset(buff.data(), 0, BUFF_SIZE);
-            std::memcpy(buff.data(), it.data.data(), it.encodedBit);
-            std::memcpy(buff.data() + (BUFF_SIZE - sizeof(int)), &it.encodedBit, sizeof(int));
-            try {
-                std::cout << "send" << std::endl;
-                serv.send(buff, "127.0.0.1", 8081);
-            } catch (const std::system_error &) {
-                std::cout << "ECHEC" << std::endl;
-            }
-            frameBuffer.pop();
-        }
+        api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
     }
 }
 
-static void clientfunc(void)
+int main()
 {
-    std::queue<Audio::compressFrameBuffer> frameBuffer;
-    Audio::OutputAudioManager output;
-    Network::AsioConnectionUDP<BUFF_SIZE> client(8081);
-    Audio::compressFrameBuffer tmp;
+    try {
+        Network::DatabaseManager database;
 
-    client.connect("127.0.0.1", 8080);
-    while (1) {
-        auto data = client.receive("127.0.0.1", 8080);
-
-        std::cout << data.second << " == " << BUFF_SIZE << std::endl;
-        if (data.second == BUFF_SIZE) {
-            tmp.data = std::vector<unsigned char>(BUFF_SIZE);
-            std::memset(tmp.data.data(), 0, BUFF_SIZE);
-            std::memcpy(tmp.data.data(), data.first.data(), BUFF_SIZE - sizeof(int));
-            std::memcpy(&tmp.encodedBit, data.first.data() + (BUFF_SIZE - sizeof(int)), sizeof(int));
-            tmp.data.resize(tmp.encodedBit);
-            frameBuffer.push(tmp);
-            output.setFrameBuffer(frameBuffer);
-            while (frameBuffer.size())
-                frameBuffer.pop();
-        } else {
-            throw std::invalid_argument("Invalid buffer size");
-        }
+        init(database);
+    } catch (...) {
+        std::cerr << "catch error" << std::endl;
+        return EXIT_ERROR;
     }
-}
-
-int main(const int ac, const char **av)
-{
-    if (ac != 2)
-        return 84;
-    if (!std::strcmp(av[1], "server"))
-        serverfunc();
-    else if (!std::strcmp(av[1], "client"))
-        clientfunc();
-    else
-        return 84;
-    return 0;
+    return EXIT_SUCCESS;
 }

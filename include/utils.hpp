@@ -9,6 +9,8 @@
 
 #define UNUSED       [[maybe_unused]]
 #define T_PACKETSIZE 1024
+#define EXIT_SUCCESS 0
+#define EXIT_ERROR   84
 
 typedef std::string string;
 typedef std::size_t size_t;
