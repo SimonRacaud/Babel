@@ -19,11 +19,7 @@ namespace Network
 
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
-<<<<<<< HEAD
             AAsioConnection<PACKETSIZE>::_connections.emplace_back(ip, port);
-=======
-            AAsioConnection<PACKETSIZE>::_connections.template emplace_back(ip, port);
->>>>>>> b98096f69a3aea6b88bb388d12a8a1733cd9ee65
         }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
