@@ -26,7 +26,7 @@ namespace Network
         {
             auto first(_connections.begin());
             auto last(_connections.end());
-            std::pair<const std::string &, const std::size_t> value(ip, port);
+            std::pair<const std::string , const std::size_t> value(ip, port);
 
             first = std::find(first, last, value);
 
