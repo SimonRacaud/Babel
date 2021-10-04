@@ -24,28 +24,39 @@ int main(int argc, char *argv[])
 #include <iostream>
 #include "UDPAudio/UDPAudio.hpp"
 
+static void sending()
+{
+    UDPAudio core(8080);
+    UserRaw user = {"cmoi", "127.0.0.1", 8081};
+
+    core.addUser(user);
+    while (1) {
+        std::cout << "streaming" << std::endl;
+        core.streamAudio();
+    }
+}
+
+static void receiving()
+{
+    Network::AsioConnectionUDP<Network::BUFFER_SIZE> in(8081);
+
+    while (1) {
+        std::cout << "respond" << std::endl;
+        auto tmp = in.receive("127.0.0.1", 8080);
+        in.send(tmp.first, "127.0.0.1", 8080);
+    }
+}
+
 int main(int ac, char **av)
 {
-    size_t input = 0;
-    size_t output = 0;
-    UserRaw user = {"cmoi", "127.0.0.1", 8082};
-
     if (ac != 2)
         return 84;
     if (std::strcmp(av[1], "send") == 0) {
-        input = 8080;
-        output = 8081;
-        user.port = 8080;
+        sending();
     } else if (std::strcmp(av[1], "recv") == 0) {
-        input = 8081;
-        output = 8080;
-        user.port = 8081;
+        receiving();
     } else {
         return 84;
     }
-    UDPAudio core(input, output);
-    core.addUser(user);
-    while (1)
-        core.streamAudio();
     return 0;
 }
