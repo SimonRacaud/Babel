@@ -19,7 +19,8 @@ static void init(Network::DatabaseManager &database)
     while (true) {
         auto recvData = serv.receiveAny();
 
-        api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
+        if (std::get<1>(recvData) > 0)
+            api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
     }
 }
 
