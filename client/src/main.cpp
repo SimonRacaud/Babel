@@ -5,7 +5,6 @@
  * main.cpp - Created: 23/09/2021
  */
 
-/*
 #include <QApplication>
 #include "gui/Window/Window.hpp"
 
@@ -18,9 +17,9 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-*/
 
-#include <cstring>
+
+/*#include <cstring>
 #include <iostream>
 #include "UDPAudio/UDPAudio.hpp"
 
@@ -59,4 +58,4 @@ int main(int ac, char **av)
         return 84;
     }
     return 0;
-}
+}*/
