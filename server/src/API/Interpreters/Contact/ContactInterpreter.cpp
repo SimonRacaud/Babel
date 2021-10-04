@@ -7,8 +7,9 @@
 
 #include <cstring>
 
-#include "Contact.hpp"
 #include "ContactInterpreter.hpp"
+#include "ContactRaw.hpp"
+#include "UserRaw.hpp"
 
 using namespace Network;
 

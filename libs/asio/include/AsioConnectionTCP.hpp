@@ -27,7 +27,7 @@ namespace Network
         {
             auto first(_socketConnections.begin());
             auto last(_socketConnections.end());
-            std::pair<const std::string &, const std::size_t> value(ip, port);
+            auto value = this->getConnection(ip, port);
 
             first = std::find(first, last, value);
 
@@ -36,7 +36,7 @@ namespace Network
                     if (!(*i == value))
                         (void) std::move(*i); // todo test
 
-            AAsioConnection<PACKETSIZE>::disconnect(connectionEndpoint.address().to_string(), connectionEndpoint.port());
+            AAsioConnection<PACKETSIZE>::disconnect(ip, port);
         }
 
         void disconnectAll()
