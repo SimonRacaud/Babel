@@ -5,7 +5,7 @@
  * signal_manager.c - Created: 05/10/2021
  */
 
-#include <signal.h>
+#include <csignal>
 
 #include "utils.hpp"
 

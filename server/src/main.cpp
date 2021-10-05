@@ -19,13 +19,14 @@ static void init(Network::DatabaseManager &database, bool &serverLoop)
 
     signalManager(SIGINT, serverLoop);
     signalManager(SIGQUIT, serverLoop);
+    serv.runAsync();
     while (serverLoop) {
-        // serv.runOneAction();
         auto recvData = serv.receiveAny();
 
         if (std::get<1>(recvData) > 0)
             api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
     }
+    serv.stopRunAsync();
 }
 
 int main()
