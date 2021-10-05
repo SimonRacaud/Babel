@@ -31,7 +31,7 @@ class UDPAudio
          * Update _list? and call this->addUser()
          * @param list
          */
-        // TODO void updateConnections(std::vector<UserRaw> &list);
+        void updateConnections(std::vector<UserRaw> &list);
         /**
          * Get _list?
          * @return vector of User

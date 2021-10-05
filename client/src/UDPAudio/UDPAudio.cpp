@@ -127,3 +127,10 @@ std::vector<UserRaw> UDPAudio::getConnections() const
         output.push_back(std::get<0>(it));
     return output;
 }
+
+void UDPAudio::updateConnections(std::vector<UserRaw> &list)
+{
+    this->_list.clear();
+    for (auto const &it : list)
+        this->_list.push_back(std::tuple<UserRaw, size_t>(it, 0));
+}
