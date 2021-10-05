@@ -118,3 +118,19 @@ bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tr
     timestamp = tram.timestamp;
     return magicNumber && timestamp;
 }
+
+std::vector<UserRaw> UDPAudio::getConnections() const
+{
+    std::vector<UserRaw> output;
+
+    for (auto const &it : this->_list)
+        output.push_back(std::get<0>(it));
+    return output;
+}
+
+void UDPAudio::updateConnections(std::vector<UserRaw> &list)
+{
+    this->_list.clear();
+    for (auto const &it : list)
+        this->_list.push_back(std::tuple<UserRaw, size_t>(it, 0));
+}
