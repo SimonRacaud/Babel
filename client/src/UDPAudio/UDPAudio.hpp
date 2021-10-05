@@ -36,7 +36,7 @@ class UDPAudio
          * Get _list?
          * @return vector of User
          */
-        // TODO std::vector<UserRaw> getConnections() const;
+        std::vector<UserRaw> getConnections() const;
 
     private:
         void sendingData();
