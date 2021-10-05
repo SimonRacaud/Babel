@@ -12,22 +12,26 @@
 #include <QObject>
 #include <vector>
 #include "UserRaw.hpp"
+#include "ContactRaw.hpp"
 
-class NetworkWorker : public QObject {
-    Q_OBJECT
-  public:
-    NetworkWorker();
-    virtual ~NetworkWorker() = default;
+namespace Network
+{
+    class NetworkWorker : public QObject {
+        Q_OBJECT
+      public:
+        NetworkWorker();
+        virtual ~NetworkWorker() = default;
 
-  public slots:
-    void work();
+      public slots:
+        void work();
 
-    signals:
-      void contactAdded(QString const &username);
-      void contactRemoved(QString const &username);
-      void logged(QString const &username);
-      void callVoiceConnect(std::vector<UserRaw> const &users);
-      void networkRequestFailed(QString const &message);
-};
+      signals:
+        void contactAdded(ContactRaw const &contact);
+        void contactRemoved(ContactRaw const &contact);
+        void logged(UserRaw const &user);
+        void callVoiceConnect(std::vector<UserRaw> const &users);
+        void networkRequestFailed(QString const &message);
+    };
+}
 
 #endif // NET_WORKER_HPP

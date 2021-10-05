@@ -51,7 +51,12 @@ void Account::slotApplyUsername()
     if (username.isEmpty() == false) {
         _input->setText("");
         /// TODO : apply new username on network (api)
-        this->_username->setText(username);
-        _username->setStyleSheet("QLabel { color: blue; }");
     }
+}
+
+void Account::slotSetUsername()
+{
+    // TODO
+//    this->_username->setText(username);
+//    _username->setStyleSheet("QLabel { color: blue; }");
 }

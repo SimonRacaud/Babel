@@ -9,24 +9,27 @@
 #define NETWORKMANAGER_HPP
 
 #include <QApplication>
+#include <QObject>
 #include <memory>
-#include "AsioConnectionUDP.hpp"
 #include "AsioClientTCP.hpp"
+#include "AsioConnectionUDP.hpp"
 #include "AsioServerTCP.hpp"
 #include "INetwork.hpp"
 #include "INetworkManager.hpp"
 
-#include "UserRaw.hpp"
 #include "Network/TCPTram/TcpTram.hpp"
+#include "UserRaw.hpp"
 
 const std::size_t PACKETSIZE(2048); // todo change that
-#define IP_SERVER "127.0.0.0"
-#define PORT_SERVER 8081
+#define IP_SERVER        "127.0.0.0"
+#define PORT_SERVER      8081
 #define PORT_CALL_SERVER 8082
 
 namespace Network
 {
-    class NetworkManager : public INetworkManager<UserRaw, QString> {
+    class NetworkManager : public QObject, public INetworkManager<UserRaw, QString> {
+        Q_OBJECT
+
         using UserType = UserRaw;
         using userNameType = QString;
         using connectionClass = Network::AsioConnectionUDP<PACKETSIZE>;
@@ -34,6 +37,8 @@ namespace Network
       public:
         NetworkManager();
         ~NetworkManager();
+
+        /// Emit network requests
         void callHangUp();
         bool isLogged() const;
         void sendCallMemberList();
@@ -49,6 +54,13 @@ namespace Network
         void mustBeConnected() const;
         void connectServer();
 
+      public slots:
+        /// Apply network response
+        void slotLogged(UserType const &user);
+        void slotContactAdded(ContactRaw const &contact);
+        void slotContactRemoved(ContactRaw const &contact);
+        void slotCallVoiceConnect(std::vector<UserType> const &users);
+
       private:
         bool _logged;
         UserType _user;
@@ -59,6 +71,6 @@ namespace Network
         std::unique_ptr<AsioServerTCP<PACKETSIZE>> _callServer;
         std::unique_ptr<AsioClientTCP<PACKETSIZE>> _callClient;
     };
-}
+} // namespace Network
 
 #endif

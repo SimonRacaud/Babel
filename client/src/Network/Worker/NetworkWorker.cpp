@@ -7,6 +7,8 @@
 
 #include "NetworkWorker.hpp"
 
+using namespace Network;
+
 NetworkWorker::NetworkWorker()
 {
 
@@ -18,10 +20,10 @@ void NetworkWorker::work()
         // receive data from de server.
         // receive data from any other client.
 
-        // emit contactAdded(username);
-        // emit contactRemoved(username);
-        // emit logged(username);
+        // emit contactAdded(contact);
+        // emit contactRemoved(contact);
+        // emit logged(user);
         // emit callVoiceConnect(userList);
-        // emit callRequestRejected(username);
+        // emit callRequestRejected(user);
     }
 }

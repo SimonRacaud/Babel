@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <memory>
+#include <iostream>
 
 #include "ANetwork.hpp"
 

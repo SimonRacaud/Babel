@@ -30,6 +30,7 @@ namespace GUI
 
       private slots:
         void slotApplyUsername();
+        void slotSetUsername();
 
       private:
         QLineEdit *_input;

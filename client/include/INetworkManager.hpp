@@ -8,10 +8,12 @@
 #ifndef INETWORKMANAGER_HPP
 #define INETWORKMANAGER_HPP
 
-template <typename UserType, typename userNameType>
-class INetworkManager
+namespace Network
 {
-    public:
+    template <typename UserType, typename userNameType>
+    class INetworkManager {
+
+      public:
         virtual ~INetworkManager() = default;
         virtual void callHangUp() = 0;
         virtual bool isLogged() const = 0;
@@ -23,6 +25,7 @@ class INetworkManager
         virtual void newContact(const userNameType &) = 0;
         virtual void voiceDisconnect(const UserType &) = 0;
         virtual void removeContact(const userNameType &) = 0;
-};
+    };
+}
 
 #endif

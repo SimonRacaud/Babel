@@ -11,18 +11,25 @@
 #include <QObject>
 #include <QThread>
 
-class Controller : public QObject {
-    Q_OBJECT
-    QThread workerThread;
-  public:
-    Controller();
-    virtual ~Controller();
+#include "NetworkManager/NetworkManager.hpp"
+#include "Network/Worker/NetworkWorker.hpp"
 
-  public slots:
-    // todo ?
+namespace Network
+{
+    class Controller : public QObject {
+        Q_OBJECT
+        QThread workerThread;
 
-  signals:
-    void operate();
-};
+      public:
+        Controller(NetworkManager &manager);
+        virtual ~Controller();
+
+      signals:
+        void operate();
+
+      private:
+        NetworkManager &_manager;
+    };
+}
 
 #endif // CONTROLLER_HPP

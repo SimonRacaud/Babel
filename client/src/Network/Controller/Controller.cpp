@@ -7,19 +7,21 @@
 
 #include "Controller.hpp"
 
-Controller::Controller()
-{
-//    Worker *worker = new Worker;
-//
-//    worker->moveToThread(&workerThread);
-//    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-//    connect(this, &Controller::operate, worker, &Worker::work);
+using namespace Network;
 
-    //connect(worker, &Worker::contactAdded, this, &Controller::handleResults);
-    //connect(worker, &Worker::contactRemoved, this, &Controller::handleResults);
-    //connect(worker, &Worker::logged, this, &Controller::handleResults);
-    //connect(worker, &Worker::callVoiceConnect, this, &Controller::handleResults);
-    //connect(worker, &Worker::networkRequestFailed, this, &Controller::handleResults);
+Controller::Controller(NetworkManager &manager) : _manager(manager)
+{
+    NetworkWorker *worker = new NetworkWorker;
+
+    worker->moveToThread(&workerThread);
+    QObject::connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    QObject::connect(this, &Controller::operate, worker, &NetworkWorker::work);
+
+    QObject::connect(worker, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
+    QObject::connect(worker, &NetworkWorker::contactAdded, &_manager, &NetworkManager::slotContactAdded);
+    QObject::connect(worker, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
+    QObject::connect(worker, &NetworkWorker::callVoiceConnect, &_manager, &NetworkManager::slotCallVoiceConnect);
+    //QObject::connect(worker, &NetworkWorker::networkRequestFailed, _manager, &NetworkManager::);
     workerThread.start();
 }
 

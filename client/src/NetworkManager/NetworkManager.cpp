@@ -119,3 +119,25 @@ void NetworkManager::connectServer()
         this->_connectionServer->connect(IP_SERVER, PORT_SERVER);
     }
 }
+
+void NetworkManager::slotLogged(UserType const &user)
+{
+    // TODO
+    _user = user;
+    this->_logged = true;
+}
+
+void NetworkManager::slotContactAdded(ContactRaw const &contact)
+{
+    // TODO
+}
+
+void NetworkManager::slotContactRemoved(ContactRaw const &contact)
+{
+    // TODO
+}
+
+void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users)
+{
+    // TODO
+}
