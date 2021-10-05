@@ -17,6 +17,7 @@
 #include <QObject>
 #include "gui/MyContactList/MyContactList.hpp"
 #include "NetworkManager/NetworkManager.hpp"
+#include "gui/Dialogue/DialogueBox.hpp"
 
 #define ADD_CONTACT_MAX_WIDTH 300
 

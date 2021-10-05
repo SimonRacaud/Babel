@@ -72,6 +72,8 @@ set(CLIENT_SRCS
         client/src/NetworkManager/NetworkManager.hpp
         client/src/UDPAudio/UDPAudio.cpp
         client/src/UDPAudio/tools/tramFactory.hpp
+        client/src/gui/Dialogue/DialogueBox.cpp
+        client/src/gui/Dialogue/DialogueBox.hpp
         )
 
 add_executable(${CLIENT} ${CLIENT_SRCS})
@@ -99,6 +101,7 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Controller
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Worker)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/NetworkManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/UDPAudio)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Dialogue)
 
 ## Server include
 target_include_directories(${SERVER} BEFORE PUBLIC server/include)
