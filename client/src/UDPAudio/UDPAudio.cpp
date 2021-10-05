@@ -102,12 +102,17 @@ void UDPAudio::receivingData()
                 std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
                 tmp.data.resize(tmp.encodedBit);
                 frameBuffer.push(tmp);
-                this->_output->setFrameBuffer(frameBuffer);
-                while (frameBuffer.size())
-                    frameBuffer.pop();
+                /*
+                **
+                ** this->_output->setFrameBuffer(frameBuffer);
+                ** while (frameBuffer.size())
+                **     frameBuffer.pop();
+                **
+                */
             }
         }
     }
+    this->_output->setFrameBuffer(frameBuffer, true);
 }
 
 bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram)
@@ -117,4 +122,33 @@ bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tr
 
     timestamp = tram.timestamp;
     return magicNumber && timestamp;
+}
+
+std::vector<UserRaw> UDPAudio::getConnections() const
+{
+    std::vector<UserRaw> output;
+
+    for (auto const &it : this->_list)
+        output.push_back(std::get<0>(it));
+    return output;
+}
+
+void UDPAudio::updateConnections(std::vector<UserRaw> &list)
+{
+    for (auto const &it : list) {
+        bool inList = std::find_if(this->_list.begin(), this->_list.end(), [it](auto const &pair) {
+            return std::get<0>(pair) == it;
+        }) != this->_list.end();
+        
+        if (!inList)
+            this->addUser(it);
+    }
+    for (auto const &it : this->_list) {
+        bool inList = std::find_if(list.begin(), list.end(), [it](auto const &user) {
+            return user == std::get<0>(it);
+        }) != list.end();
+        
+        if (!inList)
+            this->removeUser(std::get<0>(it));
+    }
 }

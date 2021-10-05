@@ -9,6 +9,8 @@
 
 using namespace GUI;
 
+extern Network::NetworkManager networkManager;
+
 Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
 {
     _mainLayout = new QVBoxLayout;
@@ -34,6 +36,7 @@ Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
     _username->setStyleSheet("QLabel { color: red; }");
     this->setMaximumHeight(100);
      QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotApplyUsername()));
+     QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateUsername, this, &Account::slotSetUsername);
 }
 
 Account::~Account()
@@ -50,8 +53,16 @@ void Account::slotApplyUsername()
 
     if (username.isEmpty() == false) {
         _input->setText("");
-        /// TODO : apply new username on network (api)
-        this->_username->setText(username);
-        _username->setStyleSheet("QLabel { color: blue; }");
+        try {
+            networkManager.login(username);
+        } catch (std::exception const &e) {
+            std::cerr << "Error: Fail to apply username." << std::endl;
+        }
     }
+}
+
+void Account::slotSetUsername(QString const &username)
+{
+    this->_username->setText(username);
+    _username->setStyleSheet("QLabel { color: blue; }");
 }

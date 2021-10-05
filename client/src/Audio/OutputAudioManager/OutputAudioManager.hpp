@@ -25,7 +25,7 @@ namespace Audio
             OutputAudioManager(int);
             ~OutputAudioManager();
 
-            void setFrameBuffer(std::queue<Audio::compressFrameBuffer> &);
+            void setFrameBuffer(std::queue<Audio::compressFrameBuffer> &, bool merging = false);
 
         private:
             std::unique_ptr<Audio::IAudioStreamer<callBackType>> _output;

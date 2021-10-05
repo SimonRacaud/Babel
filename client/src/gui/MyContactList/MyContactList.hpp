@@ -38,6 +38,8 @@ namespace GUI
         void enableCallButtons();
         void removeContact(IContact &contact);
 
+        bool exist(QString const &contactName) const;
+
       private:
         ICallManager &_callManager;
         QVBoxLayout *_contactList;

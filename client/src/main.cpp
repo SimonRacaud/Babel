@@ -6,16 +6,28 @@
  */
 
 #include <QApplication>
+#include <iostream>
+
 #include "gui/Window/Window.hpp"
+#include "NetworkManager/NetworkManager.hpp"
+
+Network::NetworkManager networkManager;
+std::unique_ptr<GUI::Window> window;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    GUI::Window win(app);
-    win.show();
-
-    return app.exec();
+    try {
+        std::cerr << "Info: will init network connection." << std::endl;
+        networkManager.init();
+        std::cerr << "Info: will init gui." << std::endl;
+        window = std::make_unique<GUI::Window>(app);
+        window->show();
+        return app.exec();
+    } catch (std::exception const &e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
 }
 
 

@@ -25,9 +25,13 @@ namespace Network
         CONTACT
     };
 
+    const std::size_t TRAM_SIZE_SHIFT = sizeof(TramAction) + sizeof(TramType)
+        + sizeof(bool) + sizeof(size_t);
+
     struct TramTCP {
         TramAction action;
         TramType type;
+        bool error;
         size_t list_size;
         void *list;
     };

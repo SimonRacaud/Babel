@@ -31,13 +31,28 @@ OutputAudioManager::~OutputAudioManager()
     this->_decoder.reset();
 }
 
-void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &data)
+void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &data, bool merging)
 {
     Audio::rawFrameBuffer extractedData;
 
-    while (data.size()) {
-        extractedData = this->_decoder->extract(data.front());
-        data.pop();
-        this->_output->setFrame(extractedData);
+    if (!merging) {
+        while (data.size()) {
+            extractedData = this->_decoder->extract(data.front());
+            data.pop();
+            this->_output->setFrame(extractedData);
+        }
+    } else {
+        Audio::rawFrameBuffer mergingData;
+
+        mergingData.data = std::vector<float>(Audio::SAMPLE_RATE * Audio::NUM_CHANNELS * sizeof(float));
+        std::fill(mergingData.data.begin(), mergingData.data.end(), 0);
+        while (data.size()) {
+            extractedData = this->_decoder->extract(data.front());
+            data.pop();
+            for (size_t i = 0; i < extractedData.data.size(); i++) {
+                mergingData.data[i] += extractedData.data[i];
+            }
+        }
+        this->_output->setFrame(mergingData);
     }
 }

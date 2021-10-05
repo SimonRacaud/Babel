@@ -9,6 +9,8 @@
 
 using namespace GUI;
 
+extern Network::NetworkManager networkManager;
+
 AddContact::AddContact(MyContactList &contactList) : QGroupBox("Add Contact"), _contactList(contactList)
 {
     _mainLayout = new QHBoxLayout;
@@ -29,6 +31,7 @@ AddContact::AddContact(MyContactList &contactList) : QGroupBox("Add Contact"), _
     _input->setPlaceholderText("username");
     /// Events
     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotAddContact()));
+    QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateContacts, this, &AddContact::slotApplyUpdate);
 }
 
 AddContact::~AddContact()
@@ -43,10 +46,20 @@ void AddContact::slotAddContact()
     QString const &input = _input->text();
 
     if (input.isEmpty() == false) {
-        /// TODO : Network add contact
-        if (true/* contact added on server */) {
-            _input->setText("");
-            _contactList.addContact(input);
+        if (_contactList.exist(input)) {
+            DialogueBox::info("The contact already exist.");
+        } else {
+            try {
+                networkManager.newContact(input);
+            } catch (std::exception const &e) {
+                std::cerr << "Error: fail to add contact. " << e.what() << std::endl;
+            }
         }
     }
+}
+
+void AddContact::slotApplyUpdate(QString const &contactName)
+{
+    _input->setText("");
+    _contactList.addContact(contactName);
 }

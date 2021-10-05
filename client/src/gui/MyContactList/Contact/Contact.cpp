@@ -9,6 +9,8 @@
 
 using namespace GUI;
 
+extern Network::NetworkManager networkManager;
+
 Contact::Contact(QVBoxLayout &parent, QString const &userName,
     ICallManager &callManager, IMyContactList &contactList)
     : _callManager(callManager), _contactList(contactList)
@@ -36,6 +38,8 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
         _buttonCall, SIGNAL(clicked()), this, SLOT(slotCallContact()));
     QObject::connect(
         _buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
+    QObject::connect(&networkManager, &Network::NetworkManager::sigRemoveContact, this, &Contact::slotApplyRemove);
+    QObject::connect(&networkManager, &Network::NetworkManager::sigCallSuccess, this, &Contact::slotApplyCall);
 }
 
 Contact::~Contact()
@@ -48,26 +52,37 @@ Contact::~Contact()
 
 void Contact::slotRemoveContact() noexcept
 {
-    //QString const &username = _label->text();
+    try {
+        networkManager.removeContact(this->getUsername());
+    } catch (std::exception const &e) {
+        std::cerr << "Error : fail to remove contact. " << e.what() << std::endl;
+    }
+}
 
-    // TODO Network : API remove contact
-    if (true /*network ok*/) {
+void Contact::slotApplyRemove(QString const &contactUsername) noexcept
+{
+    if (this->getUsername() == contactUsername) {
         this->_contactList.removeContact(*this);
     }
 }
 
 void Contact::slotCallContact() noexcept
 {
-    QString const &username = _label->text();
+    QString const &username = this->getUsername();
 
-    this->disableCall();
-    // TODO Network : start call
-    if (true /*network ok*/) {
-        _callManager.addMember(username);
-    } else {
-        this->enableCall();
-        std::cerr << "Info: fail to call " << username.toStdString()
-                  << ". Network error" << std::endl;
+    try {
+        networkManager.callUser(username);
+    } catch (std::exception const &e) {
+        std::cerr << "Error: fail to call user " << username.toStdString()
+                  << ". " << e.what() << std::endl;
+    }
+}
+
+void Contact::slotApplyCall(QString const &contactName) noexcept
+{
+    if (this->getUsername() == contactName) {
+        this->disableCall();
+        _callManager.addMember(contactName);
     }
 }
 
@@ -86,4 +101,9 @@ void Contact::disableCall()
 QWidget *Contact::getTopWidget()
 {
     return _widthControl;
+}
+
+QString Contact::getUsername() const
+{
+    return _label->text();
 }

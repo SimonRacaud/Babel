@@ -20,6 +20,7 @@
 #include "ICallManager.hpp"
 #include "IMyContactList.hpp"
 #include "IContact.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 
 /**
  * Config
@@ -42,9 +43,13 @@ namespace GUI
 
         QWidget *getTopWidget();
 
+        QString getUsername() const;
+
       private slots:
         void slotCallContact() noexcept;
+        void slotApplyCall(QString const &contactName) noexcept;
         void slotRemoveContact() noexcept;
+        void slotApplyRemove(QString const &contactUsername) noexcept;
 
       private:
         ICallManager &_callManager;

@@ -27,6 +27,17 @@ class UDPAudio
         void removeUser(const UserRaw &user);
         void streamAudio();
 
+        /**
+         * Update _list? and call this->addUser()
+         * @param list
+         */
+        void updateConnections(std::vector<UserRaw> &list);
+        /**
+         * Get _list?
+         * @return vector of User
+         */
+        std::vector<UserRaw> getConnections() const;
+
     private:
         void sendingData();
         void receivingData();
