@@ -19,14 +19,14 @@ namespace Network
 
         virtual void connect(const std::string &ip, const std::size_t port) override
         {
-            AAsioConnection<PACKETSIZE>::_connections.template emplace_back(ip, port);
+            AAsioConnection<PACKETSIZE>::_connections.emplace_back(ip, port);
         }
 
         virtual void disconnect(const std::string &ip, const std::size_t port) override
         {
             auto first(_connections.begin());
             auto last(_connections.end());
-            std::pair<const std::string &, const std::size_t> value(ip, port);
+            std::pair<const std::string, const std::size_t> value(ip, port);
 
             first = std::find(first, last, value);
 
@@ -62,12 +62,12 @@ namespace Network
             return false;
         }
 
-      public:                        // todo make private after test
-        asio::io_context _ioContext; // todo static ?
+      protected:
+        asio::io_context _ioContext;
         asio::error_code _error;
 
         enum protocol _type;
-        std::deque<std::pair<const std::string &, const std::size_t>> _connections;
+        std::deque<std::pair<const std::string, const std::size_t>> _connections;
 
         /**
          * @brief True if a server, false if a client

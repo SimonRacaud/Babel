@@ -19,6 +19,7 @@ namespace Network
          */
         AsioServerTCP(const std::size_t port)
             : AsioConnectionTCP<PACKETSIZE>(true), _acceptor(AAsioConnection<PACKETSIZE>::_ioContext, tcp::endpoint(tcp::v4(), port))
+        // todo call in try catch cause if server already exists, throws system_error
         {
             startAccept();
         }
@@ -45,7 +46,6 @@ namespace Network
 
       private:
         tcp::acceptor _acceptor;
-        tcp::endpoint _endpoint;
     };
 
 } // namespace Network
