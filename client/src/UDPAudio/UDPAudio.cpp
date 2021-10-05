@@ -130,7 +130,20 @@ std::vector<UserRaw> UDPAudio::getConnections() const
 
 void UDPAudio::updateConnections(std::vector<UserRaw> &list)
 {
-    this->_list.clear();
-    for (auto const &it : list)
-        this->_list.push_back(std::tuple<UserRaw, size_t>(it, 0));
+    for (auto const &it : list) {
+        bool inList = std::find_if(this->_list.begin(), this->_list.end(), [it](auto const &pair) {
+            return std::get<0>(pair) == it;
+        }) != this->_list.end();
+        
+        if (!inList)
+            this->addUser(it);
+    }
+    for (auto const &it : this->_list) {
+        bool inList = std::find_if(list.begin(), list.end(), [it](auto const &user) {
+            return user == std::get<0>(it);
+        }) != list.end();
+        
+        if (!inList)
+            this->removeUser(std::get<0>(it));
+    }
 }
