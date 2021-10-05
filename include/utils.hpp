@@ -18,6 +18,6 @@ typedef std::stringstream stringstream;
 typedef std::fstream fstream;
 typedef std::ofstream ofstream;
 typedef std::ifstream ifstream;
-#define toString(str)  std::to_string(str)
+#define myToString(str)  std::to_string(str)
 #define toInteger(str) std::stoi(str)
 #define toSize_t(str)  std::stoul(str)

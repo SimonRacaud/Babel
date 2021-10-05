@@ -18,11 +18,10 @@
 
 class UDPAudio
 {
-    using NetworkIn = Network::AsioConnectionUDP<Network::BUFFER_SIZE>;
-    using NetworkOut = Network::AsioConnectionUDP<Network::BUFFER_SIZE>;
+    using NetworkComponent = Network::AsioConnectionUDP<Network::BUFFER_SIZE>;
     public:
-        UDPAudio(size_t portIn, size_t portOut);
-        UDPAudio(size_t portIn, size_t portOut, const std::vector<UserRaw> &list);
+        UDPAudio(size_t port);
+        UDPAudio(size_t port, const std::vector<UserRaw> &list);
         ~UDPAudio();
         void addUser(const UserRaw &user);
         void removeUser(const UserRaw &user);
@@ -35,9 +34,10 @@ class UDPAudio
 
     private:
         std::unique_ptr<Audio::InputAudioManager> _input;
-        std::unique_ptr<NetworkIn> _networkIn;
-        std::unique_ptr<NetworkOut> _networkOut;
-        std::vector<std::tuple<UserRaw, std::unique_ptr<Audio::OutputAudioManager>, size_t>> _list;
+        std::unique_ptr<Audio::OutputAudioManager> _output;
+        std::unique_ptr<NetworkComponent> _network;
+        std::vector<std::tuple<UserRaw, size_t>> _list;
+        bool _sending;
 };
 
 #endif

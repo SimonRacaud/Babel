@@ -36,7 +36,7 @@ const std::vector<DeviceInfos> IODevices::getInputs() const
         const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(i);
 
         if (!deviceInfo)
-            throw std::invalid_argument("Failed: getInputs => Pa_GetDeviceInfo(" + toString(i) + ")");
+            throw std::invalid_argument("Failed: getInputs => Pa_GetDeviceInfo(" + myToString(i) + ")");
         if (deviceInfo->maxInputChannels > 0)
             inputDevices.push_back({deviceInfo, i});
     }
@@ -52,7 +52,7 @@ const std::vector<DeviceInfos> IODevices::getOutputs() const
         const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(i);
 
         if (!deviceInfo)
-            throw std::invalid_argument("Failed: getOutputs => Pa_GetDeviceInfo(" + toString(i) + ")");
+            throw std::invalid_argument("Failed: getOutputs => Pa_GetDeviceInfo(" + myToString(i) + ")");
         if (deviceInfo->maxOutputChannels > 0)
             outputDevices.push_back({deviceInfo, i});
     }
@@ -69,7 +69,7 @@ void IODevices::selectInput(const PaDeviceIndex &deviceIndex)
     });
 
     if (result == inputDevices.end())
-        throw std::invalid_argument("Failed: selectInput => " + toString(deviceIndex) + " isn't an input device");
+        throw std::invalid_argument("Failed: selectInput => " + myToString(deviceIndex) + " isn't an input device");
 
     this->_inputDevice = deviceIndex;
 }
@@ -84,7 +84,7 @@ void IODevices::selectOutput(const PaDeviceIndex &deviceIndex)
     });
 
     if (result == outputDevices.end())
-        throw std::invalid_argument("Failed: selectOutput => " + toString(deviceIndex) + " isn't an output device");
+        throw std::invalid_argument("Failed: selectOutput => " + myToString(deviceIndex) + " isn't an output device");
 
     this->_outputDevice = deviceIndex;
 }
@@ -104,7 +104,7 @@ const DeviceInfos IODevices::getSelectedInput() const
     const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(this->_inputDevice);
 
     if (!deviceInfo)
-        throw std::invalid_argument("Failed: getSelectedInput => Pa_GetDeviceInfo(" + toString(this->_inputDevice) + ")");
+        throw std::invalid_argument("Failed: getSelectedInput => Pa_GetDeviceInfo(" + myToString(this->_inputDevice) + ")");
     return {deviceInfo, this->_inputDevice};
 }
 
@@ -113,6 +113,6 @@ const DeviceInfos IODevices::getSelectedOutput() const
     const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(this->_outputDevice);
 
     if (!deviceInfo)
-        throw std::invalid_argument("Failed: getSelectedOutput => Pa_GetDeviceInfo(" + toString(this->_outputDevice) + ")");
+        throw std::invalid_argument("Failed: getSelectedOutput => Pa_GetDeviceInfo(" + myToString(this->_outputDevice) + ")");
     return {deviceInfo, this->_outputDevice};
 }
