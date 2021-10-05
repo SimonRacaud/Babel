@@ -125,6 +125,14 @@ namespace Network
             if (_activeThread)
                 return;
             _thread = std::thread(&AsioConnectionTCP<PACKETSIZE>::realRunAsync, this);
+            _thread.detach();
+        }
+
+        void stopRunAsync()
+        {
+            _activeThread = false;
+            if (!AAsioConnection<PACKETSIZE>::_ioContext.stopped())
+                AAsioConnection<PACKETSIZE>::_ioContext.stop();
         }
 
       protected:
@@ -137,7 +145,6 @@ namespace Network
             _activeThread = true;
             while (_activeThread)
                 AAsioConnection<PACKETSIZE>::_ioContext.run();
-            _activeThread = false;
         }
         void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection)
         {

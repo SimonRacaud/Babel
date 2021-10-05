@@ -76,10 +76,19 @@ int main(__attribute__((unused)) const int ac, const char *av[])
     return 0;
 }*/
 
+#include <functional>
 #include "AsioClientTCP.hpp"
 #include "AsioServerTCP.hpp"
+#include "signal.h"
 
 using namespace Network;
+
+static bool boolean = false;
+
+static void signalHandler(int)
+{
+    boolean = true;
+}
 
 int main(const int ac, __attribute__((unused)) const char *av[])
 {
@@ -105,6 +114,7 @@ int main(const int ac, __attribute__((unused)) const char *av[])
 
         AsioServerTCP<PACKETSIZE> server(8080);
 
+        signal(SIGINT, &signalHandler);
         server.runAsync();
         while (1) {
             recvData = server.receiveAny();
@@ -114,8 +124,12 @@ int main(const int ac, __attribute__((unused)) const char *av[])
                 std::cout.write(recvBuf.data(), lenBuf);
                 std::cout << std::endl;
             }
-            //            server.runOneAction();
+            if (boolean) {
+                server.stopRunAsync();
+                break;
+            }
         }
+        server.stopRunAsync();
     }
     return 0;
 }
