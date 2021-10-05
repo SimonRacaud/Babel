@@ -20,6 +20,7 @@
 #include "ICallManager.hpp"
 #include "IMyContactList.hpp"
 #include "IContact.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 
 /**
  * Config
@@ -47,6 +48,7 @@ namespace GUI
       private slots:
         void slotCallContact() noexcept;
         void slotRemoveContact() noexcept;
+        void slotApplyRemove(QString const &contactUsername) noexcept;
 
       private:
         ICallManager &_callManager;

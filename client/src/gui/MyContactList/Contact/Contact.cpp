@@ -9,6 +9,8 @@
 
 using namespace GUI;
 
+extern Network::NetworkManager networkManager;
+
 Contact::Contact(QVBoxLayout &parent, QString const &userName,
     ICallManager &callManager, IMyContactList &contactList)
     : _callManager(callManager), _contactList(contactList)
@@ -36,6 +38,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
         _buttonCall, SIGNAL(clicked()), this, SLOT(slotCallContact()));
     QObject::connect(
         _buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
+    QObject::connect(&networkManager, &Network::NetworkManager::sigRemoveContact, this, &Contact::slotApplyRemove);
 }
 
 Contact::~Contact()
@@ -48,10 +51,16 @@ Contact::~Contact()
 
 void Contact::slotRemoveContact() noexcept
 {
-    //QString const &username = _label->text();
+    try {
+        networkManager.removeContact(this->getUsername());
+    } catch (std::exception const &e) {
+        std::cerr << "Error : fail to remove contact. " << e.what() << std::endl;
+    }
+}
 
-    // TODO Network : API remove contact
-    if (true /*network ok*/) {
+void Contact::slotApplyRemove(QString const &contactUsername) noexcept
+{
+    if (this->getUsername() == contactUsername) {
         this->_contactList.removeContact(*this);
     }
 }

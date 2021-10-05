@@ -49,9 +49,9 @@ namespace Network
         UserType getUser(const userNameType &);
         void callUser(const userNameType &);
         void voiceConnect(const UserType &);
-        void newContact(const userNameType &);
+        void newContact(const userNameType &contactName);
         void voiceDisconnect(const UserType &);
-        void removeContact(const userNameType &);
+        void removeContact(const userNameType &contactName);
 
       private:
         void mustBeConnected() const;
@@ -67,6 +67,7 @@ namespace Network
       signals:
         void sigUpdateUsername(QString const &username);
         void sigUpdateContacts(QString const &contactUsername);
+        void sigRemoveContact(QString const &contactUsername);
 
       private:
         bool _logged;
