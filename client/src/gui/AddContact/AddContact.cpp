@@ -47,7 +47,7 @@ void AddContact::slotAddContact()
 
     if (input.isEmpty() == false) {
         if (_contactList.exist(input)) {
-            // TODO : contact already exist
+            DialogueBox::info("The contact already exist.");
         } else {
             try {
                 networkManager.newContact(input);
