@@ -11,12 +11,8 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _user({0}), _connectionUDP(nullptr),
-      _connectionServer(std::make_unique<AsioClientTCP<PACKETSIZE>>()),
-      _callServer(std::make_unique<AsioServerTCP<PACKETSIZE>>(PORT_CALL_SERVER)),
-      _callClient(std::make_unique<AsioClientTCP<PACKETSIZE>>())
+    : _logged(false), _user({0}), _connectionUDP(nullptr), _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
 {
-    this->connectServer();
 }
 
 NetworkManager::~NetworkManager()
@@ -27,6 +23,18 @@ NetworkManager::~NetworkManager()
         this->_connectionServer.reset();
     this->_callServer.reset();
     this->_callClient.reset();
+}
+
+void NetworkManager::init()
+{
+    if (this->_connectionServer != nullptr) {
+        throw std::logic_error("call init once at the beginning");
+    }
+    this->_connectionServer = std::make_unique<AsioClientTCP<PACKETSIZE>>();
+    this->_callServer = std::make_unique<AsioServerTCP<PACKETSIZE>>(PORT_CALL_SERVER);
+    this->_callClient = std::make_unique<AsioClientTCP<PACKETSIZE>>();
+
+    this->connectServer();
 }
 
 void NetworkManager::callHangUp()
@@ -53,7 +61,8 @@ void NetworkManager::login(const userNameType &username)
 {
     /// Update User
     std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
-    _user.port = PORT_SERVER;
+    _user.port = PORT_CALL_SERVER;
+    std::strcpy(_user.ip, "0.0.0.0");
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({ this->_user });
@@ -116,15 +125,15 @@ void NetworkManager::mustBeConnected() const
 void NetworkManager::connectServer()
 {
     if (!this->_connectionServer) {
-        this->_connectionServer->connect(IP_SERVER, PORT_SERVER);
+        this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
     }
 }
 
 void NetworkManager::slotLogged(UserType const &user)
 {
-    // TODO
     _user = user;
     this->_logged = true;
+    emit sigUpdateUsername(QString(user.username));
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)

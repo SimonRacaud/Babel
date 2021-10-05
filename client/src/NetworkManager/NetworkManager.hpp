@@ -22,8 +22,9 @@
 
 const std::size_t PACKETSIZE(2048); // todo change that
 #define IP_SERVER        "127.0.0.0"
-#define PORT_SERVER      8081
+#define PORT_MAIN_SERVER 8081
 #define PORT_CALL_SERVER 8082
+#define PORT_UDP_EMIT    8088
 
 namespace Network
 {
@@ -37,6 +38,8 @@ namespace Network
       public:
         NetworkManager();
         ~NetworkManager();
+
+        void init();
 
         /// Emit network requests
         void callHangUp();
@@ -60,6 +63,9 @@ namespace Network
         void slotContactAdded(ContactRaw const &contact);
         void slotContactRemoved(ContactRaw const &contact);
         void slotCallVoiceConnect(std::vector<UserType> const &users);
+
+      signals:
+        void sigUpdateUsername(QString const &username);
 
       private:
         bool _logged;

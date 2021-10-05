@@ -19,6 +19,8 @@
 #include <QObject>
 #include <iostream>
 
+#include "NetworkManager/NetworkManager.hpp"
+
 namespace GUI
 {
     class Account : public QGroupBox {
@@ -30,7 +32,7 @@ namespace GUI
 
       private slots:
         void slotApplyUsername();
-        void slotSetUsername();
+        void slotSetUsername(QString const &username);
 
       private:
         QLineEdit *_input;
