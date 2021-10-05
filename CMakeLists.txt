@@ -106,4 +106,4 @@ target_include_directories(${CLIENT} BEFORE PUBLIC ${ASIO_TOOLS_DIR}/include)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
-target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS} opusTools portAudioTools)
+target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})
