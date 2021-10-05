@@ -96,10 +96,18 @@ void NetworkManager::voiceConnect(const UserType &user)
     this->_connectionUDP->connect(user.ip, user.port);
 }
 
-void NetworkManager::newContact(const userNameType &)
+void NetworkManager::newContact(const userNameType &contactName)
 {
     this->mustBeConnected();
-    // TODO: Need srv API
+    /// Create contact
+    ContactRaw contact;
+    std::strncpy(contact.username, _user.username, USERNAME_SIZE);
+    std::strncpy(contact.contactName, contactName.toStdString().c_str(), USERNAME_SIZE);
+    /// Create tram
+    TCPTram tram(TramAction::POST, TramType::CONTACT);
+    tram.setContactList({ contact });
+    /// Send
+    _connectionServer->sendAll(*tram.getBuffer<PACKETSIZE>().get());
 }
 
 void NetworkManager::voiceDisconnect(const UserType &user)
@@ -138,7 +146,7 @@ void NetworkManager::slotLogged(UserType const &user)
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)
 {
-    // TODO
+    emit sigUpdateContacts(QString(contact.contactName));
 }
 
 void NetworkManager::slotContactRemoved(ContactRaw const &contact)

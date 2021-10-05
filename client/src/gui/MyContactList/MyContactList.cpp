@@ -62,3 +62,13 @@ void MyContactList::removeContact(IContact &contact)
         _contacts.erase(contactIt);
     }
 }
+
+bool MyContactList::exist(QString const &contactName) const
+{
+    for (Contact *contact : _contacts) {
+        if (contact->getUsername() == contactName) {
+            return true;
+        }
+    }
+    return false;
+}

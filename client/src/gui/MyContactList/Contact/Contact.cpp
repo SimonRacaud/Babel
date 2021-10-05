@@ -87,3 +87,8 @@ QWidget *Contact::getTopWidget()
 {
     return _widthControl;
 }
+
+QString Contact::getUsername() const
+{
+    return _label->text();
+}

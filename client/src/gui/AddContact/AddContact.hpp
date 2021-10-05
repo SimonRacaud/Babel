@@ -16,6 +16,7 @@
 #include <QWidget>
 #include <QObject>
 #include "gui/MyContactList/MyContactList.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 
 #define ADD_CONTACT_MAX_WIDTH 300
 
@@ -30,6 +31,7 @@ namespace GUI
 
       private slots:
         void slotAddContact();
+        void slotApplyUpdate(QString const &contactName);
 
       private:
         MyContactList &_contactList;

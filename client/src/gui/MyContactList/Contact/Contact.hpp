@@ -42,6 +42,8 @@ namespace GUI
 
         QWidget *getTopWidget();
 
+        QString getUsername() const;
+
       private slots:
         void slotCallContact() noexcept;
         void slotRemoveContact() noexcept;

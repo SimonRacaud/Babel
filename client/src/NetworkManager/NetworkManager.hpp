@@ -66,6 +66,7 @@ namespace Network
 
       signals:
         void sigUpdateUsername(QString const &username);
+        void sigUpdateContacts(QString const &contactUsername);
 
       private:
         bool _logged;
