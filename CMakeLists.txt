@@ -33,11 +33,9 @@ set(SRC_CLIENT client/src/)
 set(SRC_SERVER server/src/)
 
 include_directories(
-        ${CMAKE_INCLUDE_PATH}
-        ./include/
-        ./include/Interfaces/
-        ./client/src/
-        ./client/include/
+    ${CMAKE_INCLUDE_PATH}
+    ./include/
+    ./include/Interfaces/
 )
 
 ############ CLIENT
@@ -49,11 +47,12 @@ add_executable(${CLIENT} ${CLIENT_SRCS})
 
 file(GLOB_RECURSE SERVER_SRCS server/src/*)
 set(SERVER_SRCS
-        server/src/main.cpp
-        server/src/Database/DatabaseManager.cpp
-        ../client/src/Audio/InputAudioManager/InputAudioManager.cpp
-        ../client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
-        )
+    ${SRC_SERVER}/main.cpp
+    ${SRC_SERVER}/Database/DatabaseManager.cpp
+    ${SRC_SERVER}/API/API.cpp
+    ${SRC_SERVER}/API/Interpreters/Contact/ContactInterpreter.cpp
+    ${SRC_SERVER}/API/Interpreters/User/UserInterpreter.cpp
+)
 add_executable(${SERVER} ${SERVER_SRCS})
 
 
@@ -107,4 +106,4 @@ target_include_directories(${CLIENT} BEFORE PUBLIC ${ASIO_TOOLS_DIR}/include)
 
 # LDD conan
 target_link_libraries(${CLIENT} PUBLIC ${CONAN_LIBS} opusTools portAudioTools Qt5::Widgets Qt5::Network)
-target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS} opusTools portAudioTools)
+target_link_libraries(${SERVER} PUBLIC ${CONAN_LIBS})

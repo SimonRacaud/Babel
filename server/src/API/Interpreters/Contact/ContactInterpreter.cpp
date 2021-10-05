@@ -7,8 +7,9 @@
 
 #include <cstring>
 
-#include "Contact.hpp"
 #include "ContactInterpreter.hpp"
+#include "ContactRaw.hpp"
+#include "UserRaw.hpp"
 
 using namespace Network;
 
@@ -26,7 +27,7 @@ template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const Tram
     UserRaw userRaw;
 
     if (result.size() * sizeof(User) > PACKETSIZE)
-        throw std::out_of_range("Response size > PACKETSIZE(" + toString(PACKETSIZE) + ")");
+        throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
     for (size_t i = 0; i < result.size(); i++) {
         std::strcpy(userRaw.username, result[i].username.c_str());
         std::strcpy(userRaw.ip, result[i].ip.c_str());

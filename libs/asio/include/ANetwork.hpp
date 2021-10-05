@@ -33,7 +33,7 @@ namespace Network
             if (first != last)
                 for (auto i = first; ++i != last;)
                     if (!(*i == value))
-                        std::move(*i); // todo test
+                        (void) std::move(*i); // todo test
         }
 
         virtual void disconnectAll() override

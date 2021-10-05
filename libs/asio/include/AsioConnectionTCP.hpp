@@ -49,7 +49,7 @@ namespace Network
             if (first != last)
                 for (auto i = first; ++i != last;)
                     if (!(*i == connection))
-                        std::move(*i);
+                        (void) std::move(*i);
         }
 
         virtual void disconnectAll()
