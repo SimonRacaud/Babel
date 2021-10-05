@@ -9,9 +9,21 @@
 #define BABEL_ASIOCONNECTIONTCP_HPP
 
 #include <functional>
-#include <memory>
+#include <unordered_map>
 
+#include <asio/error.hpp>
+#include <thread>
 #include "ANetwork.hpp"
+
+struct hash_pair {
+    std::size_t operator()(const std::pair<std::string, std::size_t> &pair) const
+    {
+        std::size_t h1 = std::hash<std::string>{}(pair.first);
+        std::size_t h2 = std::hash<std::size_t>{}(pair.second);
+
+        return h1 ^ h2;
+    }
+};
 
 namespace Network
 {
@@ -37,7 +49,7 @@ namespace Network
             if (first != last)
                 for (auto i = first; ++i != last;)
                     if (!(*i == connection))
-                        std::move(*i); // todo test
+                        (void) std::move(*i);
         }
 
         virtual void disconnectAll()
@@ -53,10 +65,13 @@ namespace Network
             for (const auto &connection : AAsioConnection<PACKETSIZE>::_connections) {
                 buf = receive(connection.first, connection.second);
 
-                if (buf.second != 0)
+                if (buf.second != 0) {
                     return std::make_tuple(buf.first, buf.second, connection.first, connection.second);
-                // std::cout.write(buf.data(), len);
-                //  to write the good amount of data
+                }
+                /**
+                 * @brief Write the good amount of data :
+                 *  std::cout.write(recvBuf.data(), len);
+                 */
             }
 
             return std::make_tuple(std::array<char, PACKETSIZE>(), 0, "", 0);
@@ -67,17 +82,16 @@ namespace Network
             std::pair<std::array<char, PACKETSIZE>, std::size_t> buf({0}, 0);
             auto connection(getConnection(ip, port));
 
-            auto my_recvData(std::find_if(_recvData.begin(),
-                _recvData.end(),
-                [&](std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> &recvData) {
-                    if (ip == std::get<2>(recvData) && port == std::get<3>(recvData)) {
-                        return true;
-                    }
-                    return false;
-                }));
+            auto my_recvData(std::find_if(_recvData.begin(), _recvData.end(), [&](const auto &recvData) {
+                if (ip == recvData.first.first && port == recvData.first.second) {
+                    return true;
+                }
+                return false;
+            }));
             if (my_recvData != _recvData.end()) {
+                buf = std::make_pair(my_recvData->second.first, my_recvData->second.second);
                 _recvData.erase(my_recvData);
-                return std::make_pair(std::get<0>(*my_recvData), std::get<1>(*my_recvData));
+                return buf;
             }
             return std::pair<std::array<char, PACKETSIZE>, std::size_t>({}, 0);
         }
@@ -96,23 +110,51 @@ namespace Network
             send(buf, connection);
         }
 
+        /**
+         * @brief Blocks until one asynchronous action is performed (connection or data receive)
+         */
+        void runOneAction()
+        {
+            AAsioConnection<PACKETSIZE>::_ioContext.run_one();
+        }
+        /**
+         * @brief Create a thread, which will execute asynchronous actions on network (accept connections and receive data)
+         */
+        void runAsync()
+        {
+            if (_activeThread)
+                return;
+            _thread = std::thread(&AsioConnectionTCP<PACKETSIZE>::realRunAsync, this);
+        }
+
       protected:
-        void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection) // todo put in private ?
+        /**
+         * @brief loop through awaiting asynchronous actions and stop if one is done
+         *  to be called every time a connection or data is to be received
+         */
+        void realRunAsync()
+        {
+            _activeThread = true;
+            while (_activeThread)
+                AAsioConnection<PACKETSIZE>::_ioContext.run();
+            _activeThread = false;
+        }
+        void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection)
         {
             if (!connection) {
-                return; // todo connect() ??
+                return;
             }
-            //            asio::async_write(*connection, asio::buffer(buf), [](const asio::error_code &, std::size_t) {
-            //            connection->async_send(asio::buffer(buf), [](const asio::error_code &, std::size_t) {
             connection->send(asio::buffer(std::string(buf.data(), buf.size())));
         }
 
         bool isConnection(
             const std::shared_ptr<tcp::socket> &connection, const std::string &otherIp, const std::size_t otherPort) const
         {
+            if (!connection)
+                return false;
             auto endpoint(connection->remote_endpoint());
 
-            if (endpoint.address().to_string() == otherIp && endpoint.port() == otherPort) // todo incompatible types ?
+            if (endpoint.address().to_string() == otherIp && endpoint.port() == otherPort)
                 return true;
             return false;
         }
@@ -168,24 +210,19 @@ namespace Network
         void asyncReceiving(const asio::error_code &err, const std::size_t &lenRecvBuf, std::shared_ptr<tcp::socket> &connection)
         {
             if (err) {
-                std::cerr << "todo remove from connectinos" << std::endl;
-                // todo remove from connection if err == deconnected
+                if (err.value() == asio::error::misc_errors::eof) {
+                    return;
+                }
             }
-            if (!lenRecvBuf)
+            if (!lenRecvBuf) {
                 return;
-            if (!_recvBuf.data())
+            }
+            if (!_recvBuf.data()) {
                 return;
-
-            //                _recvData.push_back(std::make_tuple(_recvBuf,
-            //                    lenRecvBuf,
-            //                    connection->remote_endpoint().address().to_string(),
-            //                    connection->remote_endpoint().port()));
-            //            _recvData.emplace_back(_recvBuf.data(),
-            //                lenRecvBuf,
-            //                connection->remote_endpoint().address().to_string(),
-            //                connection->remote_endpoint().port());
-            std::cout.write(_recvBuf.data(), lenRecvBuf);
-            std::cout << std::endl;
+            }
+            _recvData.emplace(
+                std::make_pair(connection->remote_endpoint().address().to_string(), connection->remote_endpoint().port()),
+                std::make_pair(_recvBuf, lenRecvBuf));
             asyncReceive(connection);
         }
 
@@ -197,8 +234,13 @@ namespace Network
         /**
          * @brief deque containing data, received from connections through asynchronous operations
          */
-        std::deque<std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t>> _recvData;
+        std::unordered_map<std::pair<const std::string, const std::size_t>,
+            std::pair<std::array<char, PACKETSIZE>, std::size_t>,
+            hash_pair>
+            _recvData;
 
+        std::thread _thread;
+        bool _activeThread{false};
         std::array<char, PACKETSIZE> _recvBuf{0};
     };
 

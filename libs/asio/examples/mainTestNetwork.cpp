@@ -92,6 +92,8 @@ int main(const int ac, __attribute__((unused)) const char *av[])
 
         client.send(sendBuf, "127.0.0.1", 8080);
         std::cout << "client sent" << std::endl;
+        //        client.disconnectAll();
+        client.disconnect("0.0.0.0", 8080);
     } else /* client */ {
         // todo tcp server throws when already opened in same port and ip
         std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> recvData;
@@ -102,17 +104,17 @@ int main(const int ac, __attribute__((unused)) const char *av[])
         std::size_t portSender;
 
         AsioServerTCP<PACKETSIZE> server(8080);
-        //        server._ioContext.run();
-        // todo change server._ioContext.run() by loop method, maybe with thread
 
+        server.runAsync();
         while (1) {
             recvData = server.receiveAny();
             std::tie(recvBuf, lenBuf, ipSender, portSender) = recvData;
             if (lenBuf) {
-                std::cout << "server received" << std::endl;
+                std::cout << "! server received !" << std::endl;
                 std::cout.write(recvBuf.data(), lenBuf);
+                std::cout << std::endl;
             }
-            server._ioContext.run();
+            //            server.runOneAction();
         }
     }
     return 0;

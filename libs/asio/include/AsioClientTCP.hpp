@@ -15,19 +15,17 @@ namespace Network
       public:
         AsioClientTCP() = default;
 
-        void connect(const std::string &ip, const std::size_t port)
+        void connect(const std::string &ip, const std::size_t port) override
         {
             tcp::endpoint serverEndpoint(asio::ip::make_address(ip), port);
             auto newConnection(std::make_shared<tcp::socket>(AAsioConnection<PACKETSIZE>::_ioContext));
 
             try {
                 newConnection->connect(serverEndpoint);
-                // todo does not work if server is not active
-                //      change for async_connect ?
-                //      its ok because the server is always active (just try catch) ?
             } catch (const std::system_error &) {
-                // todo remove that
-                std::cout << "caught" << std::endl;
+                /**
+                 * @brief server is not active
+                 */
                 return;
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);

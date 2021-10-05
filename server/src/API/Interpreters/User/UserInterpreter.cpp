@@ -7,8 +7,8 @@
 
 #include <stdexcept>
 
-#include "User.hpp"
 #include "UserInterpreter.hpp"
+#include "UserRaw.hpp"
 
 using namespace Network;
 

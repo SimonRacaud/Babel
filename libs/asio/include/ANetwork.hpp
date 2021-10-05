@@ -62,8 +62,8 @@ namespace Network
             return false;
         }
 
-      public:                        // todo make private after test
-        asio::io_context _ioContext; // todo static ?
+      protected:
+        asio::io_context _ioContext;
         asio::error_code _error;
 
         enum protocol _type;

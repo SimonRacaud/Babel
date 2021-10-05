@@ -34,8 +34,10 @@ namespace Network
             size_t len = _socket.receive_from(asio::buffer(recvBuf), senderEndpoint);
 
             return std::make_tuple(recvBuf, len, senderEndpoint.address().to_string(), senderEndpoint.port());
-            // std::cout.write(recvBuf.data(), len);
-            //  to write the good amount of data
+            /**
+             * @brief Write the good amount of data :
+             *  std::cout.write(recvBuf.data(), len);
+             */
         }
 
         std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port) override
