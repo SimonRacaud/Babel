@@ -6,6 +6,7 @@
  */
 
 #include <cstring>
+#include <strings.h>
 
 #include "ContactInterpreter.hpp"
 #include "ContactRaw.hpp"
@@ -30,6 +31,7 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram,
     if (result.size() * sizeof(User) > PACKETSIZE)
         throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
     for (size_t i = 0; i < result.size(); i++) {
+        bzero(&userRaw, sizeof(UserRaw));
         std::strcpy(userRaw.username, result[i].username.c_str());
         std::strcpy(userRaw.ip, result[i].ip.c_str());
         userRaw.port = result[i].port;
