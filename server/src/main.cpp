@@ -17,6 +17,7 @@ static void init(Network::DatabaseManager &database)
     Network::API<T_PACKETSIZE> api(serv, database);
 
     while (true) {
+        serv.runOneAction();
         auto recvData = serv.receiveAny();
 
         if (std::get<1>(recvData) > 0)
