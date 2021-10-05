@@ -11,14 +11,12 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _user({0}), _connectionUDP(nullptr), _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
 {
 }
 
 NetworkManager::~NetworkManager()
 {
-    if (this->_connectionUDP)
-        this->_connectionUDP.reset();
     if (this->_connectionServer)
         this->_connectionServer.reset();
     this->_callServer.reset();
@@ -40,21 +38,12 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    this->_connectionUDP.reset();
-    // this->_connectionUDP = nullptr; // needed ?
     // TODO : GUI - empty call member list
 }
 
 bool NetworkManager::isLogged() const
 {
     return this->_logged;
-}
-
-void NetworkManager::sendCallMemberList()
-{
-    this->mustBeConnected();
-    // TODO : get call members
-    // TODO : send list on _connection
 }
 
 void NetworkManager::login(const userNameType &username)
@@ -70,11 +59,18 @@ void NetworkManager::login(const userNameType &username)
     _connectionServer->sendAll(*tram.getBuffer<PACKETSIZE>().get());
 }
 
-NetworkManager::UserType NetworkManager::getUser(const userNameType &)
+void NetworkManager::getUser(const userNameType &username)
 {
     this->mustBeConnected();
-    // TODO: Need srv API
-    return NetworkManager::UserType();
+    /// Create tram
+    UserRaw user;
+    std::strncpy(user.username, username.toStdString().c_str(), USERNAME_SIZE);
+    std::strcpy(user.ip, "");
+    user.port = 0;
+    TCPTram tram(TramAction::GET, TramType::USER);
+    tram.setUserList({ user });
+    /// Send to server
+    _connectionServer->sendAll(*tram.getBuffer<PACKETSIZE>().get());
 }
 
 void NetworkManager::callUser(const userNameType &username)
@@ -82,18 +78,14 @@ void NetworkManager::callUser(const userNameType &username)
     UserType user;
 
     this->mustBeConnected();
-    if (!this->_connectionUDP)
-        this->_connectionUDP = std::make_unique<connectionClass>(8080 /*todo change this*/);
-    user = this->getUser(username);
-    this->voiceConnect(user);
+    /// ask for the user IP to send the handshake
+    this->getUser(username);
 }
 
 void NetworkManager::voiceConnect(const UserType &user)
 {
     this->mustBeConnected();
-    if (!this->_connectionUDP)
-        throw std::invalid_argument("User must be in call");
-    this->_connectionUDP->connect(user.ip, user.port);
+    // TODO
 }
 
 void NetworkManager::newContact(const userNameType &contactName)
@@ -113,9 +105,7 @@ void NetworkManager::newContact(const userNameType &contactName)
 void NetworkManager::voiceDisconnect(const UserType &user)
 {
     this->mustBeConnected();
-    if (!this->_connectionUDP)
-        throw std::invalid_argument("User must be in call");
-    this->_connectionUDP->disconnect(user.ip, user.port);
+    // TODO
 }
 
 void NetworkManager::removeContact(const userNameType &contactName)
@@ -162,7 +152,21 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
     emit sigRemoveContact(QString(contact.contactName));
 }
 
-void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users)
+void NetworkManager::slotSendCallMemberList(const UserType &target)
 {
-    // TODO
+    this->mustBeConnected();
+    // TODO : get call UserRaw members (with _audioManager)
+    /// Create tram
+    TCPTram tram(TramAction::POST, TramType::USER);
+    tram.setUserList({ /* TODO */ });
+    ///     Send contact list
+    this->_callClient->connect(target.ip, PORT_CALL_SERVER);
+    this->_callClient->send(*tram.getBuffer<PACKETSIZE>().get(), target.ip, PORT_CALL_SERVER);
+}
+
+void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
+{
+
+    // TODO : update call member list => UDP (with _audioManager)
+
 }

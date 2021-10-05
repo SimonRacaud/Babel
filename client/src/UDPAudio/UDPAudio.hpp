@@ -27,6 +27,7 @@ class UDPAudio
         void removeUser(const UserRaw &user);
         void streamAudio();
 
+        // TODO : get call members list
     private:
         void sendingData();
         void receivingData();

@@ -29,7 +29,8 @@ namespace Network
         void contactAdded(ContactRaw const &contact);
         void contactRemoved(ContactRaw const &contact);
         void logged(UserRaw const &user);
-        void callVoiceConnect(std::vector<UserRaw> const &users);
+        void userReceived(UserRaw const &user);
+        void callHandshakeReceived(std::vector<UserRaw> const &users, UserRaw const &target);
         void networkRequestFailed(QString const &message);
     };
 }

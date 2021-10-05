@@ -17,9 +17,8 @@ namespace Network
         virtual ~INetworkManager() = default;
         virtual void callHangUp() = 0;
         virtual bool isLogged() const = 0;
-        virtual void sendCallMemberList() = 0;
         virtual void login(const userNameType &) = 0;
-        virtual UserType getUser(const userNameType &) = 0;
+        virtual void getUser(const userNameType &) = 0;
         virtual void callUser(const userNameType &) = 0;
         virtual void voiceConnect(const UserType &) = 0;
         virtual void newContact(const userNameType &) = 0;

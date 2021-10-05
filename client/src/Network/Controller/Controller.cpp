@@ -20,7 +20,8 @@ Controller::Controller(NetworkManager &manager) : _manager(manager)
     QObject::connect(worker, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
     QObject::connect(worker, &NetworkWorker::contactAdded, &_manager, &NetworkManager::slotContactAdded);
     QObject::connect(worker, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
-    QObject::connect(worker, &NetworkWorker::callVoiceConnect, &_manager, &NetworkManager::slotCallVoiceConnect);
+    QObject::connect(worker, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
+    QObject::connect(worker, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
     //QObject::connect(worker, &NetworkWorker::networkRequestFailed, _manager, &NetworkManager::);
     workerThread.start();
 }

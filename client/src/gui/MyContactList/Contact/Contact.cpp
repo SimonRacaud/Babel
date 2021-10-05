@@ -39,6 +39,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
     QObject::connect(
         _buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
     QObject::connect(&networkManager, &Network::NetworkManager::sigRemoveContact, this, &Contact::slotApplyRemove);
+    QObject::connect(&networkManager, &Network::NetworkManager::sigCallSuccess, this, &Contact::slotApplyCall);
 }
 
 Contact::~Contact()
@@ -67,16 +68,21 @@ void Contact::slotApplyRemove(QString const &contactUsername) noexcept
 
 void Contact::slotCallContact() noexcept
 {
-    QString const &username = _label->text();
+    QString const &username = this->getUsername();
 
-    this->disableCall();
-    // TODO Network : start call
-    if (true /*network ok*/) {
-        _callManager.addMember(username);
-    } else {
-        this->enableCall();
-        std::cerr << "Info: fail to call " << username.toStdString()
-                  << ". Network error" << std::endl;
+    try {
+        networkManager.callUser(username);
+    } catch (std::exception const &e) {
+        std::cerr << "Error: fail to call user " << username.toStdString()
+                  << ". " << e.what() << std::endl;
+    }
+}
+
+void Contact::slotApplyCall(QString const &contactName) noexcept
+{
+    if (this->getUsername() == contactName) {
+        this->disableCall();
+        _callManager.addMember(contactName);
     }
 }
 

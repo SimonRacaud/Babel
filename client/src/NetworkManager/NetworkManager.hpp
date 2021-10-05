@@ -19,12 +19,13 @@
 
 #include "Network/TCPTram/TcpTram.hpp"
 #include "UserRaw.hpp"
+#include "UDPAudio/UDPAudio.hpp"
 
 const std::size_t PACKETSIZE(2048); // todo change that
 #define IP_SERVER        "127.0.0.0"
 #define PORT_MAIN_SERVER 8081
 #define PORT_CALL_SERVER 8082
-#define PORT_UDP_EMIT    8088
+#define PORT_UDP_RECEIVE 8088
 
 namespace Network
 {
@@ -44,10 +45,9 @@ namespace Network
         /// Emit network requests
         void callHangUp();
         bool isLogged() const;
-        void sendCallMemberList();
         void login(const userNameType &);
-        UserType getUser(const userNameType &);
-        void callUser(const userNameType &);
+        void getUser(const userNameType &username);
+        void callUser(const userNameType &username);
         void voiceConnect(const UserType &);
         void newContact(const userNameType &contactName);
         void voiceDisconnect(const UserType &);
@@ -62,19 +62,26 @@ namespace Network
         void slotLogged(UserType const &user);
         void slotContactAdded(ContactRaw const &contact);
         void slotContactRemoved(ContactRaw const &contact);
-        void slotCallVoiceConnect(std::vector<UserType> const &users);
+        /**
+         *
+         * @param users : new list of members of the current call.
+         * @param target : the client that have sent the request (we need his ip)
+         */
+        void slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target);
+
+        void slotSendCallMemberList(const UserType &target);
 
       signals:
         void sigUpdateUsername(QString const &username);
         void sigUpdateContacts(QString const &contactUsername);
         void sigRemoveContact(QString const &contactUsername);
+        void sigCallSuccess(QString const &username);
 
       private:
         bool _logged;
+        UDPAudio _audioManager;
         UserType _user;
-        // TODO : call members list
 
-        std::unique_ptr<Network::IConnection<PACKETSIZE>> _connectionUDP;
         std::unique_ptr<AsioClientTCP<PACKETSIZE>> _connectionServer;
         std::unique_ptr<AsioServerTCP<PACKETSIZE>> _callServer;
         std::unique_ptr<AsioClientTCP<PACKETSIZE>> _callClient;
