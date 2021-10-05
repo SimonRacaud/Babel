@@ -19,10 +19,11 @@ ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &netw
 {
 }
 
-template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
+template <size_t PACKETSIZE>
+void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
-    const ContactRaw *contact = static_cast<ContactRaw *>(tram.list);
-    const std::vector<User> &result = this->_databaseManager.getContacts(contact->username);
+    const auto &contacts = tram.template getListOf<ContactRaw>();
+    const std::vector<User> &result = this->_databaseManager.getContacts(contacts[0].username);
     std::array<char, PACKETSIZE> response;
     UserRaw userRaw;
 
@@ -40,19 +41,19 @@ template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::GET(const Tram
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::POST(const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const ContactRaw *contact = static_cast<ContactRaw *>(tram.list);
+    const auto &contacts = tram.template getListOf<ContactRaw>();
 
-    this->_databaseManager.newContact(contact->username, contact->contactName);
+    this->_databaseManager.newContact(contacts[0].username, contacts[0].contactName);
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::DELETE(const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::DELETE(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const ContactRaw *contact = static_cast<ContactRaw *>(tram.list);
+    const auto &contacts = tram.template getListOf<ContactRaw>();
 
-    this->_databaseManager.removeContact(contact->username, contact->contactName);
+    this->_databaseManager.removeContact(contacts[0].username, contacts[0].contactName);
 }
 
 template <size_t PACKETSIZE>

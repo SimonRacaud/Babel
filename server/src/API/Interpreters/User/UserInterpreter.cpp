@@ -18,10 +18,11 @@ UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, D
 {
 }
 
-template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP &tram, const string &ip, const size_t &port)
+template <size_t PACKETSIZE>
+void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
-    const UserRaw *user = static_cast<UserRaw *>(tram.list);
-    const User &result = this->_databaseManager.getUser(user->username);
+    const auto &users = tram.template getListOf<UserRaw>();
+    const User &result = this->_databaseManager.getUser(users[0].username);
     UserRaw resultRaw;
     std::strcpy(resultRaw.username, result.username.c_str());
     std::strcpy(resultRaw.ip, result.ip.c_str());
@@ -34,15 +35,16 @@ template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::GET(const TramTCP
 }
 
 template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::POST(const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const UserRaw *user = static_cast<UserRaw *>(tram.list);
+    const auto &users = tram.template getListOf<UserRaw>();
 
-    this->_databaseManager.setUser(user->username, user->ip, user->port);
+    this->_databaseManager.setUser(users[0].username, users[0].ip, users[0].port);
 }
 
 template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::DELETE(UNUSED const TramTCP &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void UserInterpreter<PACKETSIZE>::DELETE(
+    UNUSED const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
 {
     throw std::runtime_error("Method not override");
 }

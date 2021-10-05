@@ -8,16 +8,17 @@
 #ifndef TCPTRAMEXTRACT_HPP
 #define TCPTRAMEXTRACT_HPP
 
-#include "tram.hpp"
 #include <array>
-#include <vector>
 #include <cstring>
 #include <stdexcept>
+#include <vector>
 
-template <std::size_t PACKETSIZE>
-class TCPTramExtract
+#include "tram.hpp"
+
+namespace Network
 {
-    public:
+    template <std::size_t PACKETSIZE> class TCPTramExtract {
+      public:
         TCPTramExtract(const std::array<char, PACKETSIZE> &buf) : _buf(buf)
         {
             if (PACKETSIZE < sizeof(Network::TramTCP))
@@ -29,9 +30,24 @@ class TCPTramExtract
 
         ~TCPTramExtract() = default;
 
+        Network::TramAction getAction() const
+        {
+            Network::TramAction tramAction;
+
+            std::memcpy(&tramAction, this->_buf.data(), sizeof(Network::TramAction));
+            return tramAction;
+        }
+
+        Network::TramType getType() const
+        {
+            Network::TramType tramType;
+
+            std::memcpy(&tramType, this->_buf.data() + sizeof(Network::TramAction), sizeof(Network::TramType));
+            return tramType;
+        }
+
         template <typename type> std::vector<type> getListOf() const
         {
-            type tmp;
             std::vector<type> list;
             size_t size = this->_tram.list_size / sizeof(type);
 
@@ -59,9 +75,10 @@ class TCPTramExtract
             return output;
         }
 
-    private:
+      private:
         const std::array<char, PACKETSIZE> _buf;
         Network::TramTCP _tram;
-};
+    };
+} // namespace Network
 
 #endif

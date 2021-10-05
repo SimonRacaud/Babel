@@ -10,15 +10,15 @@
 
 #include "DatabaseManager.hpp"
 #include "INetwork.hpp"
-#include "tram.hpp"
+#include "TCPTramExtract/TCPTramExtract.hpp"
 
 namespace Network
 {
     template <size_t PACKETSIZE> class IInterpreter {
       public:
-        virtual void GET(const TramTCP &tram, const string &ip, const size_t &port) = 0;
-        virtual void POST(const TramTCP &tram, const string &ip, const size_t &port) = 0;
-        virtual void DELETE(const TramTCP &tram, const string &ip, const size_t &port) = 0;
+        virtual void GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port) = 0;
+        virtual void POST(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port) = 0;
+        virtual void DELETE(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port) = 0;
 
       protected:
         virtual void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port) = 0;
