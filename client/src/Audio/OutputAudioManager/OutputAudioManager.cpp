@@ -49,7 +49,7 @@ void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &
         while (data.size()) {
             extractedData = this->_decoder->extract(data.front());
             data.pop();
-            for (size_t i = 0; i < extractedData.data.size(); i += sizeof(float)) {
+            for (size_t i = 0; i < extractedData.data.size(); i++) {
                 mergingData.data[i] += extractedData.data[i];
             }
         }
