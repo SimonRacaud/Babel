@@ -102,12 +102,17 @@ void UDPAudio::receivingData()
                 std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
                 tmp.data.resize(tmp.encodedBit);
                 frameBuffer.push(tmp);
-                this->_output->setFrameBuffer(frameBuffer);
-                while (frameBuffer.size())
-                    frameBuffer.pop();
+                /*
+                **
+                ** this->_output->setFrameBuffer(frameBuffer);
+                ** while (frameBuffer.size())
+                **     frameBuffer.pop();
+                **
+                */
             }
         }
     }
+    this->_output->setFrameBuffer(frameBuffer, true);
 }
 
 bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram)
