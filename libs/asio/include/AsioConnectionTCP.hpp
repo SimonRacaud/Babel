@@ -62,12 +62,10 @@ namespace Network
         {
             std::pair<std::array<char, PACKETSIZE>, std::size_t> buf;
 
-            //            std::cout << "before receive loop" << std::endl;
             for (const auto &connection : AAsioConnection<PACKETSIZE>::_connections) {
                 buf = receive(connection.first, connection.second);
 
                 if (buf.second != 0) {
-                    std::cout << "received in receiveAny" << std::endl;
                     return std::make_tuple(buf.first, buf.second, connection.first, connection.second);
                 }
                 /**
@@ -88,25 +86,11 @@ namespace Network
                 if (ip == recvData.first.first && port == recvData.first.second) {
                     return true;
                 }
-                if (recvData.first.first == "127.0.0.1" && port == recvData.first.second) {
-                    return true;
-                }
-                if (recvData.first.first == "0.0.0.0" && port == recvData.first.second) {
-                    return true;
-                }
-                std::cout << "about to show information" << std::endl;
-                std::cout << "ip : " << recvData.first.first << std::endl;
-                std::cout << "port : " << recvData.first.second << std::endl;
                 return false;
             }));
-            //            std::cout << "received in receive" << std::endl;
             if (my_recvData != _recvData.end()) {
-                std::cout << "received in receive" << std::endl;
                 buf = std::make_pair(my_recvData->second.first, my_recvData->second.second);
-                //                _recvData.erase(my_recvData);
-                _recvData.extract(my_recvData);
-                std::cout.write(buf.first.data(), buf.second);
-                std::cout << std::endl;
+                _recvData.erase(my_recvData);
                 return buf;
             }
             return std::pair<std::array<char, PACKETSIZE>, std::size_t>({}, 0);
@@ -126,30 +110,21 @@ namespace Network
             send(buf, connection);
         }
 
-        void run()
+        /**
+         * @brief Blocks until one asynchronous action is performed (connection or data receive)
+         */
+        void runOneAction()
         {
             AAsioConnection<PACKETSIZE>::_ioContext.run_one();
         }
         /**
-         * @brief Create a thread, which will launch asynchronous actions, if one is done, thread is over
+         * @brief Create a thread, which will execute asynchronous actions on network (accept connections and receive data)
          */
-        void runOneAction()
+        void runAsync()
         {
             if (_activeThread)
                 return;
-            std::cout << "hello" << std::endl;
-            /**
-             * @brief Allows io_context.run_one for connection and receiving successively and independently
-             */
-            std::thread my_thread(&AsioConnectionTCP<PACKETSIZE>::realRunOneAction, this); // todo handle sigabort
-            std::cout << " world " << std::endl;
-            // TODO why this function is called 4 times at the begining of the program
-
-            //            my_thread.detach(); // todo not shure if this allows thread to modify the boolean _activeThread
-            // todo why the thread cant be ran without .detach() ?
-            // todo find a way to not use detach but still run the thread
-
-            std::cout << "goodbye" << std::endl;
+            _thread = std::thread(&AsioConnectionTCP<PACKETSIZE>::realRunAsync, this);
         }
 
       protected:
@@ -157,11 +132,11 @@ namespace Network
          * @brief loop through awaiting asynchronous actions and stop if one is done
          *  to be called every time a connection or data is to be received
          */
-        void realRunOneAction()
+        void realRunAsync()
         {
-            std::cout << "real run" << std::endl;
             _activeThread = true;
-            AAsioConnection<PACKETSIZE>::_ioContext.run_one();
+            while (_activeThread)
+                AAsioConnection<PACKETSIZE>::_ioContext.run();
             _activeThread = false;
         }
         void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection)
@@ -235,27 +210,17 @@ namespace Network
 
         void asyncReceiving(const asio::error_code &err, const std::size_t &lenRecvBuf, std::shared_ptr<tcp::socket> &connection)
         {
-            std::cout << "checking error" << std::endl;
-            sleep(1);
             if (err) {
                 if (err.value() == asio::error::misc_errors::eof) {
                     return;
                 }
             }
-            std::cout << "checking length" << std::endl;
-            sleep(1);
-
             if (!lenRecvBuf) {
                 return;
             }
-            std::cout << "checking data" << std::endl;
-            sleep(1);
-
             if (!_recvBuf.data()) {
                 return;
             }
-            std::cout << lenRecvBuf << std::endl;
-            sleep(1);
             _recvData.emplace(
                 std::make_pair(connection->remote_endpoint().address().to_string(), connection->remote_endpoint().port()),
                 std::make_pair(_recvBuf, lenRecvBuf));
@@ -275,6 +240,7 @@ namespace Network
             hash_pair>
             _recvData;
 
+        std::thread _thread;
         bool _activeThread{false};
         std::array<char, PACKETSIZE> _recvBuf{0};
     };
