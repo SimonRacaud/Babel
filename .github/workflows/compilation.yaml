@@ -28,6 +28,9 @@ jobs:
       - name: Add bincrafters remote to conan
         run: conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
 
+      - name: TEMP Set conan SSL to false
+        run: conan remote update conancenter https://center.conan.io false
+
       # Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
