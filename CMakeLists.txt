@@ -48,6 +48,7 @@ add_executable(${CLIENT} ${CLIENT_SRCS})
 file(GLOB_RECURSE SERVER_SRCS server/src/*)
 set(SERVER_SRCS
     ${SRC_SERVER}/main.cpp
+    ${SRC_SERVER}/signalManager.cpp
     ${SRC_SERVER}/Database/DatabaseManager.cpp
     ${SRC_SERVER}/API/API.cpp
     ${SRC_SERVER}/API/Interpreters/Contact/ContactInterpreter.cpp
