@@ -11,13 +11,11 @@ using namespace Network;
 
 extern std::unique_ptr<GUI::Window> window;
 
-Controller::Controller(NetworkManager &manager) : workerThread(new QThread), _manager(manager)
+Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker), _manager(manager)
 {
     std::cerr << "Instance created" << std::endl;
-    NetworkWorker *worker = new NetworkWorker;
+    NetworkWorker *worker = new NetworkWorker(this);
 
-    worker->moveToThread(workerThread);
-    QObject::connect(workerThread, &QThread::started, worker, &NetworkWorker::work);
     QObject::connect(workerThread, &QThread::finished, worker, &QObject::deleteLater);
 
     QObject::connect(worker, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
@@ -32,6 +30,7 @@ Controller::Controller(NetworkManager &manager) : workerThread(new QThread), _ma
 
 Controller::~Controller()
 {
+    workerThread->requestInterruption();
     workerThread->quit();
     workerThread->wait();
 }

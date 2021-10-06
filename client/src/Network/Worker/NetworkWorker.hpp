@@ -9,7 +9,7 @@
 #define NET_WORKER_HPP
 
 #include <QWidget>
-#include <QObject>
+#include <QThread>
 #include <vector>
 #include "UserRaw.hpp"
 #include "ContactRaw.hpp"
@@ -17,14 +17,14 @@
 
 namespace Network
 {
-    class NetworkWorker : public QObject {
+    class NetworkWorker : public QThread {
         Q_OBJECT
       public:
-        NetworkWorker();
+        NetworkWorker(QObject *parent = nullptr);
         virtual ~NetworkWorker() = default;
 
-      public slots:
-        void work();
+      public:
+        void run() override;
 
       private:
         void processServerCommunication();

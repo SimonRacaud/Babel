@@ -11,13 +11,13 @@ using namespace Network;
 
 extern NetworkManager networkManager;
 
-NetworkWorker::NetworkWorker()
+NetworkWorker::NetworkWorker(QObject *parent) : QThread(parent)
 {
 }
 
-void NetworkWorker::work()
+void NetworkWorker::run()
 {
-    while (true) {
+    while (!this->isInterruptionRequested()) {
         std::cerr << "Is it call?" << std::endl;
         try {
             networkManager.streamAudio();
