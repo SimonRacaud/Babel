@@ -26,10 +26,10 @@ TCPTram::~TCPTram()
 void TCPTram::destroyBody() noexcept
 {
     if (_contactPtr) {
-        delete _contactPtr;
+        delete[] _contactPtr;
     }
     if (_userPtr) {
-        delete _userPtr;
+        delete[] _userPtr;
     }
 }
 

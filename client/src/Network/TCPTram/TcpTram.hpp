@@ -15,6 +15,7 @@
 #include <array>
 #include <cstring>
 #include <memory>
+#include <iostream>
 
 namespace Network
 {
@@ -35,9 +36,15 @@ namespace Network
             std::memcpy(content, &_tram, sizeof(TramTCP));
             content->list = nullptr;
             if (_tram.type == TramType::USER && _userPtr) {
-                content->list = _userPtr;
+                UserRaw *ptr = (UserRaw *)(((char *)content) + TRAM_SIZE_SHIFT);
+                for (size_t i = 0; i < _tram.list_size; i++) {
+                    ptr[i] = _userPtr[i];
+                }
             } else if (_tram.type == TramType::CONTACT && _contactPtr) {
-                content->list = _contactPtr;
+                ContactRaw *ptr = (ContactRaw *)(((char *)content) + TRAM_SIZE_SHIFT);
+                for (size_t i = 0; i < _tram.list_size; i++) {
+                    ptr[i] = _contactPtr[i];
+                }
             }
             return buffer;
         }
