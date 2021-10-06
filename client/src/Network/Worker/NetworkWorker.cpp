@@ -24,8 +24,14 @@ void NetworkWorker::work()
         } catch (std::exception const &e) {
             std::cerr << "An exception occured. " << e.what() << std::endl;
         }
-        this->processClientCommunication();
-        this->processServerCommunication();
+        try {
+            this->processClientCommunication();
+        } catch ([[maybe_unsed]] const std::invalid_argument &e) {
+        }
+        try {
+            this->processServerCommunication();
+        } catch ([[maybe_unsed]] const std::invalid_argument &e) {
+        }
     }
 }
 
