@@ -1,1 +1,37 @@
-EMPTY
+                    Babel TCP protocol documentation
+
+Contributer:
+    Simon Racaud
+    Arthur Jourdan
+    Vincent Andrieu
+    Sullivan Geslot
+
+Presentation:
+    Our TCP transmition protocol, use a dynamic tram's size.
+    Thus each transmition start by header, and after the data list.
+
+Tram:
+    Header:
+        +------------------------------------------------------------------------------+
+        |  ACTION  |  TYPE  |  ERROR  |     LIST SIZE     |            LIST            |
+        +------------------------------------------------------------------------------+
+             4B        4B        1B             8B                    Dynamic
+
+        ACTION: 4B
+            ->  GET     = 0
+            ->  POST    = 1
+            ->  DELETE  = 2
+
+        TYPE: 4B
+            ->  USER    = 0
+            ->  CONTACT = 1
+
+        ERROR: 1B
+            -> false:   list >> data
+            -> true:    list >> string
+
+        LIST SIZE: 8B
+            -> size of the list
+        
+        LIST: Dynamic
+            -> void *
