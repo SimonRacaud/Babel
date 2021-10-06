@@ -8,30 +8,46 @@
 #ifndef TCPTRAMEXTRACT_HPP
 #define TCPTRAMEXTRACT_HPP
 
-#include "tram.hpp"
 #include <array>
-#include <vector>
 #include <cstring>
 #include <stdexcept>
+#include <vector>
 
-template <std::size_t PACKETSIZE>
-class TCPTramExtract
+#include "tram.hpp"
+
+namespace Network
 {
-    public:
+    template <std::size_t PACKETSIZE> class TCPTramExtract {
+      public:
         TCPTramExtract(const std::array<char, PACKETSIZE> &buf) : _buf(buf)
         {
             if (PACKETSIZE < sizeof(Network::TramTCP))
                 throw std::invalid_argument("Invalid PACKETSIZE");
-            std::memmove(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
+            std::memcpy(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
             if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size)
                 throw std::invalid_argument("Invalid _tram");
         }
 
         ~TCPTramExtract() = default;
 
+        Network::TramAction getAction() const
+        {
+            Network::TramAction tramAction;
+
+            std::memcpy(&tramAction, this->_buf.data(), sizeof(Network::TramAction));
+            return tramAction;
+        }
+
+        Network::TramType getType() const
+        {
+            Network::TramType tramType;
+
+            std::memcpy(&tramType, this->_buf.data() + sizeof(Network::TramAction), sizeof(Network::TramType));
+            return tramType;
+        }
+
         template <typename type> std::vector<type> getListOf() const
         {
-            type tmp;
             std::vector<type> list;
             size_t size = this->_tram.list_size / sizeof(type);
 
@@ -40,7 +56,7 @@ class TCPTramExtract
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
             list = std::vector<type>(size * sizeof(type));
-            std::memmove(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            std::memcpy(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return list;
         }
 
@@ -55,13 +71,14 @@ class TCPTramExtract
 
             if (this->isCorrectTram())
                 throw std::invalid_argument("No error is correct tram");
-            std::memmove(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            std::memcpy(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return output;
         }
 
-    private:
+      private:
         const std::array<char, PACKETSIZE> _buf;
         Network::TramTCP _tram;
-};
+    };
+} // namespace Network
 
 #endif
