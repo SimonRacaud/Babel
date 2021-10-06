@@ -9,10 +9,6 @@
 
 using namespace GUI;
 
-const std::vector<QString> DEBUG_LIST = {
-    "USER A", "USER B", "USER C"
-};
-
 Window::Window(QApplication &app) : _app(app)
 {
     QMdiArea *centerArea = new QMdiArea;
@@ -34,7 +30,7 @@ Window::Window(QApplication &app) : _app(app)
     /// CallManager
     _callManager = new CallManager();
     /// Contacts
-    _contactBox = new MyContactList(*_callManager, DEBUG_LIST); // TODO : inject contacts username
+    _contactBox = new MyContactList(*_callManager);
     /// Add Contact
     _addContactBox = new AddContact((*_contactBox));
     /// Account
@@ -63,4 +59,9 @@ void Window::hideOptions()
 {
     _winOption->hide();
     this->show();
+}
+
+MyContactList &Window::getContactList()
+{
+    return *_contactBox;
 }

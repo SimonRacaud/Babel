@@ -34,10 +34,10 @@ set(SRC_SERVER server/src/)
 
 include_directories(
     ${CMAKE_INCLUDE_PATH}
-    ./include/
-    ./include/Interfaces/
-    ./include/Network/
-    ./include/Network/Raws/
+        both/include/
+        both/include/Interfaces/
+        both/include/Network/
+        both/include/Network/Raws/
 )
 
 ############ CLIENT
@@ -72,6 +72,7 @@ set(CLIENT_SRCS
     ${SRC_CLIENT}/UDPAudio/tools/tramFactory.hpp
     ${SRC_CLIENT}/gui/Dialogue/DialogueBox.cpp
     ${SRC_CLIENT}/gui/Dialogue/DialogueBox.hpp
+    both/src/TcpTram.cpp
 )
 
 add_executable(${CLIENT} ${CLIENT_SRCS})
@@ -83,6 +84,7 @@ set(SERVER_SRCS
     ${SRC_SERVER}/API/API.cpp
     ${SRC_SERVER}/API/Interpreters/User/UserInterpreter.cpp
     ${SRC_SERVER}/API/Interpreters/Contact/ContactInterpreter.cpp
+    both/src/TcpTram.cpp
 )
 add_executable(${SERVER} ${SERVER_SRCS})
 
@@ -97,7 +99,7 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Options)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Window)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/InputAudioManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioManager)
-target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/TCPTram)
+target_include_directories(${CLIENT} BEFORE PUBLIC both/src/TCPTram)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Controller)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Worker)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/NetworkManager)

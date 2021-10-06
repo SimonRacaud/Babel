@@ -10,7 +10,7 @@
 
 #include "DatabaseManager.hpp"
 #include "INetwork.hpp"
-#include "TCPTram/TcpTram.hpp"
+#include "TcpTram.hpp"
 #include "TCPTramExtract/TCPTramExtract.hpp"
 
 namespace Network

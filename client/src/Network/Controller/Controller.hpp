@@ -13,6 +13,9 @@
 
 #include "NetworkManager/NetworkManager.hpp"
 #include "Network/Worker/NetworkWorker.hpp"
+#include "gui/Dialogue/DialogueBox.hpp"
+#include "gui/MyContactList/MyContactList.hpp"
+#include "gui/Window/Window.hpp"
 
 namespace Network
 {
@@ -23,9 +26,11 @@ namespace Network
       public:
         Controller(NetworkManager &manager);
         virtual ~Controller();
-
       signals:
         void operate();
+
+      private:
+        void showDialogue(QString const &message) const;
 
       private:
         NetworkManager &_manager;

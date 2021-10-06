@@ -30,22 +30,6 @@ namespace Network
 
         ~TCPTramExtract() = default;
 
-        Network::TramAction getAction() const
-        {
-            Network::TramAction tramAction;
-
-            std::memcpy(&tramAction, this->_buf.data(), sizeof(Network::TramAction));
-            return tramAction;
-        }
-
-        Network::TramType getType() const
-        {
-            Network::TramType tramType;
-
-            std::memcpy(&tramType, this->_buf.data() + sizeof(Network::TramAction), sizeof(Network::TramType));
-            return tramType;
-        }
-
         template <typename type> std::vector<type> getListOf() const
         {
             std::vector<type> list;
@@ -58,6 +42,16 @@ namespace Network
             list = std::vector<type>(size * sizeof(type));
             std::memcpy(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return list;
+        }
+
+        Network::TramAction getAction() const
+        {
+            return _tram.action;
+        }
+
+        Network::TramType getType() const
+        {
+            return _tram.type;
         }
 
         bool isCorrectTram() const

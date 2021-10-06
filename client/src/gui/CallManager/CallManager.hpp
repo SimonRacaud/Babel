@@ -18,6 +18,7 @@
 #include <iostream>
 #include "gui/MyContactList/MyContactList.hpp"
 #include "ICallManager.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 
 namespace GUI
 {
@@ -37,6 +38,7 @@ namespace GUI
 
       private slots:
         void slotHangUpCall() noexcept;
+        void slotSetCallList(std::vector<UserRaw> const &list) noexcept;
 
       private:
         MyContactList *_contactList;

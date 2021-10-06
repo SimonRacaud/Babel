@@ -9,6 +9,8 @@
 
 using namespace Network;
 
+extern std::unique_ptr<GUI::Window> window;
+
 Controller::Controller(NetworkManager &manager) : _manager(manager)
 {
     NetworkWorker *worker = new NetworkWorker;
@@ -22,7 +24,8 @@ Controller::Controller(NetworkManager &manager) : _manager(manager)
     QObject::connect(worker, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
     QObject::connect(worker, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
     QObject::connect(worker, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
-    //QObject::connect(worker, &NetworkWorker::networkRequestFailed, _manager, &NetworkManager::);
+    QObject::connect(worker, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
+    QObject::connect(worker, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
     workerThread.start();
 }
 
@@ -30,4 +33,9 @@ Controller::~Controller()
 {
     workerThread.quit();
     workerThread.wait();
+}
+
+void Controller::showDialogue(QString const &message) const
+{
+    GUI::DialogueBox::error(message);
 }

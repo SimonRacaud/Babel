@@ -18,8 +18,8 @@ project(${NAME} VERSION 0.0.0 LANGUAGES CXX)
 include_directories(
     ./src/
     ./include/
-    ../../include/
-    ../../include/Interfaces/
+        ../../both/include/
+        ../../both/include/Interfaces/
 )
 
 ## SOURCES

@@ -37,6 +37,8 @@ namespace GUI
         virtual ~Window() = default;
 
         void hideOptions();
+
+        MyContactList &getContactList();
       private slots:
         void showOptions();
 

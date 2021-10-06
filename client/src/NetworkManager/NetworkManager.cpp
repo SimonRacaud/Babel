@@ -11,8 +11,8 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _connectionServer(nullptr), _callServer(nullptr),
-      _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(),
+      _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
 {
 }
 
@@ -30,7 +30,7 @@ void NetworkManager::init()
         throw std::logic_error("call init once at the beginning");
     }
     this->_connectionServer = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
-    this->_callServer = std::make_unique<AsioServerTCP<Network::BUFFER_SIZE>>(Network::PORT_CALL_SERVER);
+    this->_callServer = std::make_unique<AsioServerTCP<Network::BUFFER_SIZE>>(PORT_CALL_SERVER);
     this->_callClient = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
 
     this->connectServer();
@@ -39,7 +39,7 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    // TODO : GUI - empty call member list
+    this->_audioManager.closeConnections();
 }
 
 bool NetworkManager::isLogged() const
@@ -60,6 +60,37 @@ void NetworkManager::login(const userNameType &username)
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
 
+void NetworkManager::streamAudio()
+{
+    this->_audioManager.streamAudio();
+}
+
+TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
+{
+        auto [data, size, ip, port] = this->_connectionServer->receiveAny();
+        TCPTramExtract tram(data);
+
+        if (size != BUFFER_SIZE) {
+            throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
+        }
+        return tram;
+}
+
+std::tuple<TCPTramExtract<BUFFER_SIZE>, UserRaw> NetworkManager::receiveFromClient()
+{
+    auto [data, size, ip, port] = this->_callServer->receiveAny();
+    TCPTramExtract tram(data);
+    UserRaw user;
+
+    if (size != BUFFER_SIZE) {
+        throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
+    }
+    strcpy(user.username, "");
+    strncpy(user.ip, (ip.c_str()), USERNAME_SIZE);
+    user.port = port;
+    return std::make_tuple(tram, user);
+}
+
 void NetworkManager::getUser(const userNameType &username)
 {
     this->mustBeConnected();
@@ -76,17 +107,11 @@ void NetworkManager::getUser(const userNameType &username)
 
 void NetworkManager::callUser(const userNameType &username)
 {
-    UserType user;
-
     this->mustBeConnected();
     /// ask for the user IP to send the handshake
     this->getUser(username);
-}
-
-void NetworkManager::voiceConnect(const UserType &user)
-{
-    this->mustBeConnected();
-    // TODO
+    this->_callInProgress = true;
+    this->_calledUser = username;
 }
 
 void NetworkManager::newContact(const userNameType &contactName)
@@ -101,12 +126,6 @@ void NetworkManager::newContact(const userNameType &contactName)
     tram.setContactList({contact});
     /// Send
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
-}
-
-void NetworkManager::voiceDisconnect(const UserType &user)
-{
-    this->mustBeConnected();
-    // TODO
 }
 
 void NetworkManager::removeContact(const userNameType &contactName)
@@ -132,7 +151,7 @@ void NetworkManager::mustBeConnected() const
 void NetworkManager::connectServer()
 {
     if (!this->_connectionServer) {
-        this->_connectionServer->connect(Network::IP_SERVER, Network::PORT_MAIN_SERVER);
+        this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
     }
 }
 
@@ -141,6 +160,10 @@ void NetworkManager::slotLogged(UserType const &user)
     _user = user;
     this->_logged = true;
     emit sigUpdateUsername(QString(user.username));
+    /// Ask for user contacts
+    TCPTram tram(TramAction::GET, TramType::CONTACT);
+    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)
@@ -153,19 +176,34 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
     emit sigRemoveContact(QString(contact.contactName));
 }
 
-void NetworkManager::slotSendCallMemberList(const UserType &target)
+void NetworkManager::sendCallMemberList(const UserType &target)
 {
     this->mustBeConnected();
-    // TODO : get call UserRaw members (with _audioManager)
+    /// Get current call members
+    std::vector<UserRaw> const &connections = _audioManager.getConnections();
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
-    tram.setUserList({/* TODO */});
+    tram.setUserList(connections);
     ///     Send contact list
-    this->_callClient->connect(target.ip, Network::PORT_CALL_SERVER);
-    this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, Network::PORT_CALL_SERVER);
+    this->_callClient->connect(target.ip, PORT_CALL_SERVER);
+    this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, PORT_CALL_SERVER);
+}
+
+void NetworkManager::slotSendCallMemberList(const UserType &target)
+{
+    this->sendCallMemberList(target);
 }
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
-    // TODO : update call member list => UDP (with _audioManager)
+    std::vector<UserType> list = users;
+
+    list.push_back(target);
+    this->_audioManager.updateConnections(list);
+    if (this->_callInProgress == false) { // I'm replying to a call request.
+        this->sendCallMemberList(target);
+    } else {
+        emit this->sigCallSuccess(list); // update gui
+        this->_callInProgress = false; // I already have sent my call member list.
+    }
 }

@@ -38,12 +38,15 @@ class UDPAudio
          */
         std::vector<UserRaw> getConnections() const;
 
+        void closeConnections();
+
     private:
         void sendingData();
         void receivingData();
         bool correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram);
 
     private:
+        std::size_t _port;
         std::unique_ptr<Audio::InputAudioManager> _input;
         std::unique_ptr<Audio::OutputAudioManager> _output;
         std::unique_ptr<NetworkComponent> _network;

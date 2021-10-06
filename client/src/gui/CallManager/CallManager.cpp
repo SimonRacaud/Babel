@@ -9,6 +9,8 @@
 
 using namespace GUI;
 
+extern Network::NetworkManager networkManager;
+
 CallManager::CallManager() : _contactList(nullptr)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -26,6 +28,7 @@ CallManager::CallManager() : _contactList(nullptr)
     _memberList->setAlignment(Qt::AlignTop);
     /// Events
     QObject::connect(_hangUpButton, SIGNAL(clicked()), this, SLOT(slotHangUpCall()));
+    QObject::connect(&networkManager, &Network::NetworkManager::sigCallSuccess, this, &CallManager::slotSetCallList);
 }
 
 CallManager::~CallManager()
@@ -67,10 +70,21 @@ void CallManager::clearMemberList()
 
 void CallManager::slotHangUpCall() noexcept
 {
-    /// TODO : Network => close call connections
-    this->clearMemberList();
-    if (_contactList) {
-        this->_contactList->enableCallButtons();
+    try {
+        networkManager.callHangUp();
+        this->clearMemberList();
+        if (_contactList) {
+            this->_contactList->enableCallButtons();
+        }
+    } catch (std::exception const &e) {
+        std::cerr << "Fail to hang up call. " << e.what() << std::endl;
+    }
+}
+
+void CallManager::slotSetCallList(std::vector<UserRaw> const &list) noexcept
+{
+    for (UserRaw const &user : list) {
+        this->addMember(QString(user.username));
     }
 }
 
