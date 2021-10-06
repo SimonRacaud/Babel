@@ -32,7 +32,12 @@ void API<PACKETSIZE>::operator()(const std::array<char, PACKETSIZE> &data, const
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
-        std::cout << "GET" << std::endl;
+    std::cout << "GET" << std::endl;
+    switch (tram.getType()) {
+        case TramType::USER: std::cerr << "USER" << std::endl; break;
+        case TramType::CONTACT: std::cerr << "CONTACT" << std::endl; break;
+        default: std::cerr << "UNKNOWN" << std::endl;
+    }
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.GET(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.GET(tram, ip, port); break;
@@ -42,7 +47,12 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TCPTramExtract<PAC
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
-        std::cout << "POST" << std::endl;
+    std::cout << "POST" << std::endl;
+    switch (tram.getType()) {
+        case TramType::USER: std::cerr << "USER" << std::endl; break;
+        case TramType::CONTACT: std::cerr << "CONTACT" << std::endl; break;
+        default: std::cerr << "UNKNOWN" << std::endl;
+    }
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.POST(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.POST(tram, ip, port); break;
@@ -53,7 +63,12 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PA
 template <size_t PACKETSIZE>
 void API<PACKETSIZE>::_delete(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
-        std::cout << "DELETE" << std::endl;
+    std::cout << "DELETE" << std::endl;
+    switch (tram.getType()) {
+        case TramType::USER: std::cerr << "USER" << std::endl; break;
+        case TramType::CONTACT: std::cerr << "CONTACT" << std::endl; break;
+        default: std::cerr << "UNKNOWN" << std::endl;
+    }
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.DELETE(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.DELETE(tram, ip, port); break;
