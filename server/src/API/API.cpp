@@ -21,6 +21,7 @@ void API<PACKETSIZE>::operator()(const std::array<char, PACKETSIZE> &data, const
 {
     const TCPTramExtract<PACKETSIZE> tram(data);
 
+    std::cout << "redirect" << std::endl;
     switch (tram.getAction()) {
         case TramAction::GET: this->_get(tram, ip, port); break;
         case TramAction::POST: this->_post(tram, ip, port); break;
@@ -31,6 +32,7 @@ void API<PACKETSIZE>::operator()(const std::array<char, PACKETSIZE> &data, const
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
+        std::cout << "GET" << std::endl;
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.GET(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.GET(tram, ip, port); break;
@@ -40,6 +42,7 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TCPTramExtract<PAC
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
+        std::cout << "POST" << std::endl;
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.POST(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.POST(tram, ip, port); break;
@@ -50,6 +53,7 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PA
 template <size_t PACKETSIZE>
 void API<PACKETSIZE>::_delete(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
+        std::cout << "DELETE" << std::endl;
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.DELETE(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.DELETE(tram, ip, port); break;
