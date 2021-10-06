@@ -11,10 +11,11 @@
 #include "AsioServerTCP.hpp"
 #include "server.hpp"
 #include "utils.hpp"
+#include "Network.hpp"
 
 static void init(Network::DatabaseManager &database, bool &serverLoop)
 {
-    Network::AsioServerTCP<Network::BUFFER_SIZE> serv(8080);
+    Network::AsioServerTCP<Network::BUFFER_SIZE> serv(Network::PORT_MAIN_SERVER);
     Network::API<Network::BUFFER_SIZE> api(serv, database);
 
     signalManager(SIGINT, serverLoop);
