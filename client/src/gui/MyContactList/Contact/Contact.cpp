@@ -78,11 +78,13 @@ void Contact::slotCallContact() noexcept
     }
 }
 
-void Contact::slotApplyCall(QString const &contactName) noexcept
+void Contact::slotApplyCall(std::vector<UserRaw> const &list) noexcept
 {
-    if (this->getUsername() == contactName) {
+    QString username = this->getUsername();
+    auto it = std::find_if(list.begin(), list.end(), [username] (UserRaw const &user) { return QString(user.username) == username; });
+
+    if (it != list.end()) {
         this->disableCall();
-        _callManager.addMember(contactName);
     }
 }
 

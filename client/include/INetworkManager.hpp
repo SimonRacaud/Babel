@@ -20,9 +20,7 @@ namespace Network
         virtual void login(const userNameType &) = 0;
         virtual void getUser(const userNameType &) = 0;
         virtual void callUser(const userNameType &) = 0;
-        virtual void voiceConnect(const UserType &) = 0;
         virtual void newContact(const userNameType &) = 0;
-        virtual void voiceDisconnect(const UserType &) = 0;
         virtual void removeContact(const userNameType &) = 0;
     };
 }

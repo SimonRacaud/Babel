@@ -11,7 +11,8 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(),
+      _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
 {
 }
 
@@ -38,7 +39,7 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    // TODO : GUI - empty call member list
+    this->_audioManager.closeConnections();
 }
 
 bool NetworkManager::isLogged() const
@@ -75,17 +76,11 @@ void NetworkManager::getUser(const userNameType &username)
 
 void NetworkManager::callUser(const userNameType &username)
 {
-    UserType user;
-
     this->mustBeConnected();
     /// ask for the user IP to send the handshake
     this->getUser(username);
-}
-
-void NetworkManager::voiceConnect(const UserType &user)
-{
-    this->mustBeConnected();
-    // TODO
+    this->_callInProgress = true;
+    this->_calledUser = username;
 }
 
 void NetworkManager::newContact(const userNameType &contactName)
@@ -100,12 +95,6 @@ void NetworkManager::newContact(const userNameType &contactName)
     tram.setContactList({ contact });
     /// Send
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
-}
-
-void NetworkManager::voiceDisconnect(const UserType &user)
-{
-    this->mustBeConnected();
-    // TODO
 }
 
 void NetworkManager::removeContact(const userNameType &contactName)
@@ -152,21 +141,34 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
     emit sigRemoveContact(QString(contact.contactName));
 }
 
-void NetworkManager::slotSendCallMemberList(const UserType &target)
+void NetworkManager::sendCallMemberList(const UserType &target)
 {
     this->mustBeConnected();
-    // TODO : get call UserRaw members (with _audioManager)
+    /// Get current call members
+    std::vector<UserRaw> const &connections = _audioManager.getConnections();
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
-    tram.setUserList({ /* TODO */ });
+    tram.setUserList(connections);
     ///     Send contact list
     this->_callClient->connect(target.ip, PORT_CALL_SERVER);
     this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, PORT_CALL_SERVER);
 }
 
+void NetworkManager::slotSendCallMemberList(const UserType &target)
+{
+    this->sendCallMemberList(target);
+}
+
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
+    std::vector<UserType> list = users;
 
-    // TODO : update call member list => UDP (with _audioManager)
-
+    list.push_back(target);
+    this->_audioManager.updateConnections(list);
+    if (this->_callInProgress == false) { // I'm replying to a call request.
+        this->sendCallMemberList(target);
+    } else {
+        emit this->sigCallSuccess(list); // update gui
+        this->_callInProgress = false; // I already have sent my call member list.
+    }
 }

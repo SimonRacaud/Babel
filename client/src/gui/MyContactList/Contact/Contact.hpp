@@ -47,7 +47,7 @@ namespace GUI
 
       private slots:
         void slotCallContact() noexcept;
-        void slotApplyCall(QString const &contactName) noexcept;
+        void slotApplyCall(std::vector<UserRaw> const &list) noexcept;
         void slotRemoveContact() noexcept;
         void slotApplyRemove(QString const &contactUsername) noexcept;
 
