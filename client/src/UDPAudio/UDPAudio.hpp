@@ -44,6 +44,7 @@ class UDPAudio
         void sendingData();
         void receivingData();
         bool correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram);
+        void audioManagerPtr();
 
     private:
         std::size_t _port;

@@ -9,8 +9,8 @@
 #include "tools/tramFactory.hpp"
 
 UDPAudio::UDPAudio(size_t port) : _port(port),
-_input(std::make_unique<Audio::InputAudioManager>()),
-_output(std::make_unique<Audio::OutputAudioManager>()),
+_input(nullptr),
+_output(nullptr),
 _network(std::make_unique<NetworkComponent>(port)),
 _sending(false)
 {
@@ -19,8 +19,8 @@ _sending(false)
 }
 
 UDPAudio::UDPAudio(size_t port, const std::vector<UserRaw> &list) :
-_input(std::make_unique<Audio::InputAudioManager>()),
-_output(std::make_unique<Audio::OutputAudioManager>()),
+_input(nullptr),
+_output(nullptr),
 _network(std::make_unique<NetworkComponent>(port)),
 _sending(false)
 {
@@ -28,6 +28,7 @@ _sending(false)
         throw std::invalid_argument("Invalid UDP tram");
     for (auto &it : list)
         this->addUser(it);
+    this->audioManagerPtr();
 }
 
 UDPAudio::~UDPAudio()
@@ -44,6 +45,7 @@ void UDPAudio::addUser(const UserRaw &user)
 {
     this->_network->connect(user.ip, user.port);
     this->_list.push_back(std::tuple<UserRaw, size_t>(user, 0));
+    this->audioManagerPtr();
 }
 
 void UDPAudio::removeUser(const UserRaw &user)
@@ -54,6 +56,7 @@ void UDPAudio::removeUser(const UserRaw &user)
             this->_list.erase(this->_list.begin() + i);
         }
     }
+    this->audioManagerPtr();
 }
 
 void UDPAudio::closeConnections()
@@ -61,13 +64,16 @@ void UDPAudio::closeConnections()
     this->_network = std::make_unique<NetworkComponent>(_port);
     this->_list.clear();
     this->_sending = false;
+    this->audioManagerPtr();
 }
 
 void UDPAudio::streamAudio()
 {
-    this->sendingData();
-    if (this->_sending)
-        this->receivingData();
+    if (this->_list.size()) {
+        this->sendingData();
+        if (this->_sending)
+            this->receivingData();
+    }
 }
 
 void UDPAudio::sendingData()
@@ -157,5 +163,27 @@ void UDPAudio::updateConnections(std::vector<UserRaw> &list)
         
         if (!inList)
             this->removeUser(std::get<0>(it));
+    }
+    this->audioManagerPtr();
+}
+
+void UDPAudio::audioManagerPtr()
+{
+    if (this->_list.size()) {
+        if (!this->_input) {
+            this->_input = std::make_unique<Audio::InputAudioManager>();
+        }
+        if (!this->_output) {
+            this->_output = std::make_unique<Audio::OutputAudioManager>();
+        }
+    } else {
+        if (this->_input) {
+            this->_input.reset();
+            this->_input = nullptr;
+        }
+        if (this->_output) {
+            this->_output.reset();
+            this->_output = nullptr;
+        }
     }
 }
