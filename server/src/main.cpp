@@ -14,8 +14,8 @@
 
 static void init(Network::DatabaseManager &database, bool &serverLoop)
 {
-    Network::AsioServerTCP<T_PACKETSIZE> serv(8080);
-    Network::API<T_PACKETSIZE> api(serv, database);
+    Network::AsioServerTCP<Network::BUFFER_SIZE> serv(8080);
+    Network::API<Network::BUFFER_SIZE> api(serv, database);
 
     signalManager(SIGINT, serverLoop);
     signalManager(SIGQUIT, serverLoop);

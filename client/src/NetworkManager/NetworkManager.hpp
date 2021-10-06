@@ -21,7 +21,6 @@
 #include "UserRaw.hpp"
 #include "UDPAudio/UDPAudio.hpp"
 
-const std::size_t PACKETSIZE(2048); // todo change that
 #define IP_SERVER        "127.0.0.0"
 #define PORT_MAIN_SERVER 8081
 #define PORT_CALL_SERVER 8082
@@ -34,7 +33,7 @@ namespace Network
 
         using UserType = UserRaw;
         using userNameType = QString;
-        using connectionClass = Network::AsioConnectionUDP<PACKETSIZE>;
+        using connectionClass = Network::AsioConnectionUDP<Network::BUFFER_SIZE>;
 
       public:
         NetworkManager();
@@ -82,9 +81,9 @@ namespace Network
         UDPAudio _audioManager;
         UserType _user;
 
-        std::unique_ptr<AsioClientTCP<PACKETSIZE>> _connectionServer;
-        std::unique_ptr<AsioServerTCP<PACKETSIZE>> _callServer;
-        std::unique_ptr<AsioClientTCP<PACKETSIZE>> _callClient;
+        std::unique_ptr<AsioClientTCP<Network::BUFFER_SIZE>> _connectionServer;
+        std::unique_ptr<AsioServerTCP<Network::BUFFER_SIZE>> _callServer;
+        std::unique_ptr<AsioClientTCP<Network::BUFFER_SIZE>> _callClient;
     };
 } // namespace Network
 

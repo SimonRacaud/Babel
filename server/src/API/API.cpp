@@ -72,4 +72,4 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_delete(const TramTCP &tram, 
     }
 }
 
-template class API<T_PACKETSIZE>;
+template class API<Network::BUFFER_SIZE>;

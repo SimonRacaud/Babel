@@ -13,8 +13,8 @@
 
 namespace Network
 {
-    const int DATA_SIZE = 1008;
-    const int BUFFER_SIZE = 1024;
+    const int DATA_SIZE = 2032; //1008;
+    const int BUFFER_SIZE = 2048; //1024;
     const unsigned int MAGIC_NUMBER = 0x42;
 
     typedef struct __attribute__((packed)) UDPTram_s

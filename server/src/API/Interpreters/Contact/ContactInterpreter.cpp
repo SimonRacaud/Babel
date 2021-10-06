@@ -64,4 +64,4 @@ void ContactInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &d
         this->_network.send(data, ip, port);
 }
 
-template class ContactInterpreter<T_PACKETSIZE>;
+template class ContactInterpreter<Network::BUFFER_SIZE>;
