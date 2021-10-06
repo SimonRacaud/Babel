@@ -180,7 +180,7 @@ namespace Network
          * @brief Record a connection and be ready to receive data from it
          * @param newConnection The connection to record
          */
-        void addConnection(std::shared_ptr<tcp::socket> newConnection)
+        void addConnection(std::shared_ptr<tcp::socket> &newConnection)
         {
             if (!newConnection)
                 return;
