@@ -30,11 +30,6 @@ namespace Network
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
         }
-
-      private:
-        void handleConnect(const asio::error_code &err, tcp::resolver::iterator endpoint_iterator)
-        {
-        }
     };
 
 } // namespace Network
