@@ -18,8 +18,10 @@ NetworkManager::NetworkManager()
 
 NetworkManager::~NetworkManager()
 {
-    if (this->_connectionServer)
+    if (this->_connectionServer) {
+        this->_connectionServer->stopRunAsync();
         this->_connectionServer.reset();
+    }
     this->_callServer.reset();
     this->_callClient.reset();
 }
@@ -34,9 +36,9 @@ void NetworkManager::init()
     this->_callClient = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
 
     this->connectServer();
-    this->_connectionServer.runAsync();
-    this->_callServer.runAsync();
-    this->_callClient.runAsync();
+    this->_connectionServer->runAsync();
+    this->_callServer->runAsync();
+    this->_callClient->runAsync();
 }
 
 void NetworkManager::callHangUp()
@@ -79,6 +81,7 @@ TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
     if (size != BUFFER_SIZE) {
         throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
     }
+    std::cerr << "receive filled data from server" << std::endl;
     return tram;
 }
 
