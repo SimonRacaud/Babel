@@ -72,3 +72,10 @@ bool MyContactList::exist(QString const &contactName) const
     }
     return false;
 }
+
+void MyContactList::slotSetContactList(std::vector<ContactRaw> const &contacts)
+{
+    for (ContactRaw const &contact : contacts) {
+        this->addContact(QString(contact.contactName));
+    }
+}

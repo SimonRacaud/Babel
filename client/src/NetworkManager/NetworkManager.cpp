@@ -160,6 +160,10 @@ void NetworkManager::slotLogged(UserType const &user)
     _user = user;
     this->_logged = true;
     emit sigUpdateUsername(QString(user.username));
+    /// Ask for user contacts
+    TCPTram tram(TramAction::GET, TramType::CONTACT);
+    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)

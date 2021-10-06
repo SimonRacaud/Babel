@@ -43,8 +43,8 @@ void NetworkWorker::processServerCommunication()
                     emit userReceived(users[0]);
                 }
             } else if (type == TramType::CONTACT) {
-                //std::vector<ContactRaw> &contacts = tram.getListOf<ContactRaw>();
-                // TODO update gui - contact list
+                std::vector<ContactRaw> contacts = data.getListOf<ContactRaw>();
+                emit contactListReceived(contacts);
             }
         } else if (action == TramAction::POST) {
             if (type == TramType::USER) {

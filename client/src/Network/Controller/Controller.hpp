@@ -14,6 +14,8 @@
 #include "NetworkManager/NetworkManager.hpp"
 #include "Network/Worker/NetworkWorker.hpp"
 #include "gui/Dialogue/DialogueBox.hpp"
+#include "gui/MyContactList/MyContactList.hpp"
+#include "gui/Window/Window.hpp"
 
 namespace Network
 {

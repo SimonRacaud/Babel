@@ -16,14 +16,14 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-#include "ICallManager.hpp"
-#include "IMyContactList.hpp"
-#include "IContact.hpp"
 #include "Contact/Contact.hpp"
+#include "ICallManager.hpp"
+#include "IContact.hpp"
+#include "IMyContactList.hpp"
 
 namespace GUI
 {
@@ -39,6 +39,9 @@ namespace GUI
         void removeContact(IContact &contact);
 
         bool exist(QString const &contactName) const;
+
+      public slots:
+        void slotSetContactList(std::vector<ContactRaw> const &contacts);
 
       private:
         ICallManager &_callManager;
