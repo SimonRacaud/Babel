@@ -12,6 +12,6 @@ std::ostream &operator<<(std::ostream &stream, const UserRaw &userRaw)
     stream << "UserRaw:" << std::endl;
     stream << "\tip: [" << userRaw.ip << "]" << std::endl;
     stream << "\tport: [" << userRaw.port << "]" << std::endl;
-    stream << "\tusername: [" << userRaw.username << "]" << std::endl;
+    stream << "\tusername: [" << userRaw.username << "]";
     return stream;
 }

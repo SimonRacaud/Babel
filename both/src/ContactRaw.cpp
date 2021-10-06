@@ -11,6 +11,6 @@ std::ostream &operator<<(std::ostream &stream, const ContactRaw &contactRaw)
 {
     stream << "ContactRaw:" << std::endl;
     stream << "\tusername: [" << contactRaw.username << "]" << std::endl;
-    stream << "\tcontactName: [" << contactRaw.contactName << "]" << std::endl;
+    stream << "\tcontactName: [" << contactRaw.contactName << "]";
     return stream;
 }
