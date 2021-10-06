@@ -51,7 +51,7 @@ void NetworkManager::login(const userNameType &username)
     /// Update User
     std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
     _user.port = Network::PORT_CALL_SERVER;
-    std::strcpy(_user.ip, Network::IP_USER);
+    std::strcpy(_user.ip, Network::IP_USER.c_str());
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({ this->_user });
