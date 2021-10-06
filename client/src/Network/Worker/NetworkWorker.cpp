@@ -18,6 +18,7 @@ NetworkWorker::NetworkWorker()
 void NetworkWorker::work()
 {
     while (true) {
+        std::cerr << "Is it call?" << std::endl;
         try {
             networkManager.streamAudio();
         } catch (std::exception const &e) {

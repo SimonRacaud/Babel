@@ -21,7 +21,7 @@ namespace Network
 {
     class Controller : public QObject {
         Q_OBJECT
-        QThread workerThread;
+        QThread *workerThread;
 
       public:
         Controller(NetworkManager &manager);

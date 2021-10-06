@@ -69,13 +69,14 @@ void NetworkManager::streamAudio()
 
 TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
 {
-        auto [data, size, ip, port] = this->_connectionServer->receiveAny();
-        TCPTramExtract tram(data);
+    auto [data, size, ip, port] = this->_connectionServer->receiveAny();
+    TCPTramExtract tram(data);
 
-        if (size != BUFFER_SIZE) {
-            throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
-        }
-        return tram;
+    std::cerr << "receive data from master server" << std::endl;
+    if (size != BUFFER_SIZE) {
+        throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
+    }
+    return tram;
 }
 
 std::tuple<TCPTramExtract<BUFFER_SIZE>, UserRaw> NetworkManager::receiveFromClient()

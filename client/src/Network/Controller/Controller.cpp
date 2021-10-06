@@ -11,13 +11,14 @@ using namespace Network;
 
 extern std::unique_ptr<GUI::Window> window;
 
-Controller::Controller(NetworkManager &manager) : _manager(manager)
+Controller::Controller(NetworkManager &manager) : workerThread(new QThread), _manager(manager)
 {
+    std::cerr << "Instance created" << std::endl;
     NetworkWorker *worker = new NetworkWorker;
 
-    worker->moveToThread(&workerThread);
-    QObject::connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    QObject::connect(this, &Controller::operate, worker, &NetworkWorker::work);
+    worker->moveToThread(workerThread);
+    QObject::connect(workerThread, &QThread::started, worker, &NetworkWorker::work);
+    QObject::connect(workerThread, &QThread::finished, worker, &QObject::deleteLater);
 
     QObject::connect(worker, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
     QObject::connect(worker, &NetworkWorker::contactAdded, &_manager, &NetworkManager::slotContactAdded);
@@ -26,13 +27,13 @@ Controller::Controller(NetworkManager &manager) : _manager(manager)
     QObject::connect(worker, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
     QObject::connect(worker, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
     QObject::connect(worker, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
-    workerThread.start();
+    workerThread->start();
 }
 
 Controller::~Controller()
 {
-    workerThread.quit();
-    workerThread.wait();
+    workerThread->quit();
+    workerThread->wait();
 }
 
 void Controller::showDialogue(QString const &message) const
