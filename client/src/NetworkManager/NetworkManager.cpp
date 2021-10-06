@@ -11,8 +11,8 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(),
-      _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(), _connectionServer(nullptr),
+      _callServer(nullptr), _callClient(nullptr)
 {
 }
 
@@ -34,6 +34,9 @@ void NetworkManager::init()
     this->_callClient = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
 
     this->connectServer();
+    this->_connectionServer.runAsync();
+    this->_callServer.runAsync();
+    this->_callClient.runAsync();
 }
 
 void NetworkManager::callHangUp()
@@ -164,7 +167,6 @@ void NetworkManager::slotLogged(UserType const &user)
     /// Ask for user contacts
     TCPTram tram(TramAction::GET, TramType::CONTACT);
     _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
-
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)
@@ -205,6 +207,6 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
         this->sendCallMemberList(target);
     } else {
         emit this->sigCallSuccess(list); // update gui
-        this->_callInProgress = false; // I already have sent my call member list.
+        this->_callInProgress = false;   // I already have sent my call member list.
     }
 }
