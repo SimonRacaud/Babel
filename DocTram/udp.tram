@@ -1,0 +1,37 @@
+                    Babel UDP protocol documentation
+
+Contributer:
+    Simon Racaud
+    Arthur Jourdan
+    Vincent Andrieu
+    Sullivan Geslot
+
+Presentation:
+    Each UDP transmition, between two differentes user, have a fix size of 2048 Bits.
+    Thus, it's possible to one shot the transmition read.
+    To put in a nutshell, no UDP bufferisation is necessary.
+    UDP transmition is compose of 4 member, in the order:
+        1. The magic number to unsure the provenance of the tram.
+        2. The timestamp to erase the deprecated transmition
+        3. The data is a bit array who represente the compressed sample
+        4. The data size transmition
+
+Tram:
+    +------------------------------------------------------------------------------+
+    |MAGIC NB|TIMESTAMP|                      DATA                       |DATA SIZE|
+    +------------------------------------------------------------------------------+
+        4B       8B                            2032B                          4B
+
+    MAGIC NB    -> unsigned int -> 0x42
+    TIMESTAMP   -> size_t -> std::time(0): NB second since Epoch
+    DATA        -> ???
+    DATA SIZE   -> unsigned int -> 2032
+
+Data:
+    +------------------------------------------------------------------------------+
+    |                AUDIO COMPRESSED SAMPLE                |      SAMPLE SIZE     |
+    +------------------------------------------------------------------------------+
+                                    2028B                              4B
+
+    AUDIO COMPRESSED SAMPLE -> array<char>: before compression array<float>
+    SAMPLE SIZE             -> int: Size of sample after compression
