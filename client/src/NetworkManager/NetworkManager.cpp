@@ -37,6 +37,8 @@ void NetworkManager::init()
 
     this->connectServer();
     this->_connectionServer->runAsync();
+    this->_callServer->runAsync();
+    this->_callClient->runAsync();
 }
 
 void NetworkManager::callHangUp()

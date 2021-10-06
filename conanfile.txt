@@ -6,7 +6,7 @@ sqlite_orm/1.6
 
 [options]
 opus:shared = True
-portaudio:shared = True
+#portaudio:shared = True
 
 [imports]
 lib, *.so* -> bin/lib
