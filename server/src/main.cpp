@@ -9,9 +9,9 @@
 
 #include "API.hpp"
 #include "AsioServerTCP.hpp"
+#include "Network.hpp"
 #include "server.hpp"
 #include "utils.hpp"
-#include "Network.hpp"
 
 static void init(Network::DatabaseManager &database, bool &serverLoop)
 {
@@ -38,15 +38,18 @@ int main()
         Network::DatabaseManager database;
 
         init(database, serverLoop);
-    } catch (const std::invalid_argument &e) {
-        std::cerr << "invalid_argument: " << e.what() << std::endl;
-        return EXIT_ERROR;
+
     } catch (const std::out_of_range &e) {
         std::cerr << "out_of_range: " << e.what() << std::endl;
-        return EXIT_ERROR;
+    } catch (const std::invalid_argument &e) {
+        std::cerr << "invalid_argument: " << e.what() << std::endl;
+    } catch (const std::system_error &e) {
+        std::cerr << "out_of_range: " << e.what() << ", " << e.code() << std::endl;
     } catch (const std::runtime_error &e) {
         std::cerr << "runtime_error: " << e.what() << std::endl;
         return EXIT_ERROR;
+    } catch (const std::exception &e) {
+        std::cerr << "exception: " << e.what() << std::endl;
     } catch (...) {
         std::cerr << "catch error" << std::endl;
         return EXIT_ERROR;
