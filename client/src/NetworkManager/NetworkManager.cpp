@@ -11,7 +11,8 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _connectionServer(nullptr), _callServer(nullptr),
+      _callClient(nullptr)
 {
 }
 
@@ -54,7 +55,7 @@ void NetworkManager::login(const userNameType &username)
     std::strcpy(_user.ip, Network::IP_USER.c_str());
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
-    tram.setUserList({ this->_user });
+    tram.setUserList({this->_user});
     /// Send to server
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
@@ -68,7 +69,7 @@ void NetworkManager::getUser(const userNameType &username)
     std::strcpy(user.ip, "");
     user.port = 0;
     TCPTram tram(TramAction::GET, TramType::USER);
-    tram.setUserList({ user });
+    tram.setUserList({user});
     /// Send to server
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
@@ -97,7 +98,7 @@ void NetworkManager::newContact(const userNameType &contactName)
     std::strncpy(contact.contactName, contactName.toStdString().c_str(), USERNAME_SIZE);
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::CONTACT);
-    tram.setContactList({ contact });
+    tram.setContactList({contact});
     /// Send
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
@@ -117,7 +118,7 @@ void NetworkManager::removeContact(const userNameType &contactName)
     std::strncpy(contact.contactName, contactName.toStdString().c_str(), USERNAME_SIZE);
     /// Create tram
     TCPTram tram(TramAction::DELETE, TramType::CONTACT);
-    tram.setContactList({ contact });
+    tram.setContactList({contact});
     /// Send
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
@@ -158,7 +159,7 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
     // TODO : get call UserRaw members (with _audioManager)
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
-    tram.setUserList({ /* TODO */ });
+    tram.setUserList({/* TODO */});
     ///     Send contact list
     this->_callClient->connect(target.ip, Network::PORT_CALL_SERVER);
     this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, Network::PORT_CALL_SERVER);
@@ -166,7 +167,5 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
-
     // TODO : update call member list => UDP (with _audioManager)
-
 }

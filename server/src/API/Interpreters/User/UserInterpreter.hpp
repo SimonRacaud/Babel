@@ -17,12 +17,12 @@ namespace Network
         UserInterpreter(IConnection<PACKETSIZE> &network, DatabaseManager &databaseManager);
         ~UserInterpreter() = default;
 
-        void GET(const TramTCP &tram, const string &ip, const size_t &port);
-        void POST(const TramTCP &tram, const string &ip, const size_t &port);
-        void DELETE(const TramTCP &tram, const string &ip, const size_t &port);
+        void GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
+        void POST(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
+        void DELETE(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
 
       protected:
-        void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port);
+        void _send(const TCPTram &data, const string &ip, const size_t &port);
 
       private:
         DatabaseManager &_databaseManager;

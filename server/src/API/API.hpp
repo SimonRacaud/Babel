@@ -14,7 +14,6 @@
 #include "Contact/ContactInterpreter.hpp"
 #include "IAPI.hpp"
 #include "User/UserInterpreter.hpp"
-#include "tram.hpp"
 
 namespace Network
 {
@@ -26,10 +25,9 @@ namespace Network
         void operator()(const std::array<char, PACKETSIZE> &data, const string &ip = "", const size_t port = 0);
 
       private:
-        const TramTCP _dataFilter(const std::array<char, PACKETSIZE> &data) const;
-        void _get(const TramTCP &tram, const string &ip, const size_t &port);
-        void _post(const TramTCP &tram, const string &ip, const size_t &port);
-        void _delete(const TramTCP &tram, const string &ip, const size_t &port);
+        void _get(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
+        void _post(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
+        void _delete(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
 
         DatabaseManager &_databaseManager;
         IConnection<PACKETSIZE> &_network;
