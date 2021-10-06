@@ -73,6 +73,8 @@ set(CLIENT_SRCS
     ${SRC_CLIENT}/gui/Dialogue/DialogueBox.cpp
     ${SRC_CLIENT}/gui/Dialogue/DialogueBox.hpp
     both/src/TcpTram.cpp
+    both/src/UserRaw.cpp
+    both/src/ContactRaw.cpp
 )
 
 add_executable(${CLIENT} ${CLIENT_SRCS})
@@ -85,6 +87,8 @@ set(SERVER_SRCS
     ${SRC_SERVER}/API/Interpreters/User/UserInterpreter.cpp
     ${SRC_SERVER}/API/Interpreters/Contact/ContactInterpreter.cpp
     both/src/TcpTram.cpp
+    both/src/UserRaw.cpp
+    both/src/ContactRaw.cpp
 )
 add_executable(${SERVER} ${SERVER_SRCS})
 

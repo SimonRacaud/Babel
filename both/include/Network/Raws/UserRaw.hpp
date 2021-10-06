@@ -11,7 +11,7 @@
 #include "utils.hpp"
 
 #define USERNAME_SIZE 42
-#define IP_SIZE 15
+#define IP_SIZE       15
 
 struct UserRaw {
     char username[USERNAME_SIZE];
@@ -23,5 +23,7 @@ struct UserRaw {
         return this->port == RValue.port && string(this->ip) == string(RValue.ip) && string(this->username) == string(RValue.username);
     }
 };
+
+std::ostream &operator<<(std::ostream &stream, const UserRaw &userRaw);
 
 #endif // USERRAW_HPP
