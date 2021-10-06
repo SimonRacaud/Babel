@@ -150,9 +150,7 @@ void NetworkManager::mustBeConnected() const
 
 void NetworkManager::connectServer()
 {
-    if (!this->_connectionServer) {
-        this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
-    }
+    this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
 }
 
 void NetworkManager::slotLogged(UserType const &user)
