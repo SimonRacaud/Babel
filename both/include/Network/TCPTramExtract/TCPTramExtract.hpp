@@ -25,7 +25,8 @@ namespace Network
                 throw std::invalid_argument("Invalid PACKETSIZE");
             std::memcpy(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
             if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size)
-                throw std::invalid_argument("Invalid _tram");
+                throw std::invalid_argument("Invalid _tram: PACKETSIZE (" + myToString(PACKETSIZE) + ") < "
+                    + myToString(sizeof(Network::TramTCP) + this->_tram.list_size));
         }
 
         ~TCPTramExtract() = default;
