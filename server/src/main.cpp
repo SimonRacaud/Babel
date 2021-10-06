@@ -5,6 +5,11 @@
 ** Server side of Babel
 */
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 #include <iostream>
 
 #include "API.hpp"
@@ -26,6 +31,8 @@ static void init(Network::DatabaseManager &database, bool &serverLoop)
 
         if (std::get<1>(recvData) > 0)
             api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
+        else
+            usleep(1000);
     }
     serv.stopRunAsync();
 }
