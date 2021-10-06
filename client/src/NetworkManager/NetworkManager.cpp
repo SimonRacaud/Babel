@@ -11,15 +11,17 @@
 using namespace Network;
 
 NetworkManager::NetworkManager()
-    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(),
-      _connectionServer(nullptr), _callServer(nullptr), _callClient(nullptr)
+    : _logged(false), _audioManager(PORT_UDP_RECEIVE), _user({0}), _callInProgress(false), _calledUser(), _connectionServer(nullptr),
+      _callServer(nullptr), _callClient(nullptr)
 {
 }
 
 NetworkManager::~NetworkManager()
 {
-    if (this->_connectionServer)
+    if (this->_connectionServer) {
+        this->_connectionServer->stopRunAsync();
         this->_connectionServer.reset();
+    }
     this->_callServer.reset();
     this->_callClient.reset();
 }
@@ -34,6 +36,7 @@ void NetworkManager::init()
     this->_callClient = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
 
     this->connectServer();
+    this->_connectionServer->runAsync();
 }
 
 void NetworkManager::callHangUp()
@@ -76,6 +79,7 @@ TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
     if (size != BUFFER_SIZE) {
         throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
     }
+    std::cerr << "receive filled data from server" << std::endl;
     return tram;
 }
 
@@ -164,7 +168,6 @@ void NetworkManager::slotLogged(UserType const &user)
     /// Ask for user contacts
     TCPTram tram(TramAction::GET, TramType::CONTACT);
     _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
-
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)
@@ -205,6 +208,6 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
         this->sendCallMemberList(target);
     } else {
         emit this->sigCallSuccess(list); // update gui
-        this->_callInProgress = false; // I already have sent my call member list.
+        this->_callInProgress = false;   // I already have sent my call member list.
     }
 }
