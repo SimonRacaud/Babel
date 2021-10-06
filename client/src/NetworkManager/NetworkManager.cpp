@@ -22,7 +22,9 @@ NetworkManager::~NetworkManager()
         this->_connectionServer->stopRunAsync();
         this->_connectionServer.reset();
     }
+    this->_callServer->stopRunAsync();
     this->_callServer.reset();
+    this->_callClient->stopRunAsync();
     this->_callClient.reset();
 }
 
