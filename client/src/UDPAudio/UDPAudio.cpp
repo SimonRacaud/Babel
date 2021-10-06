@@ -8,7 +8,7 @@
 #include "UDPAudio.hpp"
 #include "tools/tramFactory.hpp"
 
-UDPAudio::UDPAudio(size_t port) :
+UDPAudio::UDPAudio(size_t port) : _port(port),
 _input(std::make_unique<Audio::InputAudioManager>()),
 _output(std::make_unique<Audio::OutputAudioManager>()),
 _network(std::make_unique<NetworkComponent>(port)),
@@ -54,6 +54,13 @@ void UDPAudio::removeUser(const UserRaw &user)
             this->_list.erase(this->_list.begin() + i);
         }
     }
+}
+
+void UDPAudio::closeConnections()
+{
+    this->_network = std::make_unique<NetworkComponent>(_port);
+    this->_list.clear();
+    this->_sending = false;
 }
 
 void UDPAudio::streamAudio()
