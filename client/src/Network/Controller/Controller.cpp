@@ -22,7 +22,7 @@ Controller::Controller(NetworkManager &manager) : _manager(manager)
     QObject::connect(worker, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
     QObject::connect(worker, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
     QObject::connect(worker, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
-    //QObject::connect(worker, &NetworkWorker::networkRequestFailed, _manager, &NetworkManager::);
+    QObject::connect(worker, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
     workerThread.start();
 }
 
@@ -30,4 +30,9 @@ Controller::~Controller()
 {
     workerThread.quit();
     workerThread.wait();
+}
+
+void Controller::showDialogue(QString const &message) const
+{
+    GUI::DialogueBox::error(message);
 }

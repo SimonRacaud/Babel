@@ -13,6 +13,7 @@
 #include <vector>
 #include "UserRaw.hpp"
 #include "ContactRaw.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 
 namespace Network
 {
@@ -24,6 +25,10 @@ namespace Network
 
       public slots:
         void work();
+
+      private:
+        void processServerCommunication();
+        void processClientCommunication();
 
       signals:
         void contactAdded(ContactRaw const &contact);

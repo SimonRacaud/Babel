@@ -31,7 +31,6 @@ class TCPTramExtract
 
         template <typename type> std::vector<type> getListOf() const
         {
-            type tmp;
             std::vector<type> list;
             size_t size = this->_tram.list_size / sizeof(type);
 
@@ -42,6 +41,16 @@ class TCPTramExtract
             list = std::vector<type>(size * sizeof(type));
             std::memmove(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return list;
+        }
+
+        Network::TramAction getAction() const
+        {
+            return _tram.action;
+        }
+
+        Network::TramType getType() const
+        {
+            return _tram.type;
         }
 
         bool isCorrectTram() const

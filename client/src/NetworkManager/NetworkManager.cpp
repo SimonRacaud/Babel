@@ -60,6 +60,37 @@ void NetworkManager::login(const userNameType &username)
     _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
 }
 
+void NetworkManager::streamAudio()
+{
+    this->_audioManager.streamAudio();
+}
+
+TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
+{
+        auto [data, size, ip, port] = this->_connectionServer->receiveAny();
+        TCPTramExtract tram(data);
+
+        if (size != BUFFER_SIZE) {
+            throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
+        }
+        return tram;
+}
+
+std::tuple<TCPTramExtract<BUFFER_SIZE>, UserRaw> NetworkManager::receiveFromClient()
+{
+    auto [data, size, ip, port] = this->_callServer->receiveAny();
+    TCPTramExtract tram(data);
+    UserRaw user;
+
+    if (size != BUFFER_SIZE) {
+        throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
+    }
+    strcpy(user.username, "");
+    strncpy(user.ip, (ip.c_str()), USERNAME_SIZE);
+    user.port = port;
+    return std::make_tuple(tram, user);
+}
+
 void NetworkManager::getUser(const userNameType &username)
 {
     this->mustBeConnected();

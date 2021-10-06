@@ -18,6 +18,7 @@
 #include "INetworkManager.hpp"
 
 #include "Network/TCPTram/TcpTram.hpp"
+#include "Network/TCPTramExtract/TCPTramExtract.hpp"
 #include "UserRaw.hpp"
 #include "UDPAudio/UDPAudio.hpp"
 
@@ -49,6 +50,11 @@ namespace Network
         void callUser(const userNameType &username);
         void newContact(const userNameType &contactName);
         void removeContact(const userNameType &contactName);
+
+        /// Receive requests
+        void streamAudio();
+        TCPTramExtract<BUFFER_SIZE> receiveFromServer() const;
+        std::tuple<TCPTramExtract<BUFFER_SIZE>, UserType> receiveFromClient();
 
       private:
         void mustBeConnected() const;
