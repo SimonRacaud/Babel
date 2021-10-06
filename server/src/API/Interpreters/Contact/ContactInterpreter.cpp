@@ -65,9 +65,9 @@ void ContactInterpreter<PACKETSIZE>::DELETE(
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
 {
     if (ip == "" && port == 0)
-        this->_network.sendAll(*tram.template getBuffer<PACKETSIZE>());
+        this->_network.sendAll(tram.template getBuffer<PACKETSIZE>());
     else
-        this->_network.send(*tram.template getBuffer<PACKETSIZE>(), ip, port);
+        this->_network.send(tram.template getBuffer<PACKETSIZE>(), ip, port);
 }
 
 template class ContactInterpreter<Network::BUFFER_SIZE>;

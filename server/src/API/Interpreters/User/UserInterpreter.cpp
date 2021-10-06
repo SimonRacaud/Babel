@@ -54,9 +54,9 @@ void UserInterpreter<PACKETSIZE>::DELETE(
 template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
 {
     if (ip == "" && port == 0)
-        this->_network.sendAll(*(tram.getBuffer<PACKETSIZE>().get()));
+        this->_network.sendAll(tram.getBuffer<PACKETSIZE>());
     else
-        this->_network.send(*(tram.getBuffer<PACKETSIZE>().get()), ip, port);
+        this->_network.send(tram.getBuffer<PACKETSIZE>(), ip, port);
 }
 
 template class UserInterpreter<Network::BUFFER_SIZE>;

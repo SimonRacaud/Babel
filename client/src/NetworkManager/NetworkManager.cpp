@@ -57,7 +57,9 @@ void NetworkManager::login(const userNameType &username)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({this->_user});
     /// Send to server
-    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+    std::cerr << "la6" << std::endl;
+    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    std::cerr << "la7" << std::endl;
 }
 
 void NetworkManager::streamAudio()
@@ -102,7 +104,7 @@ void NetworkManager::getUser(const userNameType &username)
     TCPTram tram(TramAction::GET, TramType::USER);
     tram.setUserList({user});
     /// Send to server
-    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
 }
 
 void NetworkManager::callUser(const userNameType &username)
@@ -125,7 +127,7 @@ void NetworkManager::newContact(const userNameType &contactName)
     TCPTram tram(TramAction::POST, TramType::CONTACT);
     tram.setContactList({contact});
     /// Send
-    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
 }
 
 void NetworkManager::removeContact(const userNameType &contactName)
@@ -139,7 +141,7 @@ void NetworkManager::removeContact(const userNameType &contactName)
     TCPTram tram(TramAction::DELETE, TramType::CONTACT);
     tram.setContactList({contact});
     /// Send
-    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
 }
 
 void NetworkManager::mustBeConnected() const
@@ -160,7 +162,7 @@ void NetworkManager::slotLogged(UserType const &user)
     emit sigUpdateUsername(QString(user.username));
     /// Ask for user contacts
     TCPTram tram(TramAction::GET, TramType::CONTACT);
-    _connectionServer->sendAll(*tram.getBuffer<Network::BUFFER_SIZE>().get());
+    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
 
 }
 
@@ -184,7 +186,7 @@ void NetworkManager::sendCallMemberList(const UserType &target)
     tram.setUserList(connections);
     ///     Send contact list
     this->_callClient->connect(target.ip, PORT_CALL_SERVER);
-    this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, PORT_CALL_SERVER);
+    this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), target.ip, PORT_CALL_SERVER);
 }
 
 void NetworkManager::slotSendCallMemberList(const UserType &target)
