@@ -21,11 +21,6 @@
 #include "UserRaw.hpp"
 #include "UDPAudio/UDPAudio.hpp"
 
-#define IP_SERVER        "127.0.0.0"
-#define PORT_MAIN_SERVER 8081
-#define PORT_CALL_SERVER 8082
-#define PORT_UDP_RECEIVE 8088
-
 namespace Network
 {
     class NetworkManager : public QObject, public INetworkManager<UserRaw, QString> {

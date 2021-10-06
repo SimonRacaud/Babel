@@ -29,7 +29,7 @@ void NetworkManager::init()
         throw std::logic_error("call init once at the beginning");
     }
     this->_connectionServer = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
-    this->_callServer = std::make_unique<AsioServerTCP<Network::BUFFER_SIZE>>(PORT_CALL_SERVER);
+    this->_callServer = std::make_unique<AsioServerTCP<Network::BUFFER_SIZE>>(Network::PORT_CALL_SERVER);
     this->_callClient = std::make_unique<AsioClientTCP<Network::BUFFER_SIZE>>();
 
     this->connectServer();
@@ -50,8 +50,8 @@ void NetworkManager::login(const userNameType &username)
 {
     /// Update User
     std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
-    _user.port = PORT_CALL_SERVER;
-    std::strcpy(_user.ip, "0.0.0.0");
+    _user.port = Network::PORT_CALL_SERVER;
+    std::strcpy(_user.ip, Network::IP_USER);
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({ this->_user });
@@ -131,7 +131,7 @@ void NetworkManager::mustBeConnected() const
 void NetworkManager::connectServer()
 {
     if (!this->_connectionServer) {
-        this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
+        this->_connectionServer->connect(Network::IP_SERVER, Network::PORT_MAIN_SERVER);
     }
 }
 
@@ -160,8 +160,8 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({ /* TODO */ });
     ///     Send contact list
-    this->_callClient->connect(target.ip, PORT_CALL_SERVER);
-    this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, PORT_CALL_SERVER);
+    this->_callClient->connect(target.ip, Network::PORT_CALL_SERVER);
+    this->_callClient->send(*tram.getBuffer<Network::BUFFER_SIZE>().get(), target.ip, Network::PORT_CALL_SERVER);
 }
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
