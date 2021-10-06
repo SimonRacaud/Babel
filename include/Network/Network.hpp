@@ -34,6 +34,7 @@ namespace Network
             std::memset(this, 0, sizeof(UDPTram_s));
             this->magicNumber = Network::MAGIC_NUMBER;
             this->timestamp = std::time(0);
+            this->dataSize = Network::DATA_SIZE;
         }
         UDPTram_s(void *src)
         {
@@ -41,6 +42,7 @@ namespace Network
             this->magicNumber = Network::MAGIC_NUMBER;
             this->timestamp = std::time(0);
             std::memmove(this->data, src, Network::DATA_SIZE);
+            this->dataSize = Network::DATA_SIZE;
         }
     } UDPTram_t;
 }
