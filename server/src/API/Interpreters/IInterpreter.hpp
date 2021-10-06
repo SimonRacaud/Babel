@@ -10,6 +10,7 @@
 
 #include "DatabaseManager.hpp"
 #include "INetwork.hpp"
+#include "TCPTram/TcpTram.hpp"
 #include "TCPTramExtract/TCPTramExtract.hpp"
 
 namespace Network
@@ -21,7 +22,7 @@ namespace Network
         virtual void DELETE(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port) = 0;
 
       protected:
-        virtual void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port) = 0;
+        virtual void _send(const TCPTram &data, const string &ip, const size_t &port) = 0;
     };
 }; // namespace Network
 

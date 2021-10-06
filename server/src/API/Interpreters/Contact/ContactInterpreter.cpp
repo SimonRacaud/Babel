@@ -21,11 +21,11 @@ ContactInterpreter<PACKETSIZE>::ContactInterpreter(IConnection<PACKETSIZE> &netw
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
+void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
-    const auto &contacts = tram.template getListOf<ContactRaw>();
+    const auto &contacts = tramExtract.template getListOf<ContactRaw>();
     const std::vector<User> &result = this->_databaseManager.getContacts(contacts[0].username);
-    std::array<char, PACKETSIZE> response;
+    std::vector<UserRaw> list;
     UserRaw userRaw;
 
     if (result.size() * sizeof(User) > PACKETSIZE)
@@ -36,35 +36,38 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram,
         std::strcpy(userRaw.ip, result[i].ip.c_str());
         userRaw.port = result[i].port;
 
-        std::memcpy(&(response[i * sizeof(UserRaw)]), &userRaw, sizeof(UserRaw));
+        list.push_back(userRaw);
     }
 
-    this->_send(response, ip, port);
+    TCPTram tram(TramAction::GET, TramType::CONTACT);
+    tram.setUserList(list);
+    this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::POST(
+    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const auto &contacts = tram.template getListOf<ContactRaw>();
+    const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
     this->_databaseManager.newContact(contacts[0].username, contacts[0].contactName);
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::DELETE(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::DELETE(
+    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const auto &contacts = tram.template getListOf<ContactRaw>();
+    const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
     this->_databaseManager.removeContact(contacts[0].username, contacts[0].contactName);
 }
 
-template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port)
+template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
 {
     if (ip == "" && port == 0)
-        this->_network.sendAll(data);
+        this->_network.sendAll(*tram.template getBuffer<PACKETSIZE>());
     else
-        this->_network.send(data, ip, port);
+        this->_network.send(*tram.template getBuffer<PACKETSIZE>(), ip, port);
 }
 
 template class ContactInterpreter<T_PACKETSIZE>;

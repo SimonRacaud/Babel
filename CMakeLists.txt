@@ -45,40 +45,37 @@ include_directories(
 ## SOURCES
 
 set(CLIENT_SRCS
-    client/src/main.cpp
-    client/src/Audio/InputAudioManager/InputAudioManager.cpp
-    client/src/Audio/OutputAudioManager/OutputAudioManager.cpp
-    client/src/gui/Account/Account.cpp
-    client/src/gui/Account/Account.hpp
-    client/src/gui/AddContact/AddContact.cpp
-    client/src/gui/AddContact/AddContact.hpp
-    client/src/gui/CallManager/CallManager.hpp
-    client/src/gui/CallManager/CallManager.cpp
-    client/src/gui/MyContactList/MyContactList.cpp
-    client/src/gui/MyContactList/MyContactList.hpp
-    client/src/gui/MyContactList/Contact/Contact.hpp
-    client/src/gui/MyContactList/Contact/Contact.cpp
-    client/src/gui/Options/Options.cpp
-    client/src/gui/Options/Options.hpp
-    client/src/gui/Window/Window.cpp
-    client/src/gui/Window/Window.hpp
-    client/src/Network/Controller/Controller.cpp
-    client/src/Network/Controller/Controller.hpp
-    client/src/Network/Worker/NetworkWorker.hpp
-    client/src/Network/Worker/NetworkWorker.cpp
-    client/src/Network/TCPTram/TcpTram.cpp
-    client/src/Network/TCPTram/TcpTram.hpp
-    client/src/NetworkManager/NetworkManager.cpp
-    client/src/NetworkManager/NetworkManager.hpp
-    client/src/UDPAudio/UDPAudio.cpp
-    client/src/UDPAudio/tools/tramFactory.hpp
-    client/src/gui/Dialogue/DialogueBox.cpp
-    client/src/gui/Dialogue/DialogueBox.hpp
+    ${SRC_CLIENT}/main.cpp
+    ${SRC_CLIENT}/Audio/InputAudioManager/InputAudioManager.cpp
+    ${SRC_CLIENT}/Audio/OutputAudioManager/OutputAudioManager.cpp
+    ${SRC_CLIENT}/gui/Account/Account.cpp
+    ${SRC_CLIENT}/gui/Account/Account.hpp
+    ${SRC_CLIENT}/gui/AddContact/AddContact.cpp
+    ${SRC_CLIENT}/gui/AddContact/AddContact.hpp
+    ${SRC_CLIENT}/gui/CallManager/CallManager.hpp
+    ${SRC_CLIENT}/gui/CallManager/CallManager.cpp
+    ${SRC_CLIENT}/gui/MyContactList/MyContactList.cpp
+    ${SRC_CLIENT}/gui/MyContactList/MyContactList.hpp
+    ${SRC_CLIENT}/gui/MyContactList/Contact/Contact.hpp
+    ${SRC_CLIENT}/gui/MyContactList/Contact/Contact.cpp
+    ${SRC_CLIENT}/gui/Options/Options.cpp
+    ${SRC_CLIENT}/gui/Options/Options.hpp
+    ${SRC_CLIENT}/gui/Window/Window.cpp
+    ${SRC_CLIENT}/gui/Window/Window.hpp
+    ${SRC_CLIENT}/Network/Controller/Controller.cpp
+    ${SRC_CLIENT}/Network/Controller/Controller.hpp
+    ${SRC_CLIENT}/Network/Worker/NetworkWorker.hpp
+    ${SRC_CLIENT}/Network/Worker/NetworkWorker.cpp
+    ${SRC_CLIENT}/NetworkManager/NetworkManager.cpp
+    ${SRC_CLIENT}/NetworkManager/NetworkManager.hpp
+    ${SRC_CLIENT}/UDPAudio/UDPAudio.cpp
+    ${SRC_CLIENT}/UDPAudio/tools/tramFactory.hpp
+    ${SRC_CLIENT}/gui/Dialogue/DialogueBox.cpp
+    ${SRC_CLIENT}/gui/Dialogue/DialogueBox.hpp
 )
 
 add_executable(${CLIENT} ${CLIENT_SRCS})
 
-file(GLOB_RECURSE SERVER_SRCS server/src/*)
 set(SERVER_SRCS
     ${SRC_SERVER}/main.cpp
     ${SRC_SERVER}/SignalManager.cpp

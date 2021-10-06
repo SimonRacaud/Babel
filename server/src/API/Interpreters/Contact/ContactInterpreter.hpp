@@ -22,7 +22,7 @@ namespace Network
         void DELETE(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port);
 
       protected:
-        void _send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port);
+        void _send(const TCPTram &data, const string &ip, const size_t &port);
 
       private:
         DatabaseManager &_databaseManager;

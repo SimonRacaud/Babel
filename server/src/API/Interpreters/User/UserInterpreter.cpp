@@ -19,43 +19,44 @@ UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, D
 }
 
 template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
+void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
-    const auto &users = tram.template getListOf<UserRaw>();
+    const auto &users = tramExtract.template getListOf<UserRaw>();
     const User &result = this->_databaseManager.getUser(users[0].username);
+    std::vector<UserRaw> list;
     UserRaw resultRaw;
     std::strcpy(resultRaw.username, result.username.c_str());
     std::strcpy(resultRaw.ip, result.ip.c_str());
     resultRaw.port = result.port;
 
-    std::array<char, PACKETSIZE> response;
-
-    std::memcpy(response.data(), &resultRaw, sizeof(UserRaw));
-    this->_send(response, ip, port);
+    list.push_back(resultRaw);
+    TCPTram tram(TramAction::GET, TramType::USER);
+    tram.setUserList(list);
+    this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
+void UserInterpreter<PACKETSIZE>::POST(
+    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
 {
-    const auto &users = tram.template getListOf<UserRaw>();
+    const auto &users = tramExtract.template getListOf<UserRaw>();
 
     this->_databaseManager.setUser(users[0].username, users[0].ip, users[0].port);
 }
 
 template <size_t PACKETSIZE>
 void UserInterpreter<PACKETSIZE>::DELETE(
-    UNUSED const TCPTramExtract<PACKETSIZE> &tram, UNUSED const string &ip, UNUSED const size_t &port)
+    UNUSED const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
 {
     throw std::runtime_error("Method not override");
 }
 
-template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::_send(const std::array<char, PACKETSIZE> &data, const string &ip, const size_t &port)
+template <size_t PACKETSIZE> void UserInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
 {
     if (ip == "" && port == 0)
-        this->_network.sendAll(data);
+        this->_network.sendAll(*tram.template getBuffer<PACKETSIZE>());
     else
-        this->_network.send(data, ip, port);
+        this->_network.send(*tram.template getBuffer<PACKETSIZE>(), ip, port);
 }
 
 template class UserInterpreter<T_PACKETSIZE>;
