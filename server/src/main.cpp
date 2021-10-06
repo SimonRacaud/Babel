@@ -38,6 +38,15 @@ int main()
         Network::DatabaseManager database;
 
         init(database, serverLoop);
+    } catch (const std::invalid_argument &e) {
+        std::cerr << "invalid_argument: " << e.what() << std::endl;
+        return EXIT_ERROR;
+    } catch (const std::out_of_range &e) {
+        std::cerr << "out_of_range: " << e.what() << std::endl;
+        return EXIT_ERROR;
+    } catch (const std::runtime_error &e) {
+        std::cerr << "runtime_error: " << e.what() << std::endl;
+        return EXIT_ERROR;
     } catch (...) {
         std::cerr << "catch error" << std::endl;
         return EXIT_ERROR;

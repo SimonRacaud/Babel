@@ -24,8 +24,11 @@ namespace Network
             if (PACKETSIZE < sizeof(Network::TramTCP))
                 throw std::invalid_argument("Invalid PACKETSIZE");
             std::memcpy(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
-            if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size)
+            if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size) {
+                std::cerr << PACKETSIZE << " < " << sizeof(Network::TramTCP) + this->_tram.list_size << std::endl;
+                std::cerr << "list size: " << this->_tram.list_size << std::endl;
                 throw std::invalid_argument("Invalid _tram");
+            }
         }
 
         ~TCPTramExtract() = default;
@@ -35,8 +38,11 @@ namespace Network
             std::vector<type> list;
             size_t size = this->_tram.list_size / sizeof(type);
 
-            if (!size)
+            if (!size) {
+                std::cerr << this->_tram.list_size << " / " << sizeof(type) << " = " << size << std::endl;
+                std::cerr << "list size: " << this->_tram.list_size << " -> " << this->_tram.list_size / sizeof(type) << std::endl;
                 throw std::invalid_argument("Invalid type: Too big");
+            }
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
             list = std::vector<type>(size * sizeof(type));

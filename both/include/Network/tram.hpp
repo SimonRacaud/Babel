@@ -28,7 +28,7 @@ namespace Network
     const std::size_t TRAM_SIZE_SHIFT = sizeof(TramAction) + sizeof(TramType)
         + sizeof(bool) + sizeof(size_t);
 
-    struct TramTCP {
+    struct __attribute__((packed)) TramTCP {
         TramAction action;
         TramType type;
         bool error;

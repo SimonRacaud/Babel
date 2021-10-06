@@ -39,7 +39,7 @@ void TCPTram::setContactList(std::vector<ContactRaw> const &list)
     _contactPtr = new ContactRaw [list.size()];
     _tram.type = TramType::CONTACT;
     _tram.list = _contactPtr;
-    _tram.list_size = list.size();
+    _tram.list_size = list.size() * sizeof(ContactRaw);
     for (size_t i = 0; i < list.size(); i++) {
         _contactPtr[i] = list[i];
     }
@@ -51,7 +51,7 @@ void TCPTram::setUserList(std::vector<UserRaw> const &list)
     _userPtr = new UserRaw [list.size()];
     _tram.type = TramType::USER;
     _tram.list = _userPtr;
-    _tram.list_size = list.size();
+    _tram.list_size = list.size() * sizeof(UserRaw);
     for (size_t i = 0; i < list.size(); i++) {
         _userPtr[i] = list[i];
     }
