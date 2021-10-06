@@ -23,7 +23,7 @@ namespace Network
         {
             if (PACKETSIZE < sizeof(Network::TramTCP))
                 throw std::invalid_argument("Invalid PACKETSIZE");
-            std::memmove(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
+            std::memcpy(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
             if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size)
                 throw std::invalid_argument("Invalid _tram");
         }
@@ -56,7 +56,7 @@ namespace Network
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
             list = std::vector<type>(size * sizeof(type));
-            std::memmove(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            std::memcpy(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return list;
         }
 
@@ -71,7 +71,7 @@ namespace Network
 
             if (this->isCorrectTram())
                 throw std::invalid_argument("No error is correct tram");
-            std::memmove(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            std::memcpy(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return output;
         }
 
