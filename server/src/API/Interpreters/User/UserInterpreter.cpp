@@ -30,18 +30,18 @@ void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtr
     resultRaw.port = result.port;
 
     list.push_back(resultRaw);
-    TCPTram tram(TramAction::GET, TramType::USER);
+    TCPTram tram(tramExtract.getAction(), tramExtract.getType());
     tram.setUserList(list);
     this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
-void UserInterpreter<PACKETSIZE>::POST(
-    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
+void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &users = tramExtract.template getListOf<UserRaw>();
 
     this->_databaseManager.setUser(users[0].username, users[0].ip, users[0].port);
+    this->GET(tramExtract, ip, port);
 }
 
 template <size_t PACKETSIZE>
