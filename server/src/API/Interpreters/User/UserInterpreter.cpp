@@ -21,31 +21,17 @@ UserInterpreter<PACKETSIZE>::UserInterpreter(IConnection<PACKETSIZE> &network, D
 template <size_t PACKETSIZE>
 void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
-    std::cout << "in GET() : " << std::endl;
-
     const auto &users = tramExtract.template getListOf<UserRaw>();
-    std::cout << "users[0].username : " << users[0].username << std::endl;
-    //
+    std::cout << "GET USER: " << users[0] << std::endl;
     const User &result = this->_databaseManager.getUser(users[0].username);
-    //
-    std::vector<UserRaw> list;
     UserRaw resultRaw;
-    std::strcpy(resultRaw.username, result.username.c_str());
-    std::cout << "resultRaw.username : " << resultRaw.username << std::endl;
-    std::strcpy(resultRaw.ip, result.ip.c_str());
 
+    std::strcpy(resultRaw.username, result.username.c_str());
+    std::strcpy(resultRaw.ip, result.ip.c_str());
     resultRaw.port = result.port;
-    list.push_back(resultRaw);
-    for (const auto &item : list) {
-        std::cout << "item.username : " << item.username << std::endl;
-        std::cout << "item.ip : " << item.ip << std::endl;
-        std::cout << "item.port : " << item.port << std::endl;
-    }
+
     TCPTram tram(tramExtract.getAction(), tramExtract.getType());
-    tram.setUserList(list);
-    std::cout << "get buffer : " << std::endl;
-    std::cout.write(tram.getBuffer<PACKETSIZE>().data(), PACKETSIZE);
-    std::cout << " | end of buffer" << std::endl;
+    tram.setUserList(std::vector<UserRaw>({resultRaw}));
     this->_send(tram, ip, port);
 }
 
@@ -54,10 +40,7 @@ void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExt
 {
     const auto &users = tramExtract.template getListOf<UserRaw>();
 
-    std::cout << "POST()" << std::endl;
-    std::cout << " users[0].username : " << users[0].username << std::endl;
-    std::cout << " users[0].ip : " << users[0].ip << std::endl;
-    std::cout << " users[0].port : " << users[0].port << std::endl;
+    std::cout << "POST USER: " << users[0] << std::endl;
     this->_databaseManager.setUser(users[0].username, users[0].ip, users[0].port);
     this->GET(tramExtract, ip, port);
 }
