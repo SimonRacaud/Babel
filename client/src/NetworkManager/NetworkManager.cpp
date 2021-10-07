@@ -83,12 +83,6 @@ TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
         throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
     }
     std::cerr << "received data from server : " << std::endl;
-    std::cerr << "size : " << size << std::endl;
-    std::cerr << "data.data() : " << std::endl;
-    std::cerr.write(data.data(), size);
-    std::cerr << " | end of data" << std::endl;
-    std::cerr << "ip : " << ip << std::endl;
-    std::cerr << "port : " << port << std::endl;
     return tram;
 }
 
