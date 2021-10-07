@@ -38,11 +38,6 @@ namespace Network
             if (_tram.type == TramType::USER && _userPtr) {
                 UserRaw *ptr = (UserRaw *) (((char *) content) + TRAM_SIZE_SHIFT);
 
-                std::cout << "in getBuffer() " << std::endl;
-                std::cout << "_userPtr : " << std::endl;
-                std::cout << _userPtr[0].username << std::endl;
-                std::cout << _userPtr[0].ip << std::endl;
-                std::cout << _userPtr[0].port << std::endl;
                 std::memcpy(ptr, _userPtr, _tram.list_size);
                 //                for (size_t i = 0; i < _tram.list_size / sizeof(UserRaw); i += sizeof(UserRaw)) {
                 //                    ptr[i] = _userPtr[i];

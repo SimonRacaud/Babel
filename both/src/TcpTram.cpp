@@ -56,15 +56,5 @@ void TCPTram::setUserList(std::vector<UserRaw> const &list)
     //
     for (size_t i = 0; i < list.size(); i++) {
         _userPtr[i] = list[i];
-
-        std::cout << "in setUserList() " << std::endl;
-        std::cout << "_userPtr : " << std::endl;
-        std::cout << _userPtr[i].username << std::endl;
-        std::cout << _userPtr[i].ip << std::endl;
-        std::cout << _userPtr[i].port << std::endl;
-        std::cout << "list : " << std::endl;
-        std::cout << list[i].username << std::endl;
-        std::cout << list[i].ip << std::endl;
-        std::cout << list[i].port << std::endl;
     }
 }
