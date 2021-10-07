@@ -45,7 +45,7 @@ namespace Network
             }
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
-            list = std::vector<type>(this->_tram.list_size);
+            list = std::vector<type>(size);
             std::memcpy(list.data(), this->_buf.data() + Network::TRAM_SIZE_SHIFT, this->_tram.list_size);
             return list;
         }
