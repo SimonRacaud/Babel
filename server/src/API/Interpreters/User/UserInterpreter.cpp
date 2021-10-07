@@ -22,16 +22,23 @@ template <size_t PACKETSIZE>
 void UserInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &users = tramExtract.template getListOf<UserRaw>();
-    std::cout << "GET USER: " << users[0] << std::endl;
-    const User &result = this->_databaseManager.getUser(users[0].username);
+    std::vector<UserRaw> list;
     UserRaw resultRaw;
 
-    std::strcpy(resultRaw.username, result.username.c_str());
-    std::strcpy(resultRaw.ip, result.ip.c_str());
-    resultRaw.port = result.port;
+    for (const UserRaw &user : users) {
+        std::cout << "GET USER: " << user << std::endl;
+        const User &result = this->_databaseManager.getUser(user.username);
+
+        bzero(&resultRaw, sizeof(UserRaw));
+        std::strcpy(resultRaw.username, result.username.c_str());
+        std::strcpy(resultRaw.ip, result.ip.c_str());
+        resultRaw.port = result.port;
+
+        list.push_back(resultRaw);
+    }
 
     TCPTram tram(tramExtract.getAction(), tramExtract.getType());
-    tram.setUserList(std::vector<UserRaw>({resultRaw}));
+    tram.setUserList(list);
     this->_send(tram, ip, port);
 }
 
@@ -40,8 +47,10 @@ void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExt
 {
     const auto &users = tramExtract.template getListOf<UserRaw>();
 
-    std::cout << "POST USER: " << users[0] << std::endl;
-    this->_databaseManager.setUser(users[0].username, users[0].ip, users[0].port);
+    for (const UserRaw &user : users) {
+        std::cout << "POST USER: " << user << std::endl;
+        this->_databaseManager.setUser(user.username, user.ip, user.port);
+    }
     this->GET(tramExtract, ip, port);
 }
 
