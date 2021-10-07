@@ -34,7 +34,7 @@ namespace Network
 
         void connect(std::shared_ptr<tcp::socket> newConnection, const asio::error_code &error)
         {
-            std::cerr << "error accepted user" << std::endl;
+            std::cerr << "Received connection request" << std::endl;
             if (error)
                 return; // todo check errors
 

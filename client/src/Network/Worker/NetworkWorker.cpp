@@ -18,11 +18,10 @@ NetworkWorker::NetworkWorker(QObject *parent) : QThread(parent)
 void NetworkWorker::run()
 {
     while (!this->isInterruptionRequested()) {
-        std::cerr << "Is it call?" << std::endl;
         try {
             networkManager.streamAudio();
         } catch (std::exception const &e) {
-            std::cerr << "An exception occured. " << e.what() << std::endl;
+            std::cerr << "An exception occurred whith networkManager.streamAudio()" << e.what() << std::endl;
         }
         try {
             this->processClientCommunication();
@@ -42,7 +41,7 @@ void NetworkWorker::processServerCommunication()
     TramType type = data.getType();
 
     if (data.isCorrectTram() == false) {
-         emit networkRequestFailed(QString(data.getStrError().c_str()));
+        emit networkRequestFailed(QString(data.getStrError().c_str()));
     } else {
         if (action == TramAction::GET) {
             if (type == TramType::USER) {

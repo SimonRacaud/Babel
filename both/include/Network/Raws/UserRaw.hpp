@@ -13,7 +13,7 @@
 #define USERNAME_SIZE 42
 #define IP_SIZE       15
 
-struct UserRaw {
+struct __attribute__((packed)) /* todo #define for windows compilation */ UserRaw {
     char username[USERNAME_SIZE];
     char ip[IP_SIZE];
     size_t port;

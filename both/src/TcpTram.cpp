@@ -1,4 +1,4 @@
-/*
+/*4
 ** EPITECH PROJECT , 2021
 ** TCPTram
 ** File description:
@@ -36,7 +36,7 @@ void TCPTram::destroyBody() noexcept
 void TCPTram::setContactList(std::vector<ContactRaw> const &list)
 {
     this->destroyBody();
-    _contactPtr = new ContactRaw [list.size()];
+    _contactPtr = new ContactRaw[list.size()];
     _tram.type = TramType::CONTACT;
     _tram.list = _contactPtr;
     _tram.list_size = list.size() * sizeof(ContactRaw);
@@ -48,11 +48,23 @@ void TCPTram::setContactList(std::vector<ContactRaw> const &list)
 void TCPTram::setUserList(std::vector<UserRaw> const &list)
 {
     this->destroyBody();
-    _userPtr = new UserRaw [list.size()];
+    _userPtr = new UserRaw[list.size()];
     _tram.type = TramType::USER;
     _tram.list = _userPtr;
     _tram.list_size = list.size() * sizeof(UserRaw);
+    //    std::memcpy(_userPtr, list.data(), list.size());
+    //
     for (size_t i = 0; i < list.size(); i++) {
         _userPtr[i] = list[i];
+
+        std::cout << "in setUserList() " << std::endl;
+        std::cout << "_userPtr : " << std::endl;
+        std::cout << _userPtr[i].username << std::endl;
+        std::cout << _userPtr[i].ip << std::endl;
+        std::cout << _userPtr[i].port << std::endl;
+        std::cout << "list : " << std::endl;
+        std::cout << list[i].username << std::endl;
+        std::cout << list[i].ip << std::endl;
+        std::cout << list[i].port << std::endl;
     }
 }

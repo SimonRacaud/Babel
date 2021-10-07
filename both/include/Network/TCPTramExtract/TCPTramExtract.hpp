@@ -45,8 +45,8 @@ namespace Network
             }
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
-            list = std::vector<type>(size * sizeof(type));
-            std::memcpy(list.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            list = std::vector<type>(this->_tram.list_size);
+            std::memcpy(list.data(), this->_buf.data() + Network::TRAM_SIZE_SHIFT, this->_tram.list_size);
             return list;
         }
 
@@ -70,9 +70,20 @@ namespace Network
             std::string output = "";
 
             if (this->isCorrectTram())
-                throw std::invalid_argument("No error is correct tram");
+                throw std::invalid_argument("No error, tram is correct");
             std::memcpy(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
             return output;
+        }
+
+        void dump() const
+        {
+            std::cout << "Action : " << int(_tram.action) << std::endl;
+            std::cout << "Type : " << int(_tram.type) << std::endl;
+            std::cout << "error : " << _tram.error << std::endl;
+            std::cout << "data :";
+            //            std::cout.write((const char *) (_tram.list), sizeof(UserRaw));
+            std::cout.write(_buf.data(), PACKETSIZE);
+            std::cout << std::endl;
         }
 
       private:

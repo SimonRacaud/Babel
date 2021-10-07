@@ -79,11 +79,17 @@ TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
     auto [data, size, ip, port] = this->_connectionServer->receiveAny();
     TCPTramExtract tram(data);
 
-    std::cerr << "receive data from master server" << std::endl;
+    //    std::cerr << "receiving data from master server" << std::endl;
     if (size != BUFFER_SIZE) {
         throw std::invalid_argument("NetworkManager::receiveFromServer : invalid tram size");
     }
-    std::cerr << "receive filled data from server" << std::endl;
+    std::cerr << "received data from server : " << std::endl;
+    std::cerr << "size : " << size << std::endl;
+    std::cerr << "data.data() : " << std::endl;
+    std::cerr.write(data.data(), size);
+    std::cerr << " | end of data" << std::endl;
+    std::cerr << "ip : " << ip << std::endl;
+    std::cerr << "port : " << port << std::endl;
     return tram;
 }
 

@@ -7,8 +7,8 @@
 #ifndef BABEL_ASIOCLIENTTCP_HPP
 #define BABEL_ASIOCLIENTTCP_HPP
 
+#include <iostream>
 #include "AsioConnectionTCP.hpp"
-
 namespace Network
 {
     template <std::size_t PACKETSIZE> class AsioClientTCP : public AsioConnectionTCP<PACKETSIZE> {
@@ -26,6 +26,7 @@ namespace Network
                 /**
                  * @brief server is not active
                  */
+                std::cout << "failed to connect" << std::endl;
                 return;
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);

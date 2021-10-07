@@ -49,10 +49,14 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PA
 {
     std::cout << "POST" << std::endl;
     switch (tram.getType()) {
-        case TramType::USER: std::cerr << "USER" << std::endl; break;
+        case TramType::USER:
+            std::cerr << "USER"
+                      << " | ip " << ip << " | port " << port << std::endl;
+            break;
         case TramType::CONTACT: std::cerr << "CONTACT" << std::endl; break;
         default: std::cerr << "UNKNOWN" << std::endl;
     }
+    tram.dump();
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.POST(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.POST(tram, ip, port); break;

@@ -6,9 +6,9 @@
 */
 
 #ifdef _WIN32
-#include <Windows.h>
+    #include <Windows.h>
 #else
-#include <unistd.h>
+    #include <unistd.h>
 #endif
 #include <iostream>
 
@@ -29,9 +29,10 @@ static void init(Network::DatabaseManager &database, bool &serverLoop)
     while (serverLoop) {
         auto recvData = serv.receiveAny();
 
-        if (std::get<1>(recvData) > 0)
+        if (std::get<1>(recvData) > 0) {
+            std::cout << "server received data" << std::endl;
             api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
-        else
+        } else
             usleep(1000);
     }
     serv.stopRunAsync();
