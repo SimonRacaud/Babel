@@ -24,6 +24,7 @@ template <size_t PACKETSIZE>
 void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
+    std::cout << "GET CONTACT: " << contacts[0] << std::endl;
     const std::vector<User> &result = this->_databaseManager.getContacts(contacts[0].username);
     std::vector<UserRaw> list;
     UserRaw userRaw;
@@ -39,27 +40,29 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramE
         list.push_back(userRaw);
     }
 
-    TCPTram tram(TramAction::GET, TramType::CONTACT);
+    TCPTram tram(tramExtract.getAction(), tramExtract.getType());
     tram.setUserList(list);
     this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::POST(
-    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
+    std::cout << "POST CONTACT: " << contacts[0] << std::endl;
     this->_databaseManager.newContact(contacts[0].username, contacts[0].contactName);
+    this->GET(tramExtract, ip, port);
 }
 
 template <size_t PACKETSIZE>
-void ContactInterpreter<PACKETSIZE>::DELETE(
-    const TCPTramExtract<PACKETSIZE> &tramExtract, UNUSED const string &ip, UNUSED const size_t &port)
+void ContactInterpreter<PACKETSIZE>::DELETE(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
+    std::cout << "DELETE CONTACT: " << contacts[0] << std::endl;
     this->_databaseManager.removeContact(contacts[0].username, contacts[0].contactName);
+    this->GET(tramExtract, ip, port);
 }
 
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
