@@ -24,20 +24,23 @@ template <size_t PACKETSIZE>
 void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
-    std::cout << "GET CONTACT: " << contacts[0] << std::endl;
-    const std::vector<User> &result = this->_databaseManager.getContacts(contacts[0].username);
     std::vector<UserRaw> list;
     UserRaw userRaw;
 
-    if (result.size() * sizeof(User) > PACKETSIZE)
-        throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
-    for (size_t i = 0; i < result.size(); i++) {
-        bzero(&userRaw, sizeof(UserRaw));
-        std::strcpy(userRaw.username, result[i].username.c_str());
-        std::strcpy(userRaw.ip, result[i].ip.c_str());
-        userRaw.port = result[i].port;
+    for (const ContactRaw &contact : contacts) {
+        std::cout << "GET CONTACT: " << contact << std::endl;
+        const std::vector<User> &result = this->_databaseManager.getContacts(contact.username);
 
-        list.push_back(userRaw);
+        if (result.size() * sizeof(UserRaw) > PACKETSIZE)
+            throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
+        for (size_t i = 0; i < result.size(); i++) {
+            bzero(&userRaw, sizeof(UserRaw));
+            std::strcpy(userRaw.username, result[i].username.c_str());
+            std::strcpy(userRaw.ip, result[i].ip.c_str());
+            userRaw.port = result[i].port;
+
+            list.push_back(userRaw);
+        }
     }
 
     TCPTram tram(tramExtract.getAction(), tramExtract.getType());
@@ -50,8 +53,10 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
-    std::cout << "POST CONTACT: " << contacts[0] << std::endl;
-    this->_databaseManager.newContact(contacts[0].username, contacts[0].contactName);
+    for (const ContactRaw &contact : contacts) {
+        std::cout << "POST CONTACT: " << contact << std::endl;
+        this->_databaseManager.newContact(contact.username, contact.contactName);
+    }
     this->GET(tramExtract, ip, port);
 }
 
@@ -60,9 +65,14 @@ void ContactInterpreter<PACKETSIZE>::DELETE(const TCPTramExtract<PACKETSIZE> &tr
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
-    std::cout << "DELETE CONTACT: " << contacts[0] << std::endl;
-    this->_databaseManager.removeContact(contacts[0].username, contacts[0].contactName);
-    this->GET(tramExtract, ip, port);
+    for (const ContactRaw &contact : contacts) {
+        std::cout << "DELETE CONTACT: " << contact << std::endl;
+        this->_databaseManager.removeContact(contact.username, contact.contactName);
+    }
+
+    TCPTram tram(tramExtract.getAction(), tramExtract.getType());
+    tram.setContactList(contacts);
+    this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE> void ContactInterpreter<PACKETSIZE>::_send(const TCPTram &tram, const string &ip, const size_t &port)
