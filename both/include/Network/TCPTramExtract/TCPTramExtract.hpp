@@ -23,7 +23,7 @@ namespace Network
         {
             if (PACKETSIZE < sizeof(Network::TramTCP))
                 throw std::invalid_argument("Invalid PACKETSIZE");
-            std::memcpy(&this->_tram, this->_buf.data(), sizeof(Network::TramTCP));
+            std::memcpy(&this->_tram, this->_buf.data(), Network::TRAM_SIZE_SHIFT);
             if (PACKETSIZE < sizeof(Network::TramTCP) + this->_tram.list_size) {
                 std::cerr << PACKETSIZE << " < " << sizeof(Network::TramTCP) + this->_tram.list_size << std::endl;
                 std::cerr << "list size: " << this->_tram.list_size << std::endl;
