@@ -56,7 +56,9 @@ void NetworkWorker::processServerCommunication()
                 std::vector<ContactRaw> contacts;
                 try {
                     contacts = data.getListOf<ContactRaw>();
-                } catch (std::invalid_argument const &) {}
+                } catch (std::invalid_argument const &) {
+                    contacts.clear();
+                }
                 emit contactListReceived(contacts);
             }
         } else if (action == TramAction::POST) {

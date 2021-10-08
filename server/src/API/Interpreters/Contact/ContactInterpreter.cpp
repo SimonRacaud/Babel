@@ -48,7 +48,7 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramE
 template <size_t PACKETSIZE>
 void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
-    const auto &contacts = tramExtract.template getListOf<ContactRaw>();
+    const std::vector<ContactRaw> &contacts = tramExtract.template getListOf<ContactRaw>();
 
     for (const ContactRaw &contact : contacts) {
         if (std::string(contact.username) == std::string(contact.contactName)) {
@@ -64,7 +64,9 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
             return; // abort
         }
     }
-    this->GET(tramExtract, ip, port);
+    TCPTram tram(tramExtract.getAction(), tramExtract.getType());
+    tram.setContactList(contacts);
+    this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
