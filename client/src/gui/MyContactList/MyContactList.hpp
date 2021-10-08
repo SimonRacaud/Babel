@@ -39,6 +39,7 @@ namespace GUI
         void removeContact(IContact &contact);
 
         bool exist(QString const &contactName) const;
+        void clearList();
 
       public slots:
         void slotSetContactList(std::vector<ContactRaw> const &contacts);

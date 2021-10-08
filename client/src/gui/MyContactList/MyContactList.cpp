@@ -75,7 +75,17 @@ bool MyContactList::exist(QString const &contactName) const
 
 void MyContactList::slotSetContactList(std::vector<ContactRaw> const &contacts)
 {
+    this->clearList();
     for (ContactRaw const &contact : contacts) {
         this->addContact(QString(contact.contactName));
+    }
+}
+
+void MyContactList::clearList()
+{
+    while (_contacts.empty() == false) {
+        _contactList->removeWidget(_contacts.back()->getTopWidget());
+        delete _contacts.back();
+        _contacts.pop_back();
     }
 }

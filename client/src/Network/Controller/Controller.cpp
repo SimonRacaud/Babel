@@ -18,6 +18,8 @@ Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker
     /// register types
     qRegisterMetaType<UserRaw>("UserRaw");
     qRegisterMetaType<ContactRaw>("ContactRaw");
+    qRegisterMetaType<std::vector<ContactRaw>>("std::vector<ContactRaw>");
+    qRegisterMetaType<std::vector<UserRaw>>("std::vector<UserRaw>");
     /// Events
     QObject::connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
     QObject::connect(workerThread, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
