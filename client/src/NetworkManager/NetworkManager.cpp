@@ -47,7 +47,9 @@ void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
     try {
-        this->_audioManager.closeConnections();
+        if (!_audioManager.getConnections().empty()) {
+            this->_audioManager.closeConnections();
+        }
     } catch (std::exception const &e) {
         std::cerr << "NetworkManager::callHangUp : request failed. " << e.what() << std::endl;
     }
@@ -184,8 +186,10 @@ void NetworkManager::removeContact(const userNameType &contactName)
 
 void NetworkManager::mustBeConnected() const
 {
-    if (!this->_logged)
+    if (!this->_logged) {
+        GUI::DialogueBox::error("You aren't logged in.");
         throw std::invalid_argument("User must be connected");
+    }
 }
 
 void NetworkManager::connectServer()
