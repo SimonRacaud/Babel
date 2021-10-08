@@ -14,6 +14,7 @@
 namespace Network
 {
     const double ConnectionPingInterval(3);
+
     template <std::size_t PACKETSIZE> class AsioClientTCP : public AsioConnectionTCP<PACKETSIZE> {
       public:
         AsioClientTCP() = default;
@@ -24,11 +25,13 @@ namespace Network
             auto newConnection(std::make_shared<tcp::socket>(AAsioConnection<PACKETSIZE>::_ioContext));
 
             try {
-                _connectionTimer.setElapsedTime();
-                std::this_thread::sleep_for(_ping - _connectionTimer.getElapsedTime());
-                _connectionTimer.resetStartingPoint();
                 newConnection->connect(serverEndpoint);
             } catch (const std::system_error &) {
+                _connectionTimer.setElapsedTime();
+                if (_ping.count() > _connectionTimer.getElapsedTime().count()) {
+                    std::this_thread::sleep_for(_ping - _connectionTimer.getElapsedTime());
+                    _connectionTimer.resetStartingPoint();
+                }
                 /**
                  * @brief server is not active
                  */
