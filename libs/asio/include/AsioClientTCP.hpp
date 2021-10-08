@@ -9,8 +9,11 @@
 
 #include <iostream>
 #include "AsioConnectionTCP.hpp"
+#include "Clock.hpp"
+
 namespace Network
 {
+    const double ConnectionPingInterval(3);
     template <std::size_t PACKETSIZE> class AsioClientTCP : public AsioConnectionTCP<PACKETSIZE> {
       public:
         AsioClientTCP() = default;
@@ -21,16 +24,23 @@ namespace Network
             auto newConnection(std::make_shared<tcp::socket>(AAsioConnection<PACKETSIZE>::_ioContext));
 
             try {
+                _connectionTimer.setElapsedTime();
+                std::this_thread::sleep_for(_ping - _connectionTimer.getElapsedTime());
+                _connectionTimer.resetStartingPoint();
                 newConnection->connect(serverEndpoint);
             } catch (const std::system_error &) {
                 /**
                  * @brief server is not active
                  */
-                std::cout << "failed to connect" << std::endl;
+                std::cerr << "Failed to connect with server" << std::endl;
                 return;
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
         }
+
+      private:
+        Clock _connectionTimer;
+        const std::chrono::duration<double> _ping{ConnectionPingInterval};
     };
 
 } // namespace Network
