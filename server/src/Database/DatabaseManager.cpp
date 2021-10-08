@@ -56,8 +56,6 @@ void DatabaseManager::insertTestDataset()
 void DatabaseManager::setUser(std::string const &username, std::string const &ip, std::size_t port)
 {
     try {
-        User data = this->getUser(username);
-
         this->updateUser(username, ip, port);
     } catch (std::invalid_argument const &e) {
         this->newUser(username, ip, port);
@@ -68,7 +66,7 @@ User DatabaseManager::getUser(std::string const &username)
 {
     auto users = _storage->get_all<User>(where(c(&User::username) = username));
 
-    if (users.size() >= 1) {
+    if (users.size() == 1) {
         return users[0];
     } else {
         throw std::invalid_argument("DatabaseManager::getUser user not found");
@@ -121,4 +119,5 @@ void DatabaseManager::updateUser(std::string const &username, std::string const 
     user.ip = ip;
     user.port = port;
     _storage->update(user);
+    _storage->commit();
 }
