@@ -26,6 +26,7 @@ namespace Network
 
         void setContactList(std::vector<ContactRaw> const &list);
         void setUserList(std::vector<UserRaw> const &list);
+        void setErrorMessage(std::string const &message);
 
         template <std::size_t PACKETSIZE> std::array<char, PACKETSIZE> getBuffer() const
         {
@@ -34,20 +35,15 @@ namespace Network
 
             std::memset(content, 0, PACKETSIZE);
             std::memcpy(content, &_tram, sizeof(TramTCP));
-            content->list = nullptr;
-            if (_tram.type == TramType::USER && _userPtr) {
+            if (_tram.type == TramType::USER && _userPtr && !_tram.error) {
                 UserRaw *ptr = (UserRaw *) (((char *) content) + TRAM_SIZE_SHIFT);
-
                 std::memcpy(ptr, _userPtr, _tram.list_size);
-                //                for (size_t i = 0; i < _tram.list_size / sizeof(UserRaw); i += sizeof(UserRaw)) {
-                //                    ptr[i] = _userPtr[i];
-                //                }
-            } else if (_tram.type == TramType::CONTACT && _contactPtr) {
+            } else if (_tram.type == TramType::CONTACT && _contactPtr && !_tram.error) {
                 ContactRaw *ptr = (ContactRaw *) (((char *) content) + TRAM_SIZE_SHIFT);
                 std::memcpy(ptr, _contactPtr, _tram.list_size);
-                //                for (size_t i = 0; i < _tram.list_size / sizeof(ContactRaw); i += sizeof(ContactRaw)) {
-                //                    ptr[i] = _contactPtr[i];
-                //                }
+            } else if (_tram.error) {
+                char *ptr = ((char *)content) + TRAM_SIZE_SHIFT;
+                std::memcpy(ptr, _errorMessage.c_str(), _tram.list_size);
             }
             return buffer;
         }
@@ -58,6 +54,7 @@ namespace Network
       private:
         ContactRaw *_contactPtr;
         UserRaw *_userPtr;
+        std::string _errorMessage;
         TramTCP _tram;
     };
 } // namespace Network

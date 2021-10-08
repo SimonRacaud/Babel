@@ -56,3 +56,10 @@ void TCPTram::setUserList(std::vector<UserRaw> const &list)
         std::memcpy(&_userPtr[i * sizeof(UserRaw)], &list[i], sizeof(UserRaw));
     }
 }
+
+void TCPTram::setErrorMessage(std::string const &message)
+{
+    this->_tram.error = true;
+    this->_tram.list_size = message.size();
+    this->_errorMessage = message;
+}
