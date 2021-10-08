@@ -64,9 +64,7 @@ void NetworkManager::login(const userNameType &username)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({this->_user});
     /// Send to server
-    std::cerr << "la6" << std::endl;
     _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
-    std::cerr << "la7" << std::endl;
 }
 
 void NetworkManager::streamAudio()
@@ -170,6 +168,9 @@ void NetworkManager::slotLogged(UserType const &user)
     emit sigUpdateUsername(QString(user.username));
     /// Ask for user contacts
     TCPTram tram(TramAction::GET, TramType::CONTACT);
+    ContactRaw me {"", ""};
+    std::strncpy(me.username, user.username, USERNAME_SIZE);
+    tram.setContactList({me});
     _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
 }
 

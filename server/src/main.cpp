@@ -27,11 +27,11 @@ static void init(Network::DatabaseManager &database, bool &serverLoop)
     signalManager(SIGQUIT, serverLoop);
     serv.runAsync();
     while (serverLoop) {
-        auto recvData = serv.receiveAny();
+        auto [data, size, ip, port] = serv.receiveAny();
 
-        if (std::get<1>(recvData) > 0) {
-            std::cout << "server received data" << std::endl;
-            api(std::get<0>(recvData), std::get<2>(recvData), std::get<3>(recvData));
+        if (size > 0) {
+            std::cout << "server received data. Size = " << size << std::endl;
+            api(data, ip, port);
         } else
             usleep(1000);
     }

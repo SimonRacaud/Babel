@@ -59,7 +59,6 @@ void NetworkWorker::processServerCommunication()
         } else if (action == TramAction::POST) {
             if (type == TramType::USER) {
                 std::vector<UserRaw> loggedUser = data.getListOf<UserRaw>();
-                std::cerr << "POST USER: " << loggedUser[0] << std::endl;
                 if (loggedUser.size() != 1) {
                     emit networkRequestFailed("Network : post user - Bad user count.");
                 } else {

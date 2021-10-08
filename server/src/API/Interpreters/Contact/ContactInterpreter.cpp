@@ -24,8 +24,8 @@ template <size_t PACKETSIZE>
 void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
-    std::vector<UserRaw> list;
-    UserRaw userRaw;
+    std::vector<ContactRaw> list;
+    ContactRaw buffer;
 
     for (const ContactRaw &contact : contacts) {
         std::cout << "GET CONTACT: " << contact << std::endl;
@@ -34,17 +34,14 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramE
         if (result.size() * sizeof(UserRaw) > PACKETSIZE)
             throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
         for (size_t i = 0; i < result.size(); i++) {
-            bzero(&userRaw, sizeof(UserRaw));
-            std::strcpy(userRaw.username, result[i].username.c_str());
-            std::strcpy(userRaw.ip, result[i].ip.c_str());
-            userRaw.port = result[i].port;
-
-            list.push_back(userRaw);
+            bzero(&buffer, sizeof(ContactRaw));
+            std::strcpy(buffer.username, contact.username);
+            std::strcpy(buffer.contactName, result[i].username.c_str());
+            list.push_back(buffer);
         }
     }
-
     TCPTram tram(tramExtract.getAction(), tramExtract.getType());
-    tram.setUserList(list);
+    tram.setContactList(list);
     this->_send(tram, ip, port);
 }
 

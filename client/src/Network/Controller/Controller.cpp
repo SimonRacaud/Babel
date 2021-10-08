@@ -13,7 +13,6 @@ extern std::unique_ptr<GUI::Window> window;
 
 Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker), _manager(manager)
 {
-    std::cerr << "Instance created" << std::endl;
     workerThread = new NetworkWorker(this);
 
     /// register types
