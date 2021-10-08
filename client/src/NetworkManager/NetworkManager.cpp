@@ -194,7 +194,8 @@ void NetworkManager::mustBeConnected() const
 
 void NetworkManager::connectServer()
 {
-    this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
+    while (!this->_connectionServer->isConnected(IP_SERVER, PORT_MAIN_SERVER))
+        this->_connectionServer->connect(IP_SERVER, PORT_MAIN_SERVER);
 }
 
 void NetworkManager::slotLogged(UserType const &user)
@@ -204,7 +205,7 @@ void NetworkManager::slotLogged(UserType const &user)
     emit sigUpdateUsername(QString(user.username));
     /// Ask for user contacts
     TCPTram tram(TramAction::GET, TramType::CONTACT);
-    ContactRaw me {"", ""};
+    ContactRaw me{"", ""};
     std::strncpy(me.username, user.username, USERNAME_SIZE);
     tram.setContactList({me});
     try {
