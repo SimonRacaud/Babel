@@ -51,6 +51,9 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
     const auto &contacts = tramExtract.template getListOf<ContactRaw>();
 
     for (const ContactRaw &contact : contacts) {
+        if (std::string(contact.username) == std::string(contact.contactName)) {
+            continue; // An user cannot be connected with himself
+        }
         std::cout << "POST CONTACT: " << contact << std::endl;
         this->_databaseManager.newContact(contact.username, contact.contactName);
     }

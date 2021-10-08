@@ -21,6 +21,7 @@
 #include "Network/TCPTramExtract/TCPTramExtract.hpp"
 #include "UserRaw.hpp"
 #include "UDPAudio/UDPAudio.hpp"
+#include "gui/Dialogue/DialogueBox.hpp"
 
 namespace Network
 {

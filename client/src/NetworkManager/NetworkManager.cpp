@@ -145,6 +145,10 @@ void NetworkManager::callUser(const userNameType &username)
 void NetworkManager::newContact(const userNameType &contactName)
 {
     this->mustBeConnected();
+    if (contactName == QString(_user.username)) {
+        GUI::DialogueBox::error("An user cannot add himself.");
+        return;
+    }
     /// Create contact
     ContactRaw contact;
     std::strncpy(contact.username, _user.username, USERNAME_SIZE);
