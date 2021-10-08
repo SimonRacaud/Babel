@@ -46,7 +46,11 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
-    this->_audioManager.closeConnections();
+    try {
+        this->_audioManager.closeConnections();
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::callHangUp : request failed. " << e.what() << std::endl;
+    }
 }
 
 bool NetworkManager::isLogged() const
@@ -64,12 +68,20 @@ void NetworkManager::login(const userNameType &username)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({this->_user});
     /// Send to server
-    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    try {
+        _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::login : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::streamAudio()
 {
-    this->_audioManager.streamAudio();
+    try {
+        this->_audioManager.streamAudio();
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::streamAudio : request failed. " << e.what() << std::endl;
+    }
 }
 
 TCPTramExtract<BUFFER_SIZE> NetworkManager::receiveFromServer() const
@@ -110,14 +122,22 @@ void NetworkManager::getUser(const userNameType &username)
     TCPTram tram(TramAction::GET, TramType::USER);
     tram.setUserList({user});
     /// Send to server
-    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    try {
+        _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::getUser : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::callUser(const userNameType &username)
 {
     this->mustBeConnected();
     /// ask for the user IP to send the handshake
-    this->getUser(username);
+    try {
+        this->getUser(username);
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::callUser : request failed. " << e.what() << std::endl;
+    }
     this->_callInProgress = true;
     this->_calledUser = username;
 }
@@ -133,7 +153,11 @@ void NetworkManager::newContact(const userNameType &contactName)
     TCPTram tram(TramAction::POST, TramType::CONTACT);
     tram.setContactList({contact});
     /// Send
-    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    try {
+        _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::newContact : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::removeContact(const userNameType &contactName)
@@ -147,7 +171,11 @@ void NetworkManager::removeContact(const userNameType &contactName)
     TCPTram tram(TramAction::DELETE, TramType::CONTACT);
     tram.setContactList({contact});
     /// Send
-    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    try {
+        _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::removeContact : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::mustBeConnected() const
@@ -171,7 +199,11 @@ void NetworkManager::slotLogged(UserType const &user)
     ContactRaw me {"", ""};
     std::strncpy(me.username, user.username, USERNAME_SIZE);
     tram.setContactList({me});
-    _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    try {
+        _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::slotLogged : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::slotContactAdded(ContactRaw const &contact)
@@ -193,8 +225,12 @@ void NetworkManager::sendCallMemberList(const UserType &target)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList(connections);
     ///     Send contact list
-    this->_callClient->connect(target.ip, PORT_CALL_SERVER);
-    this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), target.ip, PORT_CALL_SERVER);
+    try {
+        this->_callClient->connect(target.ip, PORT_CALL_SERVER);
+        this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), target.ip, PORT_CALL_SERVER);
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::sendCallMemberList : request failed. " << e.what() << std::endl;
+    }
 }
 
 void NetworkManager::slotSendCallMemberList(const UserType &target)

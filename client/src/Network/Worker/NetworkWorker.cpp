@@ -21,15 +21,15 @@ void NetworkWorker::run()
         try {
             networkManager.streamAudio();
         } catch (std::exception const &e) {
-            std::cerr << "An exception occurred whith networkManager.streamAudio()" << e.what() << std::endl;
+            std::cerr << "An exception occurred with networkManager.streamAudio()" << e.what() << std::endl;
         }
         try {
             this->processClientCommunication();
-        } catch ([[maybe_unsed]] const std::invalid_argument &e) {
+        } catch ([[maybe_unsed]] const std::exception &e) {
         }
         try {
             this->processServerCommunication();
-        } catch ([[maybe_unsed]] const std::invalid_argument &e) {
+        } catch ([[maybe_unsed]] const std::exception &e) {
         }
     }
 }
