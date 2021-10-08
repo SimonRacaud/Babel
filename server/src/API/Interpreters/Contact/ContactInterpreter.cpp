@@ -55,7 +55,14 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
             continue; // An user cannot be connected with himself
         }
         std::cout << "POST CONTACT: " << contact << std::endl;
-        this->_databaseManager.newContact(contact.username, contact.contactName);
+        try {
+            this->_databaseManager.newContact(contact.username, contact.contactName);
+        } catch (std::exception const &e) {
+            TCPTram tram(tramExtract.getAction(), tramExtract.getType());
+            tram.setErrorMessage("The user " + std::string(contact.contactName) + " doesn't exist.");
+            this->_send(tram, ip, port);
+            return; // abort
+        }
     }
     this->GET(tramExtract, ip, port);
 }

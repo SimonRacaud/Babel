@@ -71,7 +71,7 @@ namespace Network
 
             if (this->isCorrectTram())
                 throw std::invalid_argument("No error, tram is correct");
-            std::memcpy(output.data(), this->_buf.data() + sizeof(Network::TramTCP), this->_tram.list_size);
+            std::memcpy(output.data(), this->_buf.data() + TRAM_SIZE_SHIFT, this->_tram.list_size + 1);
             return output;
         }
 
