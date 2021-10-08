@@ -14,17 +14,20 @@ extern std::unique_ptr<GUI::Window> window;
 Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker), _manager(manager)
 {
     std::cerr << "Instance created" << std::endl;
-    NetworkWorker *worker = new NetworkWorker(this);
+    workerThread = new NetworkWorker(this);
 
-    QObject::connect(workerThread, &QThread::finished, worker, &QObject::deleteLater);
-
-    QObject::connect(worker, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
-    QObject::connect(worker, &NetworkWorker::contactAdded, &_manager, &NetworkManager::slotContactAdded);
-    QObject::connect(worker, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
-    QObject::connect(worker, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
-    QObject::connect(worker, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
-    QObject::connect(worker, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
-    QObject::connect(worker, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
+    /// register types
+    qRegisterMetaType<UserRaw>("UserRaw");
+    qRegisterMetaType<ContactRaw>("ContactRaw");
+    /// Events
+    QObject::connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
+    QObject::connect(workerThread, &NetworkWorker::logged, &_manager, &NetworkManager::slotLogged);
+    QObject::connect(workerThread, &NetworkWorker::contactAdded, &_manager, &NetworkManager::slotContactAdded);
+    QObject::connect(workerThread, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
+    QObject::connect(workerThread, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
+    QObject::connect(workerThread, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
+    QObject::connect(workerThread, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
+    QObject::connect(workerThread, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
     workerThread->start();
 }
 

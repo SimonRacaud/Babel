@@ -47,7 +47,7 @@ void NetworkWorker::processServerCommunication()
             if (type == TramType::USER) {
                 std::vector<UserRaw> users = data.getListOf<UserRaw>();
                 std::cerr << "GET USER: " << users[0] << std::endl;
-                if (users.size() / sizeof(UserRaw) != 1) {
+                if (users.size() != 1) {
                     emit networkRequestFailed("Network : get user - Bad user count.");
                 } else {
                     emit userReceived(users[0]);
@@ -60,14 +60,14 @@ void NetworkWorker::processServerCommunication()
             if (type == TramType::USER) {
                 std::vector<UserRaw> loggedUser = data.getListOf<UserRaw>();
                 std::cerr << "POST USER: " << loggedUser[0] << std::endl;
-                if (loggedUser.size() / sizeof(UserRaw) != 1) {
+                if (loggedUser.size() != 1) {
                     emit networkRequestFailed("Network : post user - Bad user count.");
                 } else {
                     emit logged(loggedUser[0]);
                 }
             } else if (type == TramType::CONTACT) {
                 std::vector<ContactRaw> newContact = data.getListOf<ContactRaw>();
-                if (newContact.size() / sizeof(ContactRaw) != 1) {
+                if (newContact.size() != 1) {
                     emit networkRequestFailed("Network : post contact - Bad contact count.");
                 } else {
                     emit contactAdded(newContact[0]);
@@ -76,7 +76,7 @@ void NetworkWorker::processServerCommunication()
         } else if (action == TramAction::DELETE) {
             if (type == TramType::CONTACT) {
                 std::vector<ContactRaw> removedContact = data.getListOf<ContactRaw>();
-                if (removedContact.size() / sizeof(ContactRaw) != 1) {
+                if (removedContact.size() != 1) {
                     emit networkRequestFailed("Network : delete contact - Bad contact count.");
                 } else {
                     emit contactRemoved(removedContact[0]);
