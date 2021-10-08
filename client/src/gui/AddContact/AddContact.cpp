@@ -48,12 +48,12 @@ void AddContact::slotAddContact()
 
     if (input.isEmpty() == false) {
         if (_contactList.exist(input)) {
-            DialogueBox::info("The contact already exist.");
+            DialogueBox::info("The contact already exists.");
         } else {
             try {
                 networkManager.newContact(input);
             } catch (std::exception const &e) {
-                std::cerr << "Error: fail to add contact. " << e.what() << std::endl;
+                std::cerr << "Error: failed to add contact. " << e.what() << std::endl;
             }
         }
     }
