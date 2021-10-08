@@ -30,6 +30,7 @@ AddContact::AddContact(MyContactList &contactList) : QGroupBox("Add Contact"), _
     _widthControl->setMaximumWidth(ADD_CONTACT_MAX_WIDTH);
     _input->setPlaceholderText("username");
     /// Events
+    QObject::connect(_input, SIGNAL(returnPressed()), this, SLOT(slotAddContact()));
     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotAddContact()));
     QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateContacts, this, &AddContact::slotApplyUpdate);
 }

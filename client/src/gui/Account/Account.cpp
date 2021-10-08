@@ -35,6 +35,7 @@ Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
     _upperLayout->setAlignment(Qt::AlignLeft);
     _username->setStyleSheet("QLabel { color: red; }");
     this->setMaximumHeight(100);
+     QObject::connect(_input, SIGNAL(returnPressed()), this, SLOT(slotApplyUsername()));
      QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotApplyUsername()));
      QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateUsername, this, &Account::slotSetUsername);
 }
