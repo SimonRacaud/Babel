@@ -152,7 +152,7 @@ void UDPAudio::updateConnections(std::vector<UserRaw> &list)
         bool inList = std::find_if(this->_list.begin(), this->_list.end(), [it](auto const &pair) {
             return std::get<0>(pair) == it;
         }) != this->_list.end();
-        
+
         if (!inList)
             this->addUser(it);
     }
@@ -160,7 +160,7 @@ void UDPAudio::updateConnections(std::vector<UserRaw> &list)
         bool inList = std::find_if(list.begin(), list.end(), [it](auto const &user) {
             return user == std::get<0>(it);
         }) != list.end();
-        
+
         if (!inList)
             this->removeUser(std::get<0>(it));
     }

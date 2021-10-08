@@ -31,6 +31,8 @@ static void init(Network::DatabaseManager &database, bool &serverLoop)
 
         if (size > 0) {
             std::cout << "server received data. Size = " << size << std::endl;
+            std::cout << ip << std::endl;
+            std::cout << port << std::endl;
             api(data, ip, port);
         } else
             usleep(1000);

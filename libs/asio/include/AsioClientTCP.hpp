@@ -25,17 +25,16 @@ namespace Network
             auto newConnection(std::make_shared<tcp::socket>(AAsioConnection<PACKETSIZE>::_ioContext));
 
             try {
+                std::cout << serverEndpoint.port() << std::endl;
+                std::cout << serverEndpoint.address().to_string() << std::endl;
                 newConnection->connect(serverEndpoint);
             } catch (const std::system_error &) {
+                std::cerr << "Failed to connect with server" << std::endl;
                 _connectionTimer.setElapsedTime();
                 if (_ping.count() > _connectionTimer.getElapsedTime().count()) {
                     std::this_thread::sleep_for(_ping - _connectionTimer.getElapsedTime());
                     _connectionTimer.resetStartingPoint();
                 }
-                /**
-                 * @brief server is not active
-                 */
-                std::cerr << "Failed to connect with server" << std::endl;
                 return;
             }
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);

@@ -35,9 +35,9 @@ Account::Account(QWidget *parent) : QGroupBox("My Account", parent)
     _upperLayout->setAlignment(Qt::AlignLeft);
     _username->setStyleSheet("QLabel { color: red; }");
     this->setMaximumHeight(100);
-     QObject::connect(_input, SIGNAL(returnPressed()), this, SLOT(slotApplyUsername()));
-     QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotApplyUsername()));
-     QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateUsername, this, &Account::slotSetUsername);
+    QObject::connect(_input, SIGNAL(returnPressed()), this, SLOT(slotApplyUsername()));
+    QObject::connect(_apply, SIGNAL(clicked()), this, SLOT(slotApplyUsername()));
+    QObject::connect(&networkManager, &Network::NetworkManager::sigUpdateUsername, this, &Account::slotSetUsername);
 }
 
 Account::~Account()
@@ -57,7 +57,7 @@ void Account::slotApplyUsername()
         try {
             networkManager.login(username);
         } catch (std::exception const &e) {
-            std::cerr << "Error: Fail to apply username." << std::endl;
+            std::cerr << "Error: Failed to apply username." << std::endl;
         }
     }
 }

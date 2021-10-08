@@ -40,6 +40,10 @@ template <size_t PACKETSIZE> void API<PACKETSIZE>::_get(const TCPTramExtract<PAC
 
 template <size_t PACKETSIZE> void API<PACKETSIZE>::_post(const TCPTramExtract<PACKETSIZE> &tram, const string &ip, const size_t &port)
 {
+    std::cout << "machine : " << std::endl;
+    std::cout << ip << std::endl;
+    std::cout << port << std::endl;
+
     switch (tram.getType()) {
         case TramType::USER: this->_userInterpreter.POST(tram, ip, port); break;
         case TramType::CONTACT: this->_contactInterpreter.POST(tram, ip, port); break;

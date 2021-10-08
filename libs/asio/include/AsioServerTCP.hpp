@@ -34,15 +34,12 @@ namespace Network
 
         void connect(std::shared_ptr<tcp::socket> newConnection, const asio::error_code &error)
         {
-            std::cerr << "Received connection request" << std::endl;
             if (error)
                 return; // todo check errors
 
-            std::cerr << "wait accepted user" << std::endl;
             auto my_newConnection(newConnection->remote_endpoint());
 
             AsioConnectionTCP<PACKETSIZE>::addConnection(newConnection);
-            std::cerr << "accepted user" << std::endl;
 
             startAccept();
         }
