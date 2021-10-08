@@ -31,7 +31,7 @@ void ContactInterpreter<PACKETSIZE>::GET(const TCPTramExtract<PACKETSIZE> &tramE
         std::cout << "GET CONTACT: " << contact << std::endl;
         const std::vector<User> &result = this->_databaseManager.getContacts(contact.username);
 
-        if (result.size() * sizeof(UserRaw) > PACKETSIZE)
+        if (result.size() * sizeof(ContactRaw) > PACKETSIZE)
             throw std::out_of_range("Response size > PACKETSIZE(" + myToString(PACKETSIZE) + ")");
         for (size_t i = 0; i < result.size(); i++) {
             bzero(&buffer, sizeof(ContactRaw));
