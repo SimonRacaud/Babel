@@ -53,7 +53,10 @@ void NetworkWorker::processServerCommunication()
                     emit userReceived(users[0]);
                 }
             } else if (type == TramType::CONTACT) {
-                std::vector<ContactRaw> contacts = data.getListOf<ContactRaw>();
+                std::vector<ContactRaw> contacts;
+                try {
+                    contacts = data.getListOf<ContactRaw>();
+                } catch (std::invalid_argument const &) {}
                 emit contactListReceived(contacts);
             }
         } else if (action == TramAction::POST) {
