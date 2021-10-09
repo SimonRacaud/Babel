@@ -39,9 +39,7 @@ namespace Network
             size_t size = this->_tram.list_size / sizeof(type);
 
             if (!size) {
-                std::cerr << this->_tram.list_size << " / " << sizeof(type) << " = " << size << std::endl;
-                std::cerr << "list size: " << this->_tram.list_size << " -> " << this->_tram.list_size / sizeof(type) << std::endl;
-                throw std::invalid_argument("Invalid type: Too big");
+                return list;
             }
             if (this->_tram.list_size % sizeof(type) != 0)
                 throw std::invalid_argument("Invalid type: Not multiple");
