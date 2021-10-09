@@ -259,8 +259,9 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
 {
     std::vector<UserType> list = users;
     UserType &me = _user;
-    auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) { return std::string(user.ip) == ""; });
-    auto itReceiver = std::find_if(list.begin(), list.end(), [me](UserRaw const &user) { return !std::strcmp(me.username, user.username); });
+    auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) {
+        return std::string(user.ip) == "";
+    });
 
     if (itSender == list.end()) {
         throw std::invalid_argument("NetworkManager::slotCallVoiceConnect : sender's username not found");
@@ -272,10 +273,14 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
         if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(itSender->username) + " call connection ?")) {
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
             this->sendCallMemberList(list, target);
-            if (itReceiver != list.end()) {
-                list.erase(itReceiver);
+
+            std::vector<UserType> connections;
+            for (UserType const &user : list) {
+                if (strcmp(user.username, me.username) != 0) {
+                    connections.push_back(user);
+                }
             }
-            this->_audioManager.updateConnections(list);
+            this->_audioManager.updateConnections(connections);
         }
     } else {
         this->_audioManager.updateConnections(list);
