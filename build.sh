@@ -10,5 +10,5 @@ if [[ "re" = $1 ]]; then
   cd build && conan install .. --build missing
   cmake .. && make
 else
-    make -C build
+    make -C build -j8
 fi
