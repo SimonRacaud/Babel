@@ -69,7 +69,7 @@ void UDPAudio::closeConnections()
 
 void UDPAudio::streamAudio()
 {
-    if (this->_list.size()) {
+    if (this->_list.size() && _input && _output) {
         this->sendingData();
         if (this->_sending)
             this->receivingData();
