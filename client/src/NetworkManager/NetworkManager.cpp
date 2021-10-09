@@ -255,11 +255,14 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
 
     list.push_back(target);
     std::cerr << "call : VOICE CONNECT." << std::endl;
-    this->_audioManager.updateConnections(list);
     if (this->_callInProgress == false) { // I'm replying to a call request.
-        std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
-        this->sendCallMemberList(target);
+        if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(target.ip) + " call connection ?")) {
+            std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
+            this->_audioManager.updateConnections(list);
+            this->sendCallMemberList(target);
+        }
     } else {
+        this->_audioManager.updateConnections(list);
         emit this->sigCallSuccess(list); // update gui
         this->_callInProgress = false;   // I already have sent my call member list.
     }
