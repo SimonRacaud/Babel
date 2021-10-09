@@ -56,6 +56,12 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
         }
         std::cout << "POST CONTACT: " << contact << std::endl;
         try {
+            const std::vector<User> &userContacts = this->_databaseManager.getContacts(contact.username);
+            for (User const &prevContact : userContacts) {
+                if (std::string(prevContact.username) == std::string(contact.contactName)) {
+                    throw std::invalid_argument("The contact already exist.");
+                }
+            }
             this->_databaseManager.newContact(contact.username, contact.contactName);
         } catch (std::exception const &e) {
             TCPTram tram(tramExtract.getAction(), tramExtract.getType());
