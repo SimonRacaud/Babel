@@ -187,7 +187,8 @@ namespace Network
             AAsioConnection<PACKETSIZE>::connect(
                 newConnection->remote_endpoint().address().to_string(), newConnection->remote_endpoint().port());
             _socketConnections.push_back(newConnection);
-
+            newConnection->set_option(_receiveBufferSizeOption);
+            newConnection->set_option(_sendBufferSizeOption);
             asyncReceive(newConnection);
         }
 
@@ -249,6 +250,16 @@ namespace Network
         std::thread _thread;
         bool _activeThread{false};
         std::array<char, PACKETSIZE> _recvBuf{0};
+
+        /**
+         * @brief Option (to be set) to buffer data when receiving it
+         */
+        asio::socket_base::receive_buffer_size _receiveBufferSizeOption{PACKETSIZE};
+
+        /**
+         * @brief Option (to be set) to buffer data when sending it
+         */
+        asio::socket_base::send_buffer_size _sendBufferSizeOption{PACKETSIZE};
     };
 
 } // namespace Network
