@@ -11,6 +11,12 @@
 #include <functional>
 #include <unordered_map>
 
+#ifdef _WIN32
+    #include <Windows.h>
+#else
+    #include <unistd.h>
+#endif
+
 #include <asio/error.hpp>
 #include <thread>
 #include "ANetwork.hpp"
@@ -143,8 +149,10 @@ namespace Network
         void realRunAsync()
         {
             _activeThread = true;
-            while (_activeThread)
+            while (_activeThread) {
                 AAsioConnection<PACKETSIZE>::_ioContext.run();
+                usleep(500);
+            }
         }
         void send(const std::array<char, PACKETSIZE> &buf, std::shared_ptr<tcp::socket> &connection)
         {

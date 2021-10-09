@@ -14,6 +14,11 @@
 #include "UserRaw.hpp"
 #include "ContactRaw.hpp"
 #include "NetworkManager/NetworkManager.hpp"
+#ifdef _WIN32
+    #include <Windows.h>
+#else
+    #include <unistd.h>
+#endif
 
 namespace Network
 {

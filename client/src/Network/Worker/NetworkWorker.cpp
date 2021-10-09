@@ -31,6 +31,7 @@ void NetworkWorker::run()
             this->processServerCommunication();
         } catch ([[maybe_unsed]] const std::exception &e) {
         }
+        usleep(500);
     }
 }
 
