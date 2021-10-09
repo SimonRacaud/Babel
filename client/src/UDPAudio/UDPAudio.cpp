@@ -13,6 +13,7 @@ _input(nullptr),
 _output(nullptr),
 _network(std::make_unique<NetworkComponent>(port))
 {
+    this->_network->runAsync();
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
 }
@@ -22,6 +23,7 @@ _input(nullptr),
 _output(nullptr),
 _network(std::make_unique<NetworkComponent>(port))
 {
+    this->_network->runAsync();
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
     for (auto &it : list)
@@ -31,6 +33,7 @@ _network(std::make_unique<NetworkComponent>(port))
 
 UDPAudio::~UDPAudio()
 {
+    this->_network->stopRunAsync();
     this->_list.clear();
     this->_network.reset();
     if (this->_input)

@@ -135,7 +135,7 @@ namespace Network
         void asyncReceiveAny()
         {
             for (auto &connection : AAsioConnection<PACKETSIZE>::_connections) {
-                asyncReceive(connection->first, connection->second);
+                asyncReceive(connection.first, connection.second);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Network
         void asyncReceive(const std::string &ip, const std::size_t port)
         {
             asio::ip::udp::endpoint senderEndpoint(asio::ip::make_address(ip), port);
-            _socket.async_receive_from(asio::buffer(_recvBuf),
+            _socket.async_receive_from(asio::buffer(_recvBuf), senderEndpoint,
                 std::bind(
                     &AsioConnectionUDP<PACKETSIZE>::asyncReceiving, this, std::placeholders::_1, std::placeholders::_2, ip, port));
         }
