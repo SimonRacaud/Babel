@@ -56,7 +56,7 @@ namespace Network
         void mustBeConnected() const;
         void connectServer();
 
-        void sendCallMemberList(std::vector<UserRaw> const &list, const UserType &target);
+        void sendCallMemberList(std::vector<UserRaw> &list, const UserType &target);
 
       public slots:
         /// Apply network response (called by the worker)

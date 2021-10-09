@@ -13,6 +13,7 @@
 
 namespace PortAudioCaps
 {
+    const int MAX_FRAME_OUT = 5;
     class AudioStreamer : public Audio::IAudioStreamer<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>
     {
         public:

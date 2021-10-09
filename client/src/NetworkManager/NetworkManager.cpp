@@ -226,8 +226,13 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
     emit sigRemoveContact(QString(contact.contactName));
 }
 
-void NetworkManager::sendCallMemberList(std::vector<UserRaw> const &list, const UserType &target)
+void NetworkManager::sendCallMemberList(std::vector<UserRaw> &list, const UserType &target)
 {
+    UserRaw me = {0};
+
+    std::strcpy(me.username, _user.username);
+    std::strcpy(me.ip, "");
+    list.push_back(me);
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList(list);
@@ -244,13 +249,8 @@ void NetworkManager::sendCallMemberList(std::vector<UserRaw> const &list, const 
 void NetworkManager::slotSendCallMemberList(const UserType &target)
 {
     this->mustBeConnected();
-    UserRaw me = {0};
-    std::strcpy(me.username, _user.username);
-    std::strcpy(me.ip, "");
-
     /// Get current call members
     std::vector<UserRaw> connections = _audioManager.getConnections();
-    connections.push_back(me);
 
     this->sendCallMemberList(connections, target);
 }
