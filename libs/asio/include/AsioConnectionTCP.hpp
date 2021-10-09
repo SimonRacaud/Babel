@@ -21,6 +21,8 @@
 #include <thread>
 #include "ANetwork.hpp"
 
+#ifndef HASHPAIR
+    #define HASHPAIR
 struct hash_pair {
     std::size_t operator()(const std::pair<std::string, std::size_t> &pair) const
     {
@@ -30,6 +32,7 @@ struct hash_pair {
         return h1 ^ h2;
     }
 };
+#endif
 
 namespace Network
 {
