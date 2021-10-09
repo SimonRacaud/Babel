@@ -52,7 +52,6 @@ class UDPAudio
         std::unique_ptr<Audio::OutputAudioManager> _output;
         std::unique_ptr<NetworkComponent> _network;
         std::vector<std::tuple<UserRaw, size_t>> _list;
-        bool _sending;
 };
 
 #endif

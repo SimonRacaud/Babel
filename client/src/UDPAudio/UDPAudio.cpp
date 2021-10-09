@@ -11,8 +11,7 @@
 UDPAudio::UDPAudio(size_t port) : _port(port),
 _input(nullptr),
 _output(nullptr),
-_network(std::make_unique<NetworkComponent>(port)),
-_sending(false)
+_network(std::make_unique<NetworkComponent>(port))
 {
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
@@ -21,8 +20,7 @@ _sending(false)
 UDPAudio::UDPAudio(size_t port, const std::vector<UserRaw> &list) :
 _input(nullptr),
 _output(nullptr),
-_network(std::make_unique<NetworkComponent>(port)),
-_sending(false)
+_network(std::make_unique<NetworkComponent>(port))
 {
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
@@ -63,7 +61,6 @@ void UDPAudio::closeConnections()
 {
     this->_network = std::make_unique<NetworkComponent>(_port);
     this->_list.clear();
-    this->_sending = false;
     this->audioManagerPtr();
 }
 
@@ -71,8 +68,10 @@ void UDPAudio::streamAudio()
 {
     if (this->_list.size() && _input && _output) {
         this->sendingData();
-        if (this->_sending)
+        try {
             this->receivingData();
+        } catch([[maybe_unused]] const std::exception &e) {
+        }
     }
 }
 
@@ -80,7 +79,6 @@ void UDPAudio::sendingData()
 {
     std::queue<Audio::compressFrameBuffer> frameBuffer = this->_input->getFrameBuffer();
 
-    this->_sending = (frameBuffer.size()) ? true : false;
     while (frameBuffer.size()) {
         auto it = frameBuffer.front();
         /*
