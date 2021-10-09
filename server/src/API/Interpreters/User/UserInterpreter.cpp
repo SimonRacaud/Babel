@@ -54,11 +54,12 @@ void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExt
     if (users.empty() == false) {
         this->_databaseManager.setUser(users[0].username, ip, port);
         this->GET(tramExtract, ip, port);
+    } else {
+        TCPTram tram(tramExtract.getAction(), tramExtract.getType());
+        tram.setErrorMessage("Wrong authentication parameters.");
+        this->_send(tram, ip, port);
     }
     //    }
-    TCPTram tram(tramExtract.getAction(), tramExtract.getType());
-    tram.setErrorMessage("Wrong authentication parameters.");
-    this->_send(tram, ip, port);
 }
 
 template <size_t PACKETSIZE>
