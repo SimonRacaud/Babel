@@ -44,8 +44,11 @@ namespace Network
         {
             std::array<char, PACKETSIZE> recvBuf;
             asio::ip::udp::endpoint senderEndpoint(asio::ip::make_address(ip), port);
-            size_t len = _socket.receive_from(asio::buffer(recvBuf), senderEndpoint);
+            //size_t len = _socket.receive_from(asio::buffer(recvBuf), senderEndpoint);
+            size_t len = 0;
 
+            _socket.non_blocking(true);
+            len = _socket.receive_from(asio::buffer(recvBuf), senderEndpoint);
             return std::make_pair(recvBuf, len);
         }
 
