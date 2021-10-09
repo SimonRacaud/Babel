@@ -46,11 +46,13 @@ template <size_t PACKETSIZE>
 void UserInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tramExtract, const string &ip, const size_t &port)
 {
     const auto &users = tramExtract.template getListOf<UserRaw>();
-
-    for (const UserRaw &user : users) {
-        std::cout << "POST USER: " << user << std::endl;
-        this->_databaseManager.setUser(user.username, user.ip, user.port);
-    }
+    //    // todo should take ip from params
+    //    //  why is this function for multiple users
+    //
+    //    for (const UserRaw &user : users) {
+    //        std::cout << "POST USER: " << user << std::endl;
+    this->_databaseManager.setUser(users[0].username, ip, port);
+    //    }
     this->GET(tramExtract, ip, port);
 }
 

@@ -81,7 +81,6 @@ namespace Network
             std::cout << "Type : " << int(_tram.type) << std::endl;
             std::cout << "error : " << _tram.error << std::endl;
             std::cout << "data :";
-            //            std::cout.write((const char *) (_tram.list), sizeof(UserRaw));
             std::cout.write(_buf.data(), PACKETSIZE);
             std::cout << std::endl;
         }
