@@ -226,19 +226,11 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
     emit sigRemoveContact(QString(contact.contactName));
 }
 
-void NetworkManager::sendCallMemberList(const UserType &target)
+void NetworkManager::sendCallMemberList(std::vector<UserRaw> const &list, const UserType &target)
 {
-    UserRaw me = {0};
-    std::strcpy(me.username, _user.username);
-    std::strcpy(me.ip, "");
-
-    this->mustBeConnected();
-    /// Get current call members
-    std::vector<UserRaw> connections = _audioManager.getConnections();
-    connections.push_back(me);
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
-    tram.setUserList(connections);
+    tram.setUserList(list);
     ///     Send contact list
     std::cerr << "call : SEND CALL MEMBER LIST." << std::endl;
     try {
@@ -251,25 +243,39 @@ void NetworkManager::sendCallMemberList(const UserType &target)
 
 void NetworkManager::slotSendCallMemberList(const UserType &target)
 {
-    this->sendCallMemberList(target);
+    this->mustBeConnected();
+    UserRaw me = {0};
+    std::strcpy(me.username, _user.username);
+    std::strcpy(me.ip, "");
+
+    /// Get current call members
+    std::vector<UserRaw> connections = _audioManager.getConnections();
+    connections.push_back(me);
+
+    this->sendCallMemberList(connections, target);
 }
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
     std::vector<UserType> list = users;
+    UserType &me = _user;
     auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) { return std::string(user.ip) == ""; });
+    auto itReceiver = std::find_if(list.begin(), list.end(), [me](UserRaw const &user) { return !std::strcmp(me.username, user.username); });
 
     if (itSender == list.end()) {
         throw std::invalid_argument("NetworkManager::slotCallVoiceConnect : sender's username not found");
     }
-        std::strcpy(itSender->ip, target.ip);
-        itSender->port = target.port;
+    std::strcpy(itSender->ip, target.ip);
+    itSender->port = target.port;
     std::cerr << "call : VOICE CONNECT." << std::endl;
     if (this->_callInProgress == false) { // I'm replying to a call request.
         if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(itSender->username) + " call connection ?")) {
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
+            this->sendCallMemberList(list, target);
+            if (itReceiver != list.end()) {
+                list.erase(itReceiver);
+            }
             this->_audioManager.updateConnections(list);
-            this->sendCallMemberList(target);
         }
     } else {
         this->_audioManager.updateConnections(list);
