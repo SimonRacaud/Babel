@@ -124,6 +124,7 @@ void NetworkManager::getUser(const userNameType &username)
     TCPTram tram(TramAction::GET, TramType::USER);
     tram.setUserList({user});
     /// Send to server
+    std::cerr << "call : GET USER" << std::endl;
     try {
         _connectionServer->sendAll(tram.getBuffer<Network::BUFFER_SIZE>());
     } catch (std::exception const &e) {
@@ -234,6 +235,7 @@ void NetworkManager::sendCallMemberList(const UserType &target)
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList(connections);
     ///     Send contact list
+    std::cerr << "call : SEND CALL MEMBER LIST." << std::endl;
     try {
         this->_callClient->connect(target.ip, PORT_CALL_SERVER);
         this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), target.ip, PORT_CALL_SERVER);
@@ -252,8 +254,10 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
     std::vector<UserType> list = users;
 
     list.push_back(target);
+    std::cerr << "call : VOICE CONNECT." << std::endl;
     this->_audioManager.updateConnections(list);
     if (this->_callInProgress == false) { // I'm replying to a call request.
+        std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
         this->sendCallMemberList(target);
     } else {
         emit this->sigCallSuccess(list); // update gui
