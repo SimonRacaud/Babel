@@ -108,5 +108,7 @@ int AudioStreamer::defaultCallBack(const void *, void *output, unsigned long, co
     } else {
         std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     }
+    while (tab.size() > PortAudioCaps::MAX_FRAME_OUT)
+        tab.pop();
     return paContinue;
 }
