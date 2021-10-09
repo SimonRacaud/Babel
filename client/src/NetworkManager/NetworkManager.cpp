@@ -228,9 +228,14 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
 
 void NetworkManager::sendCallMemberList(const UserType &target)
 {
+    UserRaw me = {0};
+    std::strcpy(me.username, _user.username);
+    std::strcpy(me.ip, "");
+
     this->mustBeConnected();
     /// Get current call members
-    std::vector<UserRaw> const &connections = _audioManager.getConnections();
+    std::vector<UserRaw> connections = _audioManager.getConnections();
+    connections.push_back(me);
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList(connections);
@@ -252,11 +257,16 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
     std::vector<UserType> list = users;
+    auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) { return std::string(user.ip) == ""; });
 
-    list.push_back(target);
+    if (itSender == list.end()) {
+        throw std::invalid_argument("NetworkManager::slotCallVoiceConnect : sender's username not found");
+    }
+        std::strcpy(itSender->ip, target.ip);
+        itSender->port = target.port;
     std::cerr << "call : VOICE CONNECT." << std::endl;
     if (this->_callInProgress == false) { // I'm replying to a call request.
-        if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(target.ip) + " call connection ?")) {
+        if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(itSender->username) + " call connection ?")) {
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
             this->_audioManager.updateConnections(list);
             this->sendCallMemberList(target);
