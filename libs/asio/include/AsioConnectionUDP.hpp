@@ -80,6 +80,9 @@ namespace Network
         void sendAll(const std::array<char, PACKETSIZE> &buf) override
         {
             for (const auto &connection : AAsioConnection<PACKETSIZE>::_connections) {
+                std::cout << "UDP sending to : " << std::endl;
+                std::cout << "ip : " << connection.first << std::endl;
+                std::cout << "port : " << connection.second << std::endl;
                 send(buf, connection.first, connection.second);
             }
         }
@@ -146,7 +149,8 @@ namespace Network
         void asyncReceive(const std::string &ip, const std::size_t port)
         {
             asio::ip::udp::endpoint senderEndpoint(asio::ip::make_address(ip), port);
-            _socket.async_receive_from(asio::buffer(_recvBuf), senderEndpoint,
+            _socket.async_receive_from(asio::buffer(_recvBuf),
+                senderEndpoint,
                 std::bind(
                     &AsioConnectionUDP<PACKETSIZE>::asyncReceiving, this, std::placeholders::_1, std::placeholders::_2, ip, port));
         }
