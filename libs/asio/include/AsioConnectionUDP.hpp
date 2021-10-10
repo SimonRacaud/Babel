@@ -148,6 +148,7 @@ namespace Network
          */
         void asyncReceive(const std::string &ip, const std::size_t port)
         {
+            std::cout << "ready to receive again" << std::endl;
             asio::ip::udp::endpoint senderEndpoint(asio::ip::make_address(ip), port);
             _socket.async_receive_from(asio::buffer(_recvBuf),
                 senderEndpoint,
@@ -175,6 +176,7 @@ namespace Network
             std::cout << "ip : " << ip << std::endl;
             std::cout << "port : " << port << std::endl;
             _recvData.emplace(std::make_pair(ip, port), std::make_pair(_recvBuf, lenRecvBuf));
+            std::cout << "data stored in buffer" << std::endl;
             asyncReceive(ip, port);
         }
 
