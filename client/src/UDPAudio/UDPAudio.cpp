@@ -103,7 +103,7 @@ void UDPAudio::receivingData()
     for (auto &it : this->_list) {
         std::cout << std::get<0>(it).username << std::endl;
         try {
-            auto data = this->_network->receive(std::get<0>(it).ip, PORT_UDP_RECEIVE);
+            auto data = this->_network->receive(std::get<0>(it).ip, Network::PORT_UDP_RECEIVE);
             std::cout << "size: " << data.second << std::endl;
             if (data.second == Network::BUFFER_SIZE) {
                 /*
