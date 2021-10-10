@@ -157,17 +157,23 @@ namespace Network
 
         void asyncReceiving(const asio::error_code &err, const std::size_t &lenRecvBuf, const std::string &ip, const std::size_t port)
         {
+            std::cout << "receiving..." << std::endl;
             if (err) {
                 if (err.value() == asio::error::misc_errors::eof) {
                     return;
                 }
             }
+            std::cout << "no error" << std::endl;
             if (!lenRecvBuf) {
                 return;
             }
+            std::cout << "Buff is " << lenRecvBuf << " of length" << std::endl;
             if (!_recvBuf.data()) {
                 return;
             }
+            std::cout << "received data from : " << std::endl;
+            std::cout << "ip : " << ip << std::endl;
+            std::cout << "port : " << port << std::endl;
             _recvData.emplace(std::make_pair(ip, port), std::make_pair(_recvBuf, lenRecvBuf));
             asyncReceive(ip, port);
         }

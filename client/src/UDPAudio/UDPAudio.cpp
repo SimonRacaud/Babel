@@ -8,22 +8,17 @@
 #include "UDPAudio.hpp"
 #include "tools/tramFactory.hpp"
 
-UDPAudio::UDPAudio(size_t port) : _port(port),
-_input(nullptr),
-_output(nullptr),
-_network(std::make_unique<NetworkComponent>(port))
+UDPAudio::UDPAudio(size_t port) : _port(port), _input(nullptr), _output(nullptr), _network(std::make_unique<NetworkComponent>(port))
 {
-    this->_network->runAsync();
+    //    this->_network->runAsync();
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
 }
 
-UDPAudio::UDPAudio(size_t port, const std::vector<UserRaw> &list) :
-_input(nullptr),
-_output(nullptr),
-_network(std::make_unique<NetworkComponent>(port))
+UDPAudio::UDPAudio(size_t port, const std::vector<UserRaw> &list)
+    : _input(nullptr), _output(nullptr), _network(std::make_unique<NetworkComponent>(port))
 {
-    this->_network->runAsync();
+    //    this->_network->runAsync();
     if (sizeof(Network::UDPTram_t) != Network::BUFFER_SIZE)
         throw std::invalid_argument("Invalid UDP tram");
     for (auto &it : list)
@@ -126,7 +121,7 @@ void UDPAudio::receivingData()
                     */
                 }
             }
-        } catch([[maybe_unused]] const std::exception &e) {
+        } catch ([[maybe_unused]] const std::exception &e) {
         }
     }
     this->_output->setFrameBuffer(frameBuffer, true);
@@ -169,6 +164,7 @@ void UDPAudio::updateConnections(std::vector<UserRaw> &list)
             this->removeUser(std::get<0>(it));
     }
     this->audioManagerPtr();
+    this->_network->runAsync();
 }
 
 void UDPAudio::audioManagerPtr()
