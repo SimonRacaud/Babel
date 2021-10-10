@@ -91,35 +91,35 @@ void UDPAudio::sendingData()
 
 void UDPAudio::receivingData()
 {
+    bool continu = true;
     Audio::compressFrameBuffer tmp;
     std::queue<Audio::compressFrameBuffer> frameBuffer;
 
-    for (size_t i = 0; i < 100; i++) {
+    for (size_t i = 0; continu && i < 100; i++) {
+        continu = false;
         for (auto &it : this->_list) {
-            try {
-                auto data = this->_network->receive(std::get<0>(it).ip, Network::PORT_UDP_RECEIVE);
-                if (data.second == Network::BUFFER_SIZE) {
+            auto data = this->_network->receive(std::get<0>(it).ip, Network::PORT_UDP_RECEIVE);
+            if (data.second == Network::BUFFER_SIZE) {
+                continu = true;
+                /*
+                ** tram
+                */
+                Network::UDPTram_t tram = tramFactory<Network::UDPTram_t>::getTram(data.first.data());
+                if (this->correctPacket(std::get<1>(it), tram)) {
+                    tmp.data = std::vector<unsigned char>(Network::DATA_SIZE);
+                    std::memset(tmp.data.data(), 0, Network::DATA_SIZE);
+                    std::memcpy(tmp.data.data(), tram.data, Network::DATA_SIZE - sizeof(int));
+                    std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
+                    tmp.data.resize(tmp.encodedBit);
+                    frameBuffer.push(tmp);
                     /*
-                    ** tram
+                    **
+                    ** this->_output->setFrameBuffer(frameBuffer);
+                    ** while (frameBuffer.size())
+                    **     frameBuffer.pop();
+                    **
                     */
-                    Network::UDPTram_t tram = tramFactory<Network::UDPTram_t>::getTram(data.first.data());
-                    if (this->correctPacket(std::get<1>(it), tram)) {
-                        tmp.data = std::vector<unsigned char>(Network::DATA_SIZE);
-                        std::memset(tmp.data.data(), 0, Network::DATA_SIZE);
-                        std::memcpy(tmp.data.data(), tram.data, Network::DATA_SIZE - sizeof(int));
-                        std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
-                        tmp.data.resize(tmp.encodedBit);
-                        frameBuffer.push(tmp);
-                        /*
-                        **
-                        ** this->_output->setFrameBuffer(frameBuffer);
-                        ** while (frameBuffer.size())
-                        **     frameBuffer.pop();
-                        **
-                        */
-                    }
                 }
-            } catch ([[maybe_unused]] const std::exception &e) {
             }
         }
     }
