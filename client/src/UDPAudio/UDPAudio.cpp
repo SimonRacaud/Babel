@@ -44,7 +44,7 @@ UDPAudio::~UDPAudio()
 
 void UDPAudio::addUser(const UserRaw &user)
 {
-    this->_network->connect(user.ip, user.port);
+    this->_network->connect(user.ip, Network::PORT_UDP_RECEIVE);
     this->_list.push_back(std::tuple<UserRaw, size_t>(user, 0));
     this->audioManagerPtr();
 }
