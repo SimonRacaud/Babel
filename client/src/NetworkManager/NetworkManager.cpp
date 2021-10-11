@@ -252,6 +252,14 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
     /// Get current call members
     std::vector<UserRaw> connections = _audioManager.getConnections();
 
+    /// Check if the target is not already called
+    for (UserRaw const &user : connections) {
+        if (std::strcmp(user.username, target.username) == 0) {
+            GUI::DialogueBox::error("The user is already in the call !");
+            return; // abort
+        }
+    }
+    ///
     this->sendCallMemberList(connections, target);
 }
 
