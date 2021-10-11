@@ -5,6 +5,7 @@
 ** InputAudioManager.cpp
 */
 
+#include <cstring>
 #include "OutputAudioManager.hpp"
 
 using namespace Audio;
@@ -45,7 +46,7 @@ void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &
         Audio::rawFrameBuffer mergingData;
 
         mergingData.data = std::vector<float>(Audio::SAMPLE_RATE * Audio::NUM_CHANNELS * sizeof(float));
-        std::fill(mergingData.data.begin(), mergingData.data.end(), 0);
+        std::memset(mergingData.data.data(), 0, Audio::SAMPLE_RATE * Audio::NUM_CHANNELS * sizeof(float));
         while (data.size()) {
             extractedData = this->_decoder->extract(data.front());
             data.pop();
