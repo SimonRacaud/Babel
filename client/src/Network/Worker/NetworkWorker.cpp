@@ -101,6 +101,8 @@ void NetworkWorker::processClientCommunication()
         if (tram.getType() == TramType::USER) {
             std::vector<UserRaw> users = tram.getListOf<UserRaw>();
             emit callHandshakeReceived(users, user);
+        } else if (tram.getType() == TramType::STOP) {
+            emit removeCallMember(user);
         }
     }
 }

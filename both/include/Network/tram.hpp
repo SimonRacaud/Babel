@@ -22,7 +22,8 @@ namespace Network
     enum class TramType
     {
         USER,
-        CONTACT
+        CONTACT,
+        STOP
     };
 
     const std::size_t TRAM_SIZE_SHIFT = sizeof(TramAction) + sizeof(TramType)

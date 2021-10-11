@@ -55,6 +55,7 @@ namespace Network
       private:
         void mustBeConnected() const;
         void connectServer();
+        void sendHangupRequest(const UserType &user);
 
         void sendCallMemberList(std::vector<UserRaw> &list, const UserType &target);
 
@@ -71,6 +72,7 @@ namespace Network
         void slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target);
 
         void slotSendCallMemberList(const UserType &target);
+        void slotRemoveCallMember(const UserType &user);
 
       signals:
         void sigUpdateUsername(QString const &username);

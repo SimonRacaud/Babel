@@ -57,7 +57,7 @@ void UDPAudio::removeUser(const UserRaw &user)
 
 void UDPAudio::closeConnections()
 {
-    this->_network = std::make_unique<NetworkComponent>(_port);
+    this->_network->disconnectAll();
     this->_list.clear();
     this->audioManagerPtr();
 }
