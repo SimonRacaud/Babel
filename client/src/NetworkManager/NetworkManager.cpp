@@ -257,6 +257,11 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
+    try {
+        this->mustBeConnected();
+    } catch (std::exception const &) {
+        return;
+    }
     std::vector<UserType> list = users;
     UserType &me = _user;
     auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) {
@@ -280,6 +285,8 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
             this->sendCallMemberList(list, target);
             this->_audioManager.updateConnections(usersWithoutMe);
+        } else {
+            return; // call rejected
         }
     } else {
         this->_audioManager.updateConnections(usersWithoutMe);
