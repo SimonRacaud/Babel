@@ -282,7 +282,7 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
             this->_audioManager.updateConnections(usersWithoutMe);
         }
     } else {
-        this->_audioManager.updateConnections(list);
+        this->_audioManager.updateConnections(usersWithoutMe);
         this->_callInProgress = false;   // I already have sent my call member list.
     }
     emit this->sigCallSuccess(usersWithoutMe); // update gui
