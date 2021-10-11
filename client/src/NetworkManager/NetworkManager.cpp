@@ -278,8 +278,8 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
     if (this->_callInProgress == false) { // I'm replying to a call request.
         if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(itSender->username) + " call connection ?")) {
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
-            this->sendCallMemberList(usersWithoutMe, target);
-            this->_audioManager.updateConnections(list);
+            this->sendCallMemberList(list, target);
+            this->_audioManager.updateConnections(usersWithoutMe);
         }
     } else {
         this->_audioManager.updateConnections(list);
