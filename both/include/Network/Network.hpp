@@ -14,7 +14,7 @@
 
 namespace Network
 {
-    const std::string IP_SERVER = /* "127.0.0.1" */ "10.19.249.8" /*"10.19.252.120"*/;
+    const std::string IP_SERVER = /* "127.0.0.1" */ "10.19.252.101" /*"10.19.252.120"*/;
     const int PORT_MAIN_SERVER = 8081;
     const int PORT_CALL_SERVER = 8082;
     const int PORT_UDP_RECEIVE = 8088;
