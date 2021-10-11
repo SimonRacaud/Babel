@@ -79,6 +79,7 @@ namespace Network
         void sigUpdateContacts(QString const &contactUsername);
         void sigRemoveContact(QString const &contactUsername);
         void sigCallSuccess(std::vector<UserType> const &list);
+        void sigCallUpdate(std::vector<UserType> const &list);
 
       private:
         bool _logged;

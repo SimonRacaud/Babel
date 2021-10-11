@@ -88,7 +88,7 @@ void NetworkManager::slotRemoveCallMember(const UserType &user)
         }
     }
     this->_audioManager.updateConnections(newConnections);
-    emit this->sigCallSuccess(newConnections); // update gui
+    emit this->sigCallUpdate(newConnections); // update gui
 }
 
 bool NetworkManager::isLogged() const
