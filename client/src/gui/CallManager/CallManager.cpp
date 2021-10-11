@@ -29,6 +29,7 @@ CallManager::CallManager() : _contactList(nullptr)
     /// Events
     QObject::connect(_hangUpButton, SIGNAL(clicked()), this, SLOT(slotHangUpCall()));
     QObject::connect(&networkManager, &Network::NetworkManager::sigCallSuccess, this, &CallManager::slotSetCallList);
+    QObject::connect(&networkManager, &Network::NetworkManager::sigCallUpdate, this, &CallManager::slotSetCallList);
 }
 
 CallManager::~CallManager()
