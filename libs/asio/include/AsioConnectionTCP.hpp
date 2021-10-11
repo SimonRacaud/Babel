@@ -133,8 +133,10 @@ namespace Network
         {
             if (_activeThread)
                 return;
+            _activeThread = true;
+
             _thread = std::thread(&AsioConnectionTCP<PACKETSIZE>::realRunAsync, this);
-            _thread.detach();
+            //            _thread.detach();
         }
 
         void stopRunAsync()
@@ -151,7 +153,6 @@ namespace Network
          */
         void realRunAsync()
         {
-            _activeThread = true;
             while (_activeThread) {
                 AAsioConnection<PACKETSIZE>::_ioContext.run();
                 usleep(500);
