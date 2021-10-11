@@ -269,21 +269,21 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
     std::strcpy(itSender->ip, target.ip);
     itSender->port = target.port;
     std::cerr << "call : VOICE CONNECT." << std::endl;
-    std::vector<UserType> connections;
+    std::vector<UserType> usersWithoutMe;
     for (UserType const &user : list) {
         if (strcmp(user.username, me.username) != 0) {
-            connections.push_back(user);
+            usersWithoutMe.push_back(user);
         }
     }
     if (this->_callInProgress == false) { // I'm replying to a call request.
         if (GUI::DialogueBox::question("Call in coming", "Accept " + QString(itSender->username) + " call connection ?")) {
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
-            this->sendCallMemberList(list, target);
-            this->_audioManager.updateConnections(connections);
+            this->sendCallMemberList(usersWithoutMe, target);
+            this->_audioManager.updateConnections(list);
         }
     } else {
         this->_audioManager.updateConnections(list);
         this->_callInProgress = false;   // I already have sent my call member list.
     }
-    emit this->sigCallSuccess(connections); // update gui
+    emit this->sigCallSuccess(usersWithoutMe); // update gui
 }
