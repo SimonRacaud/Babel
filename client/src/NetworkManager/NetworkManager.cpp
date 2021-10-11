@@ -46,13 +46,49 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
+    std::vector<UserType> connections = _audioManager.getConnections();
     try {
-        if (!_audioManager.getConnections().empty()) {
+        if (!connections.empty()) {
             this->_audioManager.closeConnections();
         }
     } catch (std::exception const &e) {
         std::cerr << "NetworkManager::callHangUp : request failed. " << e.what() << std::endl;
     }
+    /// Send end call request
+    for (UserType const &user : connections) {
+        this->sendHangupRequest(user);
+    }
+}
+
+void NetworkManager::sendHangupRequest(const UserType &user)
+{
+    TCPTram tram(TramAction::POST, TramType::STOP);
+
+    try {
+        this->_callClient->connect(user.ip, PORT_CALL_SERVER);
+        this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), user.ip, PORT_CALL_SERVER);
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::sendHangupRequest : request failed. " << e.what() << std::endl;
+    }
+}
+
+void NetworkManager::slotRemoveCallMember(const UserType &user)
+{
+    try {
+        this->mustBeConnected();
+    } catch (std::exception const &) {
+        return;
+    }
+    std::vector<UserType> connections = _audioManager.getConnections();
+    std::vector<UserType> newConnections;
+
+    for (UserType const &elem : connections) {
+        if (std::strcmp(elem.ip, user.ip) != 0) {
+            newConnections.push_back(elem);
+        }
+    }
+    this->_audioManager.updateConnections(newConnections);
+    emit this->sigCallSuccess(newConnections); // update gui
 }
 
 bool NetworkManager::isLogged() const

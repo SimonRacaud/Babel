@@ -27,6 +27,7 @@ Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker
     QObject::connect(workerThread, &NetworkWorker::contactRemoved, &_manager, &NetworkManager::slotContactRemoved);
     QObject::connect(workerThread, &NetworkWorker::callHandshakeReceived, &_manager, &NetworkManager::slotCallVoiceConnect);
     QObject::connect(workerThread, &NetworkWorker::userReceived, &_manager, &NetworkManager::slotSendCallMemberList);
+    QObject::connect(workerThread, &NetworkWorker::removeCallMember, &_manager, &NetworkManager::slotRemoveCallMember);
     QObject::connect(workerThread, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
     QObject::connect(workerThread, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
     workerThread->start();
