@@ -264,6 +264,9 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
 
 void NetworkManager::sendCallMemberList(std::vector<UserRaw> &list, const UserType &target)
 {
+    if (_audioManager.getConnections().size() >= MAX_MEMBER_CALL) {
+        return; // abort
+    }
     UserRaw me = {0};
 
     std::strcpy(me.username, _user.username);

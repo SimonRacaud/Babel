@@ -22,6 +22,9 @@ namespace Network
     const int BUFFER_SIZE = 1024;
     const unsigned int MAGIC_NUMBER = 0x42;
 
+    const int MAX_MEMBER_CALL = 5;
+    const int MAX_CONTACT = 5;
+
     typedef struct __attribute__((packed)) UDPTram_s {
         unsigned int magicNumber;      // 4
         size_t timestamp;              // 8

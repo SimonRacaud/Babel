@@ -62,6 +62,12 @@ void ContactInterpreter<PACKETSIZE>::POST(const TCPTramExtract<PACKETSIZE> &tram
                     throw std::invalid_argument("The contact already exist.");
                 }
             }
+            if (this->_databaseManager.getContacts(contact.username).size() > Network::MAX_CONTACT) {
+                TCPTram tram(tramExtract.getAction(), tramExtract.getType());
+                tram.setErrorMessage("Max contact number reached");
+                this->_send(tram, ip, port);
+                return; // abort
+            }
             this->_databaseManager.newContact(contact.username, contact.contactName);
         } catch (std::exception const &e) {
             TCPTram tram(tramExtract.getAction(), tramExtract.getType());
