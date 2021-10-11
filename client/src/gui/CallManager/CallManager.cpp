@@ -83,6 +83,7 @@ void CallManager::slotHangUpCall() noexcept
 
 void CallManager::slotSetCallList(std::vector<UserRaw> const &list) noexcept
 {
+    this->clearMemberList();
     for (UserRaw const &user : list) {
         this->addMember(QString(user.username));
     }
