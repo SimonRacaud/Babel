@@ -122,8 +122,8 @@ void UDPAudio::receivingData()
                 }
             }
         }
+        this->_output->setFrameBuffer(frameBuffer, true);
     }
-    this->_output->setFrameBuffer(frameBuffer);
 }
 
 bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram)

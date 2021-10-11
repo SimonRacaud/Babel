@@ -54,6 +54,6 @@ void OutputAudioManager::setFrameBuffer(std::queue<Audio::compressFrameBuffer> &
                 mergingData.data[i] += extractedData.data[i];
             }
         }
-        this->_output->setFrame(mergingData, true);
+        this->_output->setFrame(mergingData);
     }
 }
