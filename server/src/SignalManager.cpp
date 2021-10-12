@@ -26,7 +26,7 @@ static void signalHandler(UNUSED int signum)
     activatorSwitch(nullptr);
 }
 
-void signalManager( &signum, bool &activatorPtr)
+void signalManager(const int &signum, bool &activatorPtr)
 {
     activatorSwitch(&activatorPtr);
     auto signalValue = signal(signum, &signalHandler);
