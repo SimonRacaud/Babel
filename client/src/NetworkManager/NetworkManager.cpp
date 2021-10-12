@@ -101,7 +101,12 @@ void NetworkManager::login(const userNameType &username)
     /// Update User
     std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
     _user.port = Network::PORT_CALL_SERVER;
-    std::strcpy(_user.ip, "0.0.0.0"); // todo change for good ip or remove from tram
+    /*
+    ** The client don't know is own IP.
+    ** So, at this step it's impossible to get his IP
+    ** Thus it's a conceptio's error. So we just send basic string
+    */
+    std::strcpy(_user.ip, "0.0.0.0");
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({this->_user});
