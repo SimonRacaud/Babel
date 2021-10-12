@@ -40,6 +40,7 @@ Contact::Contact(QVBoxLayout &parent, QString const &userName,
         _buttonRemove, SIGNAL(clicked()), this, SLOT(slotRemoveContact()));
     QObject::connect(&networkManager, &Network::NetworkManager::sigRemoveContact, this, &Contact::slotApplyRemove);
     QObject::connect(&networkManager, &Network::NetworkManager::sigCallSuccess, this, &Contact::slotApplyCall);
+    QObject::connect(&networkManager, &Network::NetworkManager::sigCallUpdate, this, &Contact::slotUpdateCall);
 }
 
 Contact::~Contact()
@@ -85,6 +86,16 @@ void Contact::slotApplyCall(std::vector<UserRaw> const &list) noexcept
 
     if (it != list.end()) {
         this->disableCall();
+    }
+}
+
+void Contact::slotUpdateCall(std::vector<UserRaw> const &list) noexcept
+{
+    QString username = this->getUsername();
+    auto it = std::find_if(list.begin(), list.end(), [username] (UserRaw const &user) { return QString(user.username) == username; });
+
+    if (it == list.end()) {
+        this->enableCall();
     }
 }
 

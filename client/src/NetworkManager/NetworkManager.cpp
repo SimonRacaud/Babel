@@ -46,13 +46,49 @@ void NetworkManager::init()
 void NetworkManager::callHangUp()
 {
     this->mustBeConnected();
+    std::vector<UserType> connections = _audioManager.getConnections();
     try {
-        if (!_audioManager.getConnections().empty()) {
+        if (!connections.empty()) {
             this->_audioManager.closeConnections();
         }
     } catch (std::exception const &e) {
         std::cerr << "NetworkManager::callHangUp : request failed. " << e.what() << std::endl;
     }
+    /// Send end call request
+    for (UserType const &user : connections) {
+        this->sendHangupRequest(user);
+    }
+}
+
+void NetworkManager::sendHangupRequest(const UserType &user)
+{
+    TCPTram tram(TramAction::POST, TramType::STOP);
+
+    try {
+        this->_callClient->connect(user.ip, PORT_CALL_SERVER);
+        this->_callClient->send(tram.getBuffer<Network::BUFFER_SIZE>(), user.ip, PORT_CALL_SERVER);
+    } catch (std::exception const &e) {
+        std::cerr << "NetworkManager::sendHangupRequest : request failed. " << e.what() << std::endl;
+    }
+}
+
+void NetworkManager::slotRemoveCallMember(const UserType &user)
+{
+    try {
+        this->mustBeConnected();
+    } catch (std::exception const &) {
+        return;
+    }
+    std::vector<UserType> connections = _audioManager.getConnections();
+    std::vector<UserType> newConnections;
+
+    for (UserType const &elem : connections) {
+        if (std::strcmp(elem.ip, user.ip) != 0) {
+            newConnections.push_back(elem);
+        }
+    }
+    this->_audioManager.updateConnections(newConnections);
+    emit this->sigCallUpdate(newConnections); // update gui
 }
 
 bool NetworkManager::isLogged() const
@@ -228,6 +264,9 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
 
 void NetworkManager::sendCallMemberList(std::vector<UserRaw> &list, const UserType &target)
 {
+    if (_audioManager.getConnections().size() >= MAX_MEMBER_CALL) {
+        return; // abort
+    }
     UserRaw me = {0};
 
     std::strcpy(me.username, _user.username);
@@ -252,11 +291,24 @@ void NetworkManager::slotSendCallMemberList(const UserType &target)
     /// Get current call members
     std::vector<UserRaw> connections = _audioManager.getConnections();
 
+    /// Check if the target is not already called
+    for (UserRaw const &user : connections) {
+        if (std::strcmp(user.username, target.username) == 0) {
+            GUI::DialogueBox::error("The user is already in the call !");
+            return; // abort
+        }
+    }
+    ///
     this->sendCallMemberList(connections, target);
 }
 
 void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, UserRaw const &target)
 {
+    try {
+        this->mustBeConnected();
+    } catch (std::exception const &) {
+        return;
+    }
     std::vector<UserType> list = users;
     UserType &me = _user;
     auto itSender = std::find_if(list.begin(), list.end(), [target](UserRaw const &user) {
@@ -280,6 +332,8 @@ void NetworkManager::slotCallVoiceConnect(std::vector<UserType> const &users, Us
             std::cerr << "call : SEND REPLY CALL MEMBER LIST." << std::endl;
             this->sendCallMemberList(list, target);
             this->_audioManager.updateConnections(usersWithoutMe);
+        } else {
+            return; // call rejected
         }
     } else {
         this->_audioManager.updateConnections(usersWithoutMe);

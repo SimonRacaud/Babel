@@ -43,6 +43,7 @@ namespace Network
         void callHandshakeReceived(std::vector<UserRaw> const &users, UserRaw const &target);
         void networkRequestFailed(QString const &message);
         void contactListReceived(std::vector<ContactRaw> const &contacts);
+        void removeCallMember(UserRaw const &user);
     };
 }
 
