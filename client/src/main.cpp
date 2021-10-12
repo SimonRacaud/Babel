@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
         return app.exec();
     } catch (std::exception const &e) {
         std::cerr << "Exception: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Exception: no Exception::what()" << std::endl;
     }
 }
 
