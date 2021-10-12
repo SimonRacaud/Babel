@@ -103,9 +103,16 @@ Audio::rawFrameBuffer AudioRecorder::getFrame()
 
 int AudioRecorder::defaultCallBack(const void *input, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *params)
 {
-    PortAudioCaps::AudioRecorder *tools = static_cast<PortAudioCaps::AudioRecorder *>(params);
-    std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
     Audio::rawFrameBuffer frameBuffer;
+    PortAudioCaps::AudioRecorder *tools = NULL;
+
+    if (!input || !params)
+        return paContinue;
+    tools = static_cast<PortAudioCaps::AudioRecorder *>(params);
+    if (!tools)
+        return paContinue;
+
+    std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
 
     frameBuffer.data = std::vector<float>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     std::memset(frameBuffer.data.data(), 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));

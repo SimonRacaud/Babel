@@ -97,7 +97,14 @@ void AudioStreamer::setFrame(Audio::rawFrameBuffer frame)
 
 int AudioStreamer::defaultCallBack(const void *, void *output, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *params)
 {
-    PortAudioCaps::AudioStreamer *tools = static_cast<PortAudioCaps::AudioStreamer *>(params);
+    PortAudioCaps::AudioStreamer *tools = NULL;
+
+    if (!output || !params)
+        return paContinue;
+    tools = static_cast<PortAudioCaps::AudioStreamer *>(params);
+    if (!tools)
+        return paContinue;
+
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
 
     std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
