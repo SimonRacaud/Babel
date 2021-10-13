@@ -18,6 +18,13 @@ NetworkManager::NetworkManager()
 
 NetworkManager::~NetworkManager()
 {
+    /// Hang up
+    try {
+        if (this->_logged) {
+            this->callHangUp();
+        }
+    } catch (...) {}
+    ///
     if (this->_connectionServer) {
         this->_connectionServer->stopRunAsync();
         this->_connectionServer.reset();
