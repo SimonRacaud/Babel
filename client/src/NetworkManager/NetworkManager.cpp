@@ -18,6 +18,13 @@ NetworkManager::NetworkManager()
 
 NetworkManager::~NetworkManager()
 {
+    /// Hang up
+    try {
+        if (this->_logged) {
+            this->callHangUp();
+        }
+    } catch (...) {}
+    ///
     if (this->_connectionServer) {
         this->_connectionServer->stopRunAsync();
         this->_connectionServer.reset();
@@ -101,7 +108,12 @@ void NetworkManager::login(const userNameType &username)
     /// Update User
     std::strncpy(_user.username, username.toStdString().c_str(), USERNAME_SIZE);
     _user.port = Network::PORT_CALL_SERVER;
-    std::strcpy(_user.ip, "0.0.0.0"); // todo change for good ip or remove from tram
+    /*
+    ** The client don't know is own IP.
+    ** So, at this step it's impossible to get his IP
+    ** Thus it's a conceptio's error. So we just send basic string
+    */
+    std::strcpy(_user.ip, "0.0.0.0");
     /// Create tram
     TCPTram tram(TramAction::POST, TramType::USER);
     tram.setUserList({this->_user});
@@ -264,6 +276,9 @@ void NetworkManager::slotContactRemoved(ContactRaw const &contact)
 
 void NetworkManager::sendCallMemberList(std::vector<UserRaw> &list, const UserType &target)
 {
+    if (_audioManager.getConnections().size() >= MAX_MEMBER_CALL) {
+        return; // abort
+    }
     UserRaw me = {0};
 
     std::strcpy(me.username, _user.username);

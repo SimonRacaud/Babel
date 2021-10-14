@@ -14,13 +14,16 @@
 
 namespace Network
 {
-    const std::string IP_SERVER = /* "127.0.0.1" */ "10.19.252.101" /*"10.19.252.120"*/;
+    const std::string IP_SERVER = "10.19.254.16";
     const int PORT_MAIN_SERVER = 8081;
     const int PORT_CALL_SERVER = 8082;
     const int PORT_UDP_RECEIVE = 8088;
     const int DATA_SIZE = 1008;
     const int BUFFER_SIZE = 1024;
     const unsigned int MAGIC_NUMBER = 0x42;
+
+    const int MAX_MEMBER_CALL = 5;
+    const int MAX_CONTACT = 5;
 
     typedef struct __attribute__((packed)) UDPTram_s {
         unsigned int magicNumber;      // 4

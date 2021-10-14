@@ -66,6 +66,8 @@ set(CLIENT_SRCS
     ${SRC_CLIENT}/Network/Controller/Controller.hpp
     ${SRC_CLIENT}/Network/Worker/NetworkWorker.hpp
     ${SRC_CLIENT}/Network/Worker/NetworkWorker.cpp
+    ${SRC_CLIENT}/Network/SoundWorker/SoundWorker.cpp
+    ${SRC_CLIENT}/Network/SoundWorker/SoundWorker.hpp
     ${SRC_CLIENT}/NetworkManager/NetworkManager.cpp
     ${SRC_CLIENT}/NetworkManager/NetworkManager.hpp
     ${SRC_CLIENT}/UDPAudio/UDPAudio.cpp
@@ -106,6 +108,7 @@ target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Audio/OutputAudioM
 target_include_directories(${CLIENT} BEFORE PUBLIC both/src/TCPTram)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Controller)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/Worker)
+target_include_directories(${CLIENT} BEFORE PUBLIC client/src/Network/SoundWorker)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/NetworkManager)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/UDPAudio)
 target_include_directories(${CLIENT} BEFORE PUBLIC client/src/gui/Dialogue)

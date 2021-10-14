@@ -14,6 +14,7 @@
 
 #include "NetworkManager/NetworkManager.hpp"
 #include "Network/Worker/NetworkWorker.hpp"
+#include "Network/SoundWorker/SoundWorker.hpp"
 #include "gui/Dialogue/DialogueBox.hpp"
 #include "gui/MyContactList/MyContactList.hpp"
 #include "gui/Window/Window.hpp"
@@ -25,6 +26,7 @@ namespace Network
     class Controller : public QObject {
         Q_OBJECT
         NetworkWorker *workerThread;
+        SoundWorker *soundWorkerThread;
 
       public:
         Controller(NetworkManager &manager);

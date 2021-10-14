@@ -19,11 +19,6 @@ void NetworkWorker::run()
 {
     while (!this->isInterruptionRequested()) {
         try {
-            networkManager.streamAudio();
-        } catch (std::exception const &e) {
-            std::cerr << "An exception occurred with networkManager.streamAudio()" << e.what() << std::endl;
-        }
-        try {
             this->processClientCommunication();
         } catch ([[maybe_unsed]] const std::exception &e) {
         }

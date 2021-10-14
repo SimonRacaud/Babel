@@ -13,7 +13,7 @@
 
 namespace PortAudioCaps
 {
-    const int MAX_FRAME_IN = 1000;
+    const int MAX_FRAME_IN = 10;
     class AudioRecorder : public Audio::IAudioRecorder<int (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *)>
     {
         public:
