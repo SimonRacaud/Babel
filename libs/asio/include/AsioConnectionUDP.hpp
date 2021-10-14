@@ -40,6 +40,12 @@ namespace Network
         {
         }
 
+        ~AsioConnectionUDP()
+        {
+            if (_activeThread || _thread.joinable())
+                _thread.join();
+        }
+
         std::tuple<std::array<char, PACKETSIZE>, std::size_t, std::string, std::size_t> receiveAny() override
         {
             std::pair<std::array<char, PACKETSIZE>, std::size_t> buf;
@@ -62,6 +68,7 @@ namespace Network
         std::pair<std::array<char, PACKETSIZE>, std::size_t> receive(const std::string &ip, const std::size_t port) override
         {
             std::pair<std::array<char, PACKETSIZE>, std::size_t> buf({0}, 0);
+            _socket.set_option(_receiveBufferSizeOption);
 
             auto my_recvData(std::find_if(_recvData.begin(), _recvData.end(), [&](const auto &recvData) {
                 if (ip == recvData.first.first && port == recvData.first.second) {
@@ -108,7 +115,7 @@ namespace Network
             }
             asyncReceiveAny();
             _thread = std::thread(&AsioConnectionUDP<PACKETSIZE>::realRunAsync, this);
-            _thread.detach();
+            //            _thread.detach();
         }
 
         void stopRunAsync()
@@ -194,6 +201,8 @@ namespace Network
         std::thread _thread;
         bool _activeThread{false};
         std::array<char, PACKETSIZE> _recvBuf{0};
+
+        asio::socket_base::receive_buffer_size _receiveBufferSizeOption{PACKETSIZE};
     };
 
 } // namespace Network

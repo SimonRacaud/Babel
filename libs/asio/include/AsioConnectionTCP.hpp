@@ -43,6 +43,11 @@ namespace Network
         AsioConnectionTCP(const bool server = false) : AAsioConnection<PACKETSIZE>(server)
         {
         }
+        ~AsioConnectionTCP()
+        {
+            if (_activeThread || _thread.joinable())
+                _thread.join();
+        }
 
         void disconnect(const std::string &ip, const std::size_t port)
         {
@@ -200,7 +205,7 @@ namespace Network
                 newConnection->remote_endpoint().address().to_string(), newConnection->remote_endpoint().port());
             _socketConnections.push_back(newConnection);
             newConnection->set_option(_receiveBufferSizeOption);
-            newConnection->set_option(_sendBufferSizeOption);
+            //            newConnection->set_option(_sendBufferSizeOption);
             asyncReceive(newConnection);
         }
 
@@ -271,7 +276,7 @@ namespace Network
         /**
          * @brief Option (to be set) to buffer data when sending it
          */
-        asio::socket_base::send_buffer_size _sendBufferSizeOption{PACKETSIZE};
+        //        asio::socket_base::send_buffer_size _sendBufferSizeOption{PACKETSIZE};
     };
 
 } // namespace Network
