@@ -11,9 +11,10 @@ using namespace Network;
 
 extern std::unique_ptr<GUI::Window> window;
 
-Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker), _manager(manager)
+Controller::Controller(NetworkManager &manager) : workerThread(nullptr), soundWorkerThread(nullptr), _manager(manager)
 {
     workerThread = new NetworkWorker(this);
+    soundWorkerThread = new SoundWorker(this);
 
     /// register types
     qRegisterMetaType<UserRaw>("UserRaw");
@@ -31,13 +32,20 @@ Controller::Controller(NetworkManager &manager) : workerThread(new NetworkWorker
     QObject::connect(workerThread, &NetworkWorker::networkRequestFailed, this, &Controller::showDialogue);
     QObject::connect(workerThread, &NetworkWorker::contactListReceived, &(window->getContactList()), &GUI::MyContactList::slotSetContactList);
     workerThread->start();
+    soundWorkerThread->start();
 }
 
 Controller::~Controller()
 {
     workerThread->requestInterruption();
+    soundWorkerThread->requestInterruption();
+    soundWorkerThread->quit();
     workerThread->quit();
     workerThread->wait();
+    soundWorkerThread->wait();
+
+    delete soundWorkerThread;
+    delete workerThread;
 }
 
 void Controller::showDialogue(QString const &message) const
