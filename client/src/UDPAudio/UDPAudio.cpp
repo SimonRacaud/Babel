@@ -129,7 +129,7 @@ void UDPAudio::receivingData()
 bool UDPAudio::correctPacket(size_t &lastTimestamp, const Network::UDPTram_t &tram)
 {
     bool magicNumber = tram.magicNumber == Network::MAGIC_NUMBER;
-    bool timestamp = true;//lastTimestamp < tram.timestamp;
+    bool timestamp = lastTimestamp <= tram.timestamp;
 
     timestamp = tram.timestamp;
     return magicNumber && timestamp;
