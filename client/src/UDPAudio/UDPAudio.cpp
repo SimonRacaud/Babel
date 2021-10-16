@@ -74,7 +74,7 @@ void UDPAudio::sendingData()
 {
     std::queue<Audio::compressFrameBuffer> frameBuffer = this->_input->getFrameBuffer();
 
-    //while (frameBuffer.size()) {
+    if (frameBuffer.size()) {
         auto it = frameBuffer.front();
         Network::UDPTram_t tram;
         if ((long unsigned int) it.encodedBit > Network::DATA_SIZE - sizeof(int))
@@ -83,7 +83,7 @@ void UDPAudio::sendingData()
         std::memcpy(tram.data + (Network::DATA_SIZE - sizeof(int)), &it.encodedBit, sizeof(int));
         this->_network->sendAll(tramFactory<Network::UDPTram_t>::makeTram(tram));
         frameBuffer.pop();
-    //}
+    }
 }
 
 void UDPAudio::receivingData()
