@@ -74,7 +74,7 @@ void UDPAudio::sendingData()
 {
     std::queue<Audio::compressFrameBuffer> frameBuffer = this->_input->getFrameBuffer();
 
-    if (frameBuffer.size()) {
+    while (frameBuffer.size()) {
         auto it = frameBuffer.front();
         Network::UDPTram_t tram;
         if ((long unsigned int) it.encodedBit > Network::DATA_SIZE - sizeof(int))
@@ -92,7 +92,7 @@ void UDPAudio::receivingData()
     Audio::compressFrameBuffer tmp;
     std::queue<Audio::compressFrameBuffer> frameBuffer;
 
-    //for (size_t i = 0; continu && i < 100; i++) {
+    for (size_t i = 0; continu && i < 100; i++) {
         continu = false;
         for (auto &it : this->_list) {
             auto data = this->_network->receive(std::get<0>(it).ip, Network::PORT_UDP_RECEIVE);
@@ -119,7 +119,7 @@ void UDPAudio::receivingData()
                 }
             }
         }
-    //}
+    }
     this->_output->setFrameBuffer(frameBuffer);
 }
 
