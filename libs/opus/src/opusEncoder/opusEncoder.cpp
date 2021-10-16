@@ -36,7 +36,7 @@ compressBuffer opusEncoder::compress(const defaultBuffer &src)
 void opusEncoder::compress(compressBuffer &dest, const defaultBuffer &src)
 {
     //std::cout << "Compressor: float -> unsigned char" << std::endl;
-    dest.data = std::vector<unsigned char>(Audio::SAMPLE_RATE * Audio::NUM_CHANNELS * sizeof(unsigned char));
+    dest.data = std::vector<unsigned char>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(unsigned char));
     std::fill(dest.data.begin(), dest.data.end(), 0);
     dest.encodedBit = opus_encode_float(this->_encoder, src.data.data(), Audio::FRAMES_PER_BUFFER, dest.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS);
     if (dest.encodedBit < 0)

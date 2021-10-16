@@ -38,7 +38,7 @@ void opusDecoder::extract(defaultBuffer &dest, const compressBuffer &src)
     int bit_decode = 0;
 
     std::cout << "Extractor: unsigned char -> float" << std::endl;
-    dest.data = std::vector<float>(Audio::SAMPLE_RATE * Audio::NUM_CHANNELS * sizeof(float));
+    dest.data = std::vector<float>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     std::fill(dest.data.begin(), dest.data.end(), 0);
     bit_decode = opus_decode_float(this->_decoder, src.data.data(), src.encodedBit, dest.data.data(), Audio::FRAMES_PER_BUFFER, 0);
     if (bit_decode < 0)
