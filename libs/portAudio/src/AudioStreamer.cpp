@@ -107,11 +107,11 @@ int AudioStreamer::defaultCallBack(const void *, void *output, unsigned long, co
 
     std::queue<Audio::rawFrameBuffer> &tab = tools->getSampleBuffer();
 
-    std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+    std::memset(output, 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS);
     if (tab.size()) {
         auto &member = tab.front();
 
-        std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
+        std::memcpy(output, member.data.data(), Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS);
         tab.pop();
     }
     while (tab.size() > PortAudioCaps::MAX_FRAME_OUT)
