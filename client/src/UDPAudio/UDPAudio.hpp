@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <memory>
+#include "Audio.hpp"
 #include "Network.hpp"
 #include "UserRaw.hpp"
 #include "AsioConnectionUDP.hpp"
