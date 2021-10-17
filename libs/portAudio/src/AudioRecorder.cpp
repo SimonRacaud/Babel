@@ -116,9 +116,10 @@ int AudioRecorder::defaultCallBack(const void *input, void *, unsigned long, con
 
     frameBuffer.data = std::vector<float>(Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
     std::memset(frameBuffer.data.data(), 0, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
-    if (input)
+    if (input) {
         std::memcpy(frameBuffer.data.data(), input, Audio::FRAMES_PER_BUFFER * Audio::NUM_CHANNELS * sizeof(float));
-    tab.push(frameBuffer);
+        tab.push(frameBuffer);
+    }
     while (tab.size() > PortAudioCaps::MAX_FRAME_IN)
         tab.pop();
     return paContinue;
