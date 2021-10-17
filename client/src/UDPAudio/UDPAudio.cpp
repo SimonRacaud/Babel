@@ -108,7 +108,7 @@ void UDPAudio::receivingData()
                     std::memset(tmp.data.data(), 0, Network::DATA_SIZE);
                     std::memcpy(tmp.data.data(), tram.data, Network::DATA_SIZE - sizeof(int));
                     std::memcpy(&tmp.encodedBit, tram.data + (Network::DATA_SIZE - sizeof(int)), sizeof(int));
-                    tmp.data.resize(tmp.encodedBit);
+                    //tmp.data.resize(tmp.encodedBit);
                     frameBuffer.push(tmp);
                     /*
                     **
