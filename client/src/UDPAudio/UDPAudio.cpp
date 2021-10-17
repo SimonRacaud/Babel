@@ -79,6 +79,7 @@ void UDPAudio::sendingData()
         Network::UDPTram_t tram;
         if ((long unsigned int) it.encodedBit > Network::DATA_SIZE - sizeof(int))
             throw std::invalid_argument("Invalid data size: resize is necessary");
+        std::memset(tram.data, 0, Network::DATA_SIZE);
         std::memcpy(tram.data, it.data.data(), it.encodedBit);
         std::memcpy(tram.data + (Network::DATA_SIZE - sizeof(int)), &it.encodedBit, sizeof(int));
         this->_network->sendAll(tramFactory<Network::UDPTram_t>::makeTram(tram));
