@@ -28,3 +28,5 @@ or
 ```shell
 ./build.sh re
 ```
+### Preview
+![GUI](/.github/gui.png)
