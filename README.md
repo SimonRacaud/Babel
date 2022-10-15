@@ -1,3 +1,15 @@
+# Description
+Low level, UDP, audio streaming application.
+
+### Technologies:
+- portaudio, opus: Audio processing and compression
+- Asio: Networking
+- Qt: GUI
+- sqlite_orm: Database
+
+# Documentation
+- [Diagrams](./doc/)
+- [Network Tram](./DocTram/)
 
 # Requirements
 
