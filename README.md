@@ -1,6 +1,10 @@
 # Description
 Low level, UDP, audio streaming application.
 
+The project consists in a client/server architecture voice over IP application, similar to Skype or TeamSpeak.
+
+The project is OS independent (Unix system and Windows).
+
 ### Technologies:
 - portaudio, opus: Audio processing and compression
 - Asio: Networking
