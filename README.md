@@ -1,5 +1,6 @@
 # Description
 Low level, UDP, audio streaming application.
+Durung this project, we developed our own applicative protocol on top of UDP to transmit the audio. 
 
 The project consists in a client/server architecture voice over IP application, similar to Skype or TeamSpeak.
 
